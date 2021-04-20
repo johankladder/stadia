@@ -67,7 +67,9 @@
             </div>
             <div class="card-body">
                 @if(count($itemsGlobal) <= 0)
-                    <span class="text-muted">No dates set yet! </span>
+                    <div class="alert alert-danger">
+                        No default dates set yet!
+                    </div>
                 @else
                     <table class="table">
                         <thead>
@@ -81,17 +83,17 @@
                         @foreach($itemsGlobal as $item)
                             <tr>
                                 <td>
-                                    {{$item->getDateFrom()}}
+                                    {{date('d-m', strtotime($item->getDateFrom()))}}
                                 </td>
                                 <td>
-                                    {{$item->getDateTo()}}
+                                    {{date('d-m', strtotime($item->getDateTo()))}}
                                 </td>
                                 <td>
 
                                     <form action="{{ route('calendar.destroy', $item->id)}}" method="POST">
                                         @method('delete')
                                         @csrf
-                                        <button class="btn btn-outline-danger" type="submit">Remove</button>
+                                        <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
                                     </form>
                                 </td>
                             </tr>
@@ -116,37 +118,49 @@
 
                         <div class="card mb-3">
                             <div class="card-header">
-                                {{$countryName}}
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        {{$countryName}}
+                                    </div>
+                                    <div class="col-sm-auto">
+                                        <button class="btn btn-link" data-toggle="collapse"
+                                                data-target="#collapse-{{$countryName}}">Show
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse" id="collapse-{{$countryName}}">
+
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Date from</th>
+                                        <th scope="col">Date to</th>
+                                        <th scope="col">Options</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($items as $item)
+                                        <tr>
+                                            <td>
+                                                {{date('d-m', strtotime($item->getDateFrom()))}}
+                                            </td>
+                                            <td>
+                                                {{date('d-m', strtotime($item->getDateTo()))}}
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('calendar.destroy', $item->id)}}" method="POST">
+                                                    @method('delete')
+                                                    @csrf
+                                                    <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
                             </div>
 
-                            <table class="table ">
-                                <thead>
-                                <tr>
-                                    <th scope="col">Date from</th>
-                                    <th scope="col">Date to</th>
-                                    <th scope="col">Options</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($items as $item)
-                                    <tr>
-                                        <td>
-                                            {{$item->getDateFrom()}}
-                                        </td>
-                                        <td>
-                                            {{$item->getDateTo()}}
-                                        </td>
-                                        <td>
-                                            <form action="{{ route('calendar.destroy', $item->id)}}" method="POST">
-                                                @method('delete')
-                                                @csrf
-                                                <button class="btn btn-outline-danger" type="submit">Remove</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
                         </div>
                     @endforeach
                 @endif
