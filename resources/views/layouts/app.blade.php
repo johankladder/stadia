@@ -35,7 +35,7 @@
     @endif
 
     <div>
-        <a href="{{ url()->previous() }}">Back</a>
+        <a href="@yield('backUrl', url()->previous() )">Back</a>
     </div>
 
     <div class="row mt-3">
