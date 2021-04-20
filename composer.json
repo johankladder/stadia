@@ -1,0 +1,39 @@
+{
+    "name": "johankladder/stadia",
+    "description": "A package for managing plants and levels for Planty.io",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Johan Kladder",
+            "email": "johankladder@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "JohanKladder\\Stadia\\": "src/",
+            "JohanKladder\\Stadia\\Database\\Seeds\\": "database/seeds"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JohanKladder\\Stadia\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^5.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "JohanKladder\\Stadia\\StadiaPackageServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-f": "vendor/bin/phpunit --filter"
+    }
+}
