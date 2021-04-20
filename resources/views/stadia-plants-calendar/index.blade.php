@@ -220,46 +220,60 @@
 
         @empty($selectedCalendar)
         @else
-            <div class="mt-3">
+            <div class="">
                 <hr/>
                 <div class="row">
                     @if(count($selectedCalendar) > 0)
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Date from</th>
-                                <th scope="col">Date to</th>
-                                <th scope="col">Options</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($selectedCalendar as $item)
+                        <div class="col">
+                            <table class="table">
+                                <thead>
                                 <tr>
-                                    <td>
-                                        {{date('d-m', strtotime($item->getDateFrom()))}}
-                                    </td>
-                                    <td>
-                                        {{date('d-m', strtotime($item->getDateTo()))}}
-                                    </td>
-                                    <td>
-                                        <form action="{{ route('calendar.destroy', $item->id)}}" method="POST">
-                                            @method('delete')
-                                            @csrf
-                                            <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
-                                        </form>
-                                    </td>
+                                    <th scope="col">Date from</th>
+                                    <th scope="col">Date to</th>
+                                    <th scope="col">Options</th>
                                 </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                @foreach($selectedCalendar as $item)
+                                    <tr>
+                                        <td>
+                                            {{date('d-m', strtotime($item->getDateFrom()))}}
+                                        </td>
+                                        <td>
+                                            {{date('d-m', strtotime($item->getDateTo()))}}
+                                        </td>
+                                        <td>
+                                            <form action="{{ route('calendar.destroy', $item->id)}}" method="POST">
+                                                @method('delete')
+                                                @csrf
+                                                <button class="btn btn-sm btn-outline-danger" type="submit">Remove
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     @else
                         <div class="col">
                             <p class="text-danger">No dates are found for this country</p>
                         </div>
-
                     @endif
                 </div>
             </div>
+
+            {{-- Show the scatter plot of the sowing to harvest ratio:  --}}
+
+            <div class="card">
+                <div class="card-header">
+                    Scatter plot of this plant in this country:
+                </div>
+                <div class="card-body">
+                    Test test
+                </div>
+            </div>
+
         @endif
     </div>
 

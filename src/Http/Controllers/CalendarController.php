@@ -4,7 +4,6 @@ namespace JohanKladder\Stadia\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use JohanKladder\Stadia\Http\Requests\CalendarIndexRangeRequest;
 use JohanKladder\Stadia\Http\Requests\CalendarRangeRequest;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaPlant;
