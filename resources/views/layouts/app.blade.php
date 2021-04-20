@@ -26,8 +26,7 @@
         </ul>
     </div>
 </nav>
-<div class="container mt-3">
-
+<div class="p-5">
     @if(session()->has('message'))
         <div class="alert {{session('alert') ?? 'alert-info'}}">
             {{ session('message') }}
@@ -39,8 +38,6 @@
     </div>
 
     <div class="row mt-3">
-
-
         @hasSection('content-side')
             <div class="col-8">
                 <div class="card">

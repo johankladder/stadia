@@ -2,6 +2,9 @@
 
 namespace JohanKladder\Stadia\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use JohanKladder\Stadia\Http\Requests\CalendarIndexRangeRequest;
 use JohanKladder\Stadia\Http\Requests\CalendarRangeRequest;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaPlant;
@@ -21,6 +24,15 @@ class CalendarController extends Controller
         ]);
     }
 
+    public function indexCalendarRanges(Request $request, StadiaPlant $stadiaPlant)
+    {
+        $country = Country::find($request->get('country_id'));
+        return $this->index($stadiaPlant)->with([
+            'selectedCalendar' => $country ? $country->calendarRanges()->get() : Collection::make(),
+            'selectedCountry' => $country
+        ]);
+    }
+
     public function storeCalendarRange(CalendarRangeRequest $request, StadiaPlant $stadiaPlant)
     {
         StadiaPlantCalendarRange::create(array_merge(
@@ -28,7 +40,7 @@ class CalendarController extends Controller
             ['stadia_plant_id' => $stadiaPlant->id]
         ));
 
-        return redirect()->back();
+        return redirect()->back()->wi;
     }
 
     public function destroy(StadiaPlantCalendarRange $calendarRange)

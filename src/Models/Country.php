@@ -12,4 +12,9 @@ class Country extends Model
         'code'
     ];
 
+    public function calendarRanges()
+    {
+        return $this->hasMany(StadiaPlantCalendarRange::class);
+    }
+
 }

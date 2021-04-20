@@ -120,7 +120,7 @@
                             <div class="card-header">
                                 <div class="row align-items-center">
                                     <div class="col">
-                                        {{$countryName}}
+                                        {{$countryName}} ({{count($items)}})
                                     </div>
                                     <div class="col-sm-auto">
                                         <button class="btn btn-link" data-toggle="collapse"
@@ -152,7 +152,8 @@
                                                 <form action="{{ route('calendar.destroy', $item->id)}}" method="POST">
                                                     @method('delete')
                                                     @csrf
-                                                    <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
+                                                    <button class="btn btn-sm btn-outline-danger" type="submit">Remove
+                                                    </button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -189,37 +190,74 @@
 @section('content-side')
     <div>
         <div>
-            <div class="form-group">
-                <label for="form-select-country-code">Select country</label>
-                <select class="form-control" id="form-select-country-code">
-                    <option label=" "></option>
-
-                    @foreach($countries as $country)
-                        <option>{{$country->name}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="form-select-climate-code">Climate code</label>
-                <select class="form-control" id="form-select-climate-code">
-                    <option label=" "></option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Get calendar</button>
+            <form action="{{ route('calendar.withCountry', $plant)}}" method="POST">
+                @csrf
+                @method('POST')
+                <div class="form-group">
+                    <label for="form-select-country-code">Select country</label>
+                    <select class="form-control" id="form-select-country-code" name="country_id">
+                        <option label=" "></option>
+                        @foreach($countries as $country)
+                            <option value="{{$country->id}}">{{$country->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="form-select-climate-code">Climate code</label>
+                    <select class="form-control" id="form-select-climate-code">
+                        <option label=" "></option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Get calendar</button>
+            </form>
         </div>
+
 
         @empty($selectedCalendar)
         @else
             <div class="mt-3">
                 <hr/>
-
                 <div class="row">
+                    @if(count($selectedCalendar) > 0)
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Date from</th>
+                                <th scope="col">Date to</th>
+                                <th scope="col">Options</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($selectedCalendar as $item)
+                                <tr>
+                                    <td>
+                                        {{date('d-m', strtotime($item->getDateFrom()))}}
+                                    </td>
+                                    <td>
+                                        {{date('d-m', strtotime($item->getDateTo()))}}
+                                    </td>
+                                    <td>
+                                        <form action="{{ route('calendar.destroy', $item->id)}}" method="POST">
+                                            @method('delete')
+                                            @csrf
+                                            <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <div class="col">
+                            <p class="text-danger">No dates are found for this country</p>
+                        </div>
 
+                    @endif
                 </div>
             </div>
         @endif
