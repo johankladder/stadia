@@ -265,14 +265,15 @@
 
             {{-- Show the scatter plot of the sowing to harvest ratio:  --}}
 
-            <div class="card">
-                <div class="card-header">
-                    Scatter plot of this plant in this country:
+            @if($selectedCountry)
+                <div class="card">
+                    <div class="card-header">
+                        Scatter plot of this plant in this country:
+                    </div>
+                    <div class="card-body">
+                    </div>
                 </div>
-                <div class="card-body">
-                    Test test
-                </div>
-            </div>
+            @endif
 
         @endif
     </div>
