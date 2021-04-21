@@ -124,12 +124,12 @@
                                     </div>
                                     <div class="col-sm-auto">
                                         <button class="btn btn-link" data-toggle="collapse"
-                                                data-target="#collapse-{{$countryName}}">Show
+                                                data-target="#collapse-{{str_replace(' ', '', $countryName)}}">Show
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="collapse" id="collapse-{{$countryName}}">
+                            <div class="collapse" id="collapse-{{str_replace(' ', '', $countryName)}}">
 
                                 <table class="table">
                                     <thead>
