@@ -11,22 +11,17 @@ use JohanKladder\Stadia\Models\StadiaPlantCalendarRange;
 
 class CalendarController extends Controller
 {
-    public function index(StadiaPlant $stadiaPlant)
+    public function index(Request $request, StadiaPlant $stadiaPlant)
     {
+        $countryId = $request->query('country');
+        $country = Country::find($countryId);
         return view("stadia::stadia-plants-calendar.index", [
             'itemsGlobal' => $stadiaPlant->calendarRanges()->whereNull('country_id')->get(),
             'itemsCountry' => $stadiaPlant->calendarRanges()->whereNotNull('country_id')->get()->groupBy(function ($item) {
                 return $item->country->name;
             }),
             'countries' => Country::all(),
-            'plant' => $stadiaPlant
-        ]);
-    }
-
-    public function indexCalendarRanges(Request $request, StadiaPlant $stadiaPlant)
-    {
-        $country = Country::find($request->get('country_id'));
-        return $this->index($stadiaPlant)->with([
+            'plant' => $stadiaPlant,
             'selectedCalendar' => $country ? $country->calendarRanges()->get() : Collection::make(),
             'selectedCountry' => $country
         ]);
@@ -39,7 +34,7 @@ class CalendarController extends Controller
             ['stadia_plant_id' => $stadiaPlant->id]
         ));
 
-        return redirect()->back()->wi;
+        return redirect()->back();
     }
 
     public function destroy(StadiaPlantCalendarRange $calendarRange)

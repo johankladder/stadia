@@ -190,18 +190,20 @@
 @section('content-side')
     <div>
         <div>
-            <form action="{{ route('calendar.withCountry', $plant)}}" method="POST">
-                @csrf
-                @method('POST')
+            <form action="{{ route('calendar.index', $plant)}}" method="GET">
+
                 <div class="form-group">
                     <label for="form-select-country-code">Select country</label>
-                    <select class="form-control" id="form-select-country-code" name="country_id">
+                    <select class="form-control" id="form-select-country-code" name="country">
                         <option label=" "></option>
                         @foreach($countries as $country)
                             <option
                                 value="{{$country->id}}"
-                            @if($selectedCountry != null && ($country->id == $selectedCountry->id))
-                                {{'selected'}}
+                            @empty($selectedCountry)
+                                @else
+                                @if($selectedCountry != null && ($country->id == $selectedCountry->id))
+                                    {{'selected'}}
+                                    @endif
                                 @endif
                             >{{$country->name}}</option>
                         @endforeach
