@@ -198,7 +198,12 @@
                     <select class="form-control" id="form-select-country-code" name="country_id">
                         <option label=" "></option>
                         @foreach($countries as $country)
-                            <option value="{{$country->id}}">{{$country->name}}</option>
+                            <option
+                                value="{{$country->id}}"
+                            @if($selectedCountry != null && ($country->id == $selectedCountry->id))
+                                {{'selected'}}
+                                @endif
+                            >{{$country->name}}</option>
                         @endforeach
                     </select>
                 </div>
