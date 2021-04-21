@@ -1,6 +1,6 @@
 <?php
 
-namespace JohanKladder\Stadia\Tests\Feature;
+namespace JohanKladder\Stadia\Tests\Feature\Facades;
 
 use Illuminate\Support\Collection;
 use JohanKladder\Stadia\Facades\Stadia;
