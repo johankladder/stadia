@@ -38,4 +38,8 @@ class StadiaPlant extends Model
         return $this->hasMany(StadiaPlantCalendarRange::class);
     }
 
+    public function getSupportedCountries() {
+        return $this->calendarRanges()->whereNotNull('country_id')->get()->groupBy('country_id');
+    }
+
 }

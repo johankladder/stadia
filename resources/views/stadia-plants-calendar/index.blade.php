@@ -1,6 +1,6 @@
 @extends('stadia::layouts.app')
 
-@section('title', 'Calendar of: ' . $plant->getId() )
+@section('title', 'Calendar of: ' . $plant->getName() ?: $plant->getId() )
 @section('backUrl', route('stadia-plants.index') )
 
 @section('content')
