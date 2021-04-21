@@ -35,7 +35,7 @@ class StadiaPackageServiceProvider extends ServiceProvider
     {
         return [
             'prefix' => 'stadia',
-            'middleware' => ['web'],
+            'middleware' => ['web', 'auth'],
         ];
     }
 
