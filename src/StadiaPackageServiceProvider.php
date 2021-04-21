@@ -10,7 +10,9 @@ class StadiaPackageServiceProvider extends ServiceProvider
 
     public function register()
     {
-        //
+        $this->app->bind('stadia', function ($app) {
+            return new Stadia();
+        });
     }
 
     public function boot()

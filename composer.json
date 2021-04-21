@@ -29,7 +29,10 @@
         "laravel": {
             "providers": [
                 "JohanKladder\\Stadia\\StadiaPackageServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Stadia": "JohanKladder\\Stadia\\Facades\\Stadia"
+            }
         }
     },
     "scripts": {
