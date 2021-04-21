@@ -8,13 +8,13 @@ use JohanKladder\Stadia\Models\StadiaPlant;
 
 class SyncLogic
 {
-    public function syncPlants(string $tableName)
+    public function syncPlants(string $tableName, $nameCallBack = null): Collection
     {
         $syncedEntities = Collection::make();
         $results = DB::select("select * from {$tableName}");
         foreach ($results as $plantEntity) {
             $entityId = $plantEntity->id;
-            $entityName = $plantEntity->name;
+            $entityName = $nameCallBack == null ? $plantEntity->name : call_user_func($nameCallBack, $plantEntity);
             $entity = StadiaPlant::firstOrCreate([
                 'reference_id' => $entityId,
                 'reference_table' => $tableName,
