@@ -1,10 +1,11 @@
 <?php
 
 
-namespace JohanKladder\Stadia\Tests;
+namespace JohanKladder\Stadia\Tests\Models;
 
 use JohanKladder\Stadia\Models\StadiaPlant;
 use JohanKladder\Stadia\Models\StadiaPlantCalendarRange;
+use JohanKladder\Stadia\Tests\TestCase;
 
 class StadiaPlantUnitTest extends TestCase
 {

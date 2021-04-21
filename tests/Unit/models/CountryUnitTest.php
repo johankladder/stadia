@@ -1,9 +1,10 @@
 <?php
 
 
-namespace JohanKladder\Stadia\Tests;
+namespace JohanKladder\Stadia\Tests\Models;
 
 use JohanKladder\Stadia\Models\Country;
+use JohanKladder\Stadia\Tests\TestCase;
 
 class CountryUnitTest extends TestCase
 {
