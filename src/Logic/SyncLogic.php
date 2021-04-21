@@ -14,9 +14,11 @@ class SyncLogic
         $results = DB::select("select * from {$tableName}");
         foreach ($results as $plantEntity) {
             $entityId = $plantEntity->id;
+            $entityName = $plantEntity->name;
             $entity = StadiaPlant::firstOrCreate([
                 'reference_id' => $entityId,
-                'reference_table' => $tableName
+                'reference_table' => $tableName,
+                'name' => $entityName
             ]);
             $syncedEntities->add($entity);
 

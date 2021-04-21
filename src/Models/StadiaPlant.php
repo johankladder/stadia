@@ -9,7 +9,8 @@ class StadiaPlant extends Model
 
     protected $fillable = [
         'reference_id',
-        'reference_table'
+        'reference_table',
+        'name'
     ];
 
     public function getId()

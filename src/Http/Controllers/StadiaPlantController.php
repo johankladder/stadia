@@ -20,7 +20,7 @@ class StadiaPlantController extends Controller
     public function destroy(StadiaPlant $stadiaPlant)
     {
         $stadiaPlant->delete();
-        return redirect()->route('stadia::stadia-plants.index')->with(['message' => 'Plant deleted!', 'alert' => 'alert-success']);
+        return redirect()->route('stadia-plants.index')->with(['message' => 'Plant deleted!', 'alert' => 'alert-success']);
     }
 
     public function sync()
