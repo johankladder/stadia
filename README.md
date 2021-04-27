@@ -24,5 +24,13 @@ to initialise the models.
 After that you can fill in date ranges and climate relative information about these plants.
 
 ### Usage in general
+#### Configuration
+The Stadia environment will be available at the `/stadia` prefix and using only the `web` middleware. To customize this you can publish 
+the config file with the following command: 
+`php artisan vendor:publish --provider="JohanKladder\Stadia\StadiaPackageServiceProvider" --tag="config"`. 
+After that the `stadia.php` config file is located in your `/config` folder and can be changed accordingly.
+
+
+
 
 

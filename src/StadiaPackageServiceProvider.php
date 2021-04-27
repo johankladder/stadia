@@ -13,6 +13,8 @@ class StadiaPackageServiceProvider extends ServiceProvider
         $this->app->bind('stadia', function ($app) {
             return new Stadia();
         });
+
+        $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'stadia');
     }
 
     public function boot()
@@ -22,6 +24,12 @@ class StadiaPackageServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'stadia');
         $this->publishResources();
 
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../config/config.php' => config_path('stadia.php'),
+            ], 'config');
+
+        }
     }
 
     protected function registerRoutes()
@@ -34,8 +42,8 @@ class StadiaPackageServiceProvider extends ServiceProvider
     protected function routeConfiguration()
     {
         return [
-            'prefix' => 'stadia',
-            'middleware' => ['web'],
+            'prefix' => config('stadia.prefix'),
+            'middleware' => config('stadia.middleware'),
         ];
     }
 
