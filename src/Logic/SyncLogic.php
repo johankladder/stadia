@@ -11,7 +11,7 @@ class SyncLogic
     public function syncPlants(string $tableName, $nameCallBack = null): Collection
     {
         $syncedEntities = Collection::make();
-        $results = DB::select("select * from {$tableName}");
+        $results = DB::select($this->queryFactory($tableName, config('stadia.soft_deleted_tables', [])));
         foreach ($results as $plantEntity) {
             $entityId = $plantEntity->id;
             $entityName = $nameCallBack == null ? $plantEntity->name : call_user_func($nameCallBack, $plantEntity);
@@ -24,6 +24,14 @@ class SyncLogic
 
         }
         return $syncedEntities;
+    }
+
+    private function queryFactory($table, $softDeletedTables)
+    {
+        if (in_array($table, $softDeletedTables)) {
+            return "select * from {$table} where deleted_at IS NULL";
+        }
+        return "select * from {$table}";
     }
 
 }
