@@ -51,7 +51,7 @@
             </tbody>
         </table>
 
-        <a href="" class="btn btn-outline-primary">
+        <a href="{{ route('stadia-levels.sync', $stadiaPlant) }}" class="btn btn-outline-primary">
             Sync
         </a>
 
