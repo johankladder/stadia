@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use JohanKladder\Stadia\Logic\SyncLogic;
+use JohanKladder\Stadia\Models\StadiaPlant;
 use JohanKladder\Stadia\Tests\TestCase;
 
 class SyncLogicFeatureTest extends TestCase
@@ -29,10 +30,25 @@ class SyncLogicFeatureTest extends TestCase
     }
 
     /** @test */
+    public function sync_non_existing_database_levels()
+    {
+        $this->expectException(QueryException::class);
+        $this->syncLogic->syncLevels();
+    }
+
+    /** @test */
     public function sync_existing_empty_database()
     {
         $this->createPlantRelatedTable('plants');
         $collection = $this->syncLogic->syncPlants('plants');
+        $this->assertCount(0, $collection);
+    }
+
+    /** @test */
+    public function sync_existing_empty_database_levels()
+    {
+        $this->createLevelRelatedTable('levels');
+        $collection = $this->syncLogic->syncLevels();
         $this->assertCount(0, $collection);
     }
 
@@ -49,6 +65,37 @@ class SyncLogicFeatureTest extends TestCase
             $this->assertEquals($index, $item->reference_id);
             $this->assertEquals("plants", $item->reference_table);
         });
+    }
+
+    /** @test */
+    public function sync_existing_database_levels()
+    {
+        $referencePlant = StadiaPlant::create([
+            'reference_id' => 0
+        ]);
+        $this->createLevelRelatedTable('levels');
+        $this->insertLevelInLevelRelatedTable('levels');
+        $collection = $this->syncLogic->syncLevels();
+        $this->assertCount(5, $collection);
+
+        $collection->each(function ($item, $index) use ($referencePlant) {
+            $this->assertEquals("Name", $item->name);
+            $this->assertEquals($index, $item->reference_id);
+            $this->assertEquals("levels", $item->reference_table);
+            $this->assertEquals($referencePlant->id, $item->stadia_plant_id);
+        });
+    }
+
+    /** @test */
+    public function sync_existing_database_levels_unknown_relation()
+    {
+        StadiaPlant::create([
+            'reference_id' => 1
+        ]);
+        $this->createLevelRelatedTable('levels');
+        $this->insertLevelInLevelRelatedTable('levels');
+        $collection = $this->syncLogic->syncLevels();
+        $this->assertCount(0, $collection);
     }
 
     /** @test */
@@ -100,6 +147,20 @@ class SyncLogicFeatureTest extends TestCase
         });
     }
 
+    private function createLevelRelatedTable($tableName, $softDeleted = false)
+    {
+        Schema::create($tableName, function ($table) use ($softDeleted) {
+            $table->temporary();
+            $table->increments('id');
+            $table->string('name');
+            $table->integer("plant_id");
+            $table->timestamps();
+            if ($softDeleted) {
+                $table->softDeletes();
+            }
+        });
+    }
+
     public function insertPlantInPlantRelatedTable($tableName, $n = 5, $name = "Name", $fromId = 0, $softDeleted = false, $softDeletedValue = null)
     {
         for ($i = 0; $i < $n; $i++) {
@@ -107,6 +168,17 @@ class SyncLogicFeatureTest extends TestCase
                 DB::insert("insert into " . $tableName . " (id, name, deleted_at) values (?, ?, ?)", [($i + $fromId), $name, $softDeletedValue]);
             } else {
                 DB::insert("insert into " . $tableName . " (id, name) values (?, ?)", [($i + $fromId), $name]);
+            }
+        }
+    }
+
+    public function insertLevelInLevelRelatedTable($tableName, $n = 5, $name = "Name", $plantId = 0, $fromId = 0, $softDeleted = false, $softDeletedValue = null)
+    {
+        for ($i = 0; $i < $n; $i++) {
+            if ($softDeleted) {
+                DB::insert("insert into " . $tableName . " (id, name, plant_id, deleted_at) values (?, ?, ?, ?)", [($i + $fromId), $name, $plantId, $softDeletedValue]);
+            } else {
+                DB::insert("insert into " . $tableName . " (id, name, plant_id) values (?, ?, ?)", [($i + $fromId), $name, $plantId]);
             }
         }
     }
