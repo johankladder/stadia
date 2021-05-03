@@ -26,7 +26,7 @@ class CalendarRangeRequest extends FormRequest
         return [
             'range_from' => 'required|date',
             'range_to' => 'required|date',
-            'country_id' => 'sometimes|integer|nullable'
+            'country_id' => 'sometimes|integer|nullable|exists:countries,id'
         ];
     }
 }
