@@ -12,7 +12,8 @@ class StadiaLevelController extends Controller
     public function index(StadiaPlant $stadiaPlant)
     {
         return view("stadia::stadia-levels.index", [
-            'items' => $stadiaPlant->stadiaLevels()->get()
+            'items' => $stadiaPlant->stadiaLevels()->get(),
+            'stadiaPlant' => $stadiaPlant
         ]);
     }
 
@@ -22,11 +23,12 @@ class StadiaLevelController extends Controller
         return redirect()->route('stadia-levels.index', $stadiaLevel->stadiaPlant)->with(['message' => 'Level deleted!', 'alert' => 'alert-success']);
     }
 
-    public function show(StadiaLevel $stadiaLevel) {
+    public function show(StadiaLevel $stadiaLevel)
+    {
 
     }
 
-    public function sync()
+    public function sync(StadiaPlant $stadiaPlant)
     {
 
     }

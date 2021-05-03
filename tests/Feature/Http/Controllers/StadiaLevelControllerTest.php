@@ -21,12 +21,15 @@ class StadiaLevelControllerTest extends TestCase
     /** @test */
     public function index_with_plant_when_no_stadia_levels()
     {
-        $response = $this->get("stadia/stadia-levels/index-with-plant/" . $this->createStadiaPlant()->id);
+        $stadiaPlant = $this->createStadiaPlant();
+        $response = $this->get("stadia/stadia-levels/index-with-plant/" . $stadiaPlant->id);
         $response->assertOk();
         $response->assertViewIs('stadia::stadia-levels.index');
-        $response->assertViewHas(['items']);
+        $response->assertViewHas(['items', 'stadiaPlant']);
         $items = $response->viewData('items');
+        $plant = $response->viewData('stadiaPlant');
         $this->assertCount(0, $items);
+        $this->assertEquals($stadiaPlant->id, $plant->id);
     }
 
     /** @test */

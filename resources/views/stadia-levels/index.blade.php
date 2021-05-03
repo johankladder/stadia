@@ -1,6 +1,6 @@
 @extends('stadia::layouts.app')
 
-@section('title', 'Stadiaplants')
+@section('title', 'Levels of ' . $stadiaPlant->name)
 
 @section('content')
     <div>
@@ -51,7 +51,7 @@
             </tbody>
         </table>
 
-        <a href="{{ route('stadia-plants.sync') }}" class="btn btn-outline-primary">
+        <a href="" class="btn btn-outline-primary">
             Sync
         </a>
 

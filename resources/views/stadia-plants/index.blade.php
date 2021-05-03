@@ -11,6 +11,7 @@
                 <th scope="col">Reference table</th>
                 <th scope="col">Name</th>
                 <th scope="col">Calendar</th>
+                <th scope="col">Levels</th>
                 <th scope="col">Support</th>
                 <th scope="col">Options</th>
             </tr>
@@ -34,6 +35,11 @@
                     <td>
                         <a href="{{route('calendar.index', $item->getId())}}" class="btn btn-outline-primary">
                             Calendar
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{route('stadia-levels.index', $item->getId())}}" class="btn btn-outline-primary">
+                            Levels
                         </a>
                     </td>
                     <td>
