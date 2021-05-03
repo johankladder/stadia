@@ -2,7 +2,10 @@
 
 <head>
     <link href={{ asset("css/app.css") }} rel="stylesheet"/>
-    <script src="{{ mix('js/app.js') }}"></script>
+
+    @if(!App::runningUnitTests())
+        <script src="{{ mix('js/app.js') }}"></script>
+    @endif
 
     <title>
         @yield('title')
@@ -71,6 +74,7 @@
             </div>
         @endif
     </div>
+</div>
 
 
 </body>

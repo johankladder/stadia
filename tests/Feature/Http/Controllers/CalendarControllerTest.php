@@ -4,10 +4,10 @@
 namespace JohanKladder\Stadia\Tests\Feature\Http\Controllers;
 
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Collection;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaPlant;
+use JohanKladder\Stadia\Models\StadiaPlantCalendarRange;
 use JohanKladder\Stadia\Tests\TestCase;
 
 class CalendarControllerTest extends TestCase
@@ -101,6 +101,109 @@ class CalendarControllerTest extends TestCase
             'stadia_plant_id' => $stadiaPlant->id,
         ]);
         $response->assertSessionHasErrors(['country_id']);
+    }
+
+    /** @test */
+    public function get_calendar_ranges_when_none()
+    {
+        $response = $this->get("stadia/calendar/" . $this->createPlant()->id);
+        $response->assertOk();
+        $response->assertViewHas("itemsGlobal", Collection::make([]));
+        $response->assertViewHas("itemsCountry", Collection::make([]));
+    }
+
+    /** @test */
+    public function get_calendar_ranges_when_only_globally()
+    {
+        $stadiaPlant = $this->createPlant();
+        StadiaPlantCalendarRange::create([
+            'stadia_plant_id' => $stadiaPlant->id,
+            'range_from' => now(),
+            'range_to' => now(),
+        ]);
+        $response = $this->get("stadia/calendar/" . $stadiaPlant->id);
+        $response->assertOk();
+
+        $itemsGlobal = $response->viewData('itemsGlobal');
+        $itemsCountry = $response->viewData('itemsCountry');
+        $this->assertCount(1, $itemsGlobal);
+        $this->assertCount(0, $itemsCountry);
+    }
+
+    /** @test */
+    public function get_calendar_ranges_when_globally_and_country()
+    {
+        $stadiaPlant = $this->createPlant();
+        StadiaPlantCalendarRange::create([
+            'stadia_plant_id' => $stadiaPlant->id,
+            'range_from' => now(),
+            'range_to' => now(),
+        ]);
+
+        StadiaPlantCalendarRange::create([
+            'stadia_plant_id' => $stadiaPlant->id,
+            'range_from' => now(),
+            'range_to' => now(),
+            'country_id' => $this->createCountry()->id
+        ]);
+        $response = $this->get("stadia/calendar/" . $stadiaPlant->id);
+        $response->assertOk();
+
+        $itemsGlobal = $response->viewData('itemsGlobal');
+        $itemsCountry = $response->viewData('itemsCountry');
+        $this->assertCount(1, $itemsGlobal);
+        $this->assertCount(1, $itemsCountry);
+
+    }
+
+    /** @test */
+    public function get_calendar_ranges_with_country_when_none()
+    {
+        $response = $this->get("stadia/calendar/" . $this->createPlant()->id . "?country=" . $this->createCountry()->id);
+        $response->assertOk();
+        $response->assertViewHas("itemsGlobal", Collection::make([]));
+        $response->assertViewHas("itemsCountry", Collection::make([]));
+    }
+
+    /** @test */
+    public function get_calendar_ranges_with_country_when_only_globally()
+    {
+        $stadiaPlant = $this->createPlant();
+        StadiaPlantCalendarRange::create([
+            'stadia_plant_id' => $stadiaPlant->id,
+            'range_from' => now(),
+            'range_to' => now()
+        ]);
+        $response = $this->get("stadia/calendar/" . $stadiaPlant->id . "?country=" . $this->createCountry()->id);
+        $response->assertOk();
+        $itemsCountry = $response->viewData('selectedCalendar');
+        $this->assertCount(1, $itemsCountry);
+    }
+
+    /** @test */
+    public function get_calendar_ranges_with_country_when_defined()
+    {
+        $stadiaPlant = $this->createPlant();
+        $country = $this->createCountry();
+
+        $incorrect = StadiaPlantCalendarRange::create([
+            'stadia_plant_id' => $stadiaPlant->id,
+            'range_from' => now(),
+            'range_to' => now(),
+        ]);
+
+        $correct = StadiaPlantCalendarRange::create([
+            'stadia_plant_id' => $stadiaPlant->id,
+            'range_from' => now(),
+            'range_to' => now(),
+            'country_id' => $country->id
+        ]);
+        $response = $this->get("stadia/calendar/" . $stadiaPlant->id . "?country=" . $country->id);
+        $response->assertOk();
+        $itemsCountry = $response->viewData('selectedCalendar');
+        $this->assertCount(1, $itemsCountry);
+        $this->assertEquals($correct->id, $itemsCountry[0]->id);
+        $this->assertNotEquals($incorrect->id, $itemsCountry[0]->id);
     }
 
     private function createPlant()

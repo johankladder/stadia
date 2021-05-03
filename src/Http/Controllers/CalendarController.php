@@ -13,8 +13,8 @@ class CalendarController extends Controller
 {
     public function index(Request $request, StadiaPlant $stadiaPlant)
     {
-        $countryId = $request->query('country');
-        $country = Country::find($countryId);
+        $country = Country::find($request->query("country"));
+        $selectedCalendar = $country ? $country->calendarRanges()->where('stadia_plant_id', $stadiaPlant->id)->get() : Collection::make();
 
         return view("stadia::stadia-plants-calendar.index", [
             'itemsGlobal' => $stadiaPlant->calendarRanges()->whereNull('country_id')->get(),
@@ -23,7 +23,7 @@ class CalendarController extends Controller
             }),
             'countries' => Country::all(),
             'plant' => $stadiaPlant,
-            'selectedCalendar' => $country ? $country->calendarRanges()->where('stadia_plant_id', $stadiaPlant->id)->get() : Collection::make(),
+            'selectedCalendar' => $selectedCalendar->count() > 0 ? $selectedCalendar : $stadiaPlant->calendarRanges()->whereNull('country_id')->get(),
             'selectedCountry' => $country
         ]);
     }
