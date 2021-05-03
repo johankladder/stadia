@@ -2,6 +2,8 @@
 
 @section('title', 'Levels of ' . $stadiaPlant->name)
 
+@section('backUrl', route('stadia-plants.index') )
+
 @section('content')
     <div>
         <table class="table">

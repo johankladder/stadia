@@ -39,7 +39,7 @@
                     </td>
                     <td>
                         <a href="{{route('stadia-levels.index', $item->getId())}}" class="btn btn-outline-primary">
-                            Levels
+                            Levels ({{$item->stadiaLevels()->count()}})
                         </a>
                     </td>
                     <td>
