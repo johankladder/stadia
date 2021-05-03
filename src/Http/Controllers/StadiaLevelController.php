@@ -19,7 +19,11 @@ class StadiaLevelController extends Controller
     public function destroy(StadiaLevel $stadiaLevel)
     {
         $stadiaLevel->delete();
-        return redirect()->route('stadia-levels.index')->with(['message' => 'Level deleted!', 'alert' => 'alert-success']);
+        return redirect()->route('stadia-levels.index', $stadiaLevel->stadiaPlant)->with(['message' => 'Level deleted!', 'alert' => 'alert-success']);
+    }
+
+    public function show(StadiaLevel $stadiaLevel) {
+
     }
 
     public function sync()

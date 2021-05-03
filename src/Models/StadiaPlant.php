@@ -10,7 +10,7 @@ class StadiaPlant extends Model
     protected $fillable = [
         'reference_id',
         'reference_table',
-        'name'
+        'name',
     ];
 
     public function getId()
@@ -38,7 +38,13 @@ class StadiaPlant extends Model
         return $this->hasMany(StadiaPlantCalendarRange::class);
     }
 
-    public function getSupportedCountries() {
+    public function stadiaLevels()
+    {
+        return $this->hasMany(StadiaLevel::class);
+    }
+
+    public function getSupportedCountries()
+    {
         return $this->calendarRanges()->whereNotNull('country_id')->get()->groupBy('country_id');
     }
 

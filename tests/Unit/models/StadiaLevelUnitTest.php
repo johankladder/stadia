@@ -36,4 +36,16 @@ class StadiaLevelUnitTest extends TestCase
         $this->assertEquals("levels", $entity->reference_table);
     }
 
+    /** @test */
+    public function get_stadia_plant_id_when_set()
+    {
+        $entity = StadiaLevel::create([
+            'name' => 'Test',
+            'stadia_plant_id' => 1
+        ]);
+
+        $this->assertEquals("Test", $entity->name);
+        $this->assertEquals(1, $entity->stadia_plant_id);
+    }
+
 }

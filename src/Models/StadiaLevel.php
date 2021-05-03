@@ -10,7 +10,8 @@ class StadiaLevel extends Model
     protected $fillable = [
         'reference_id',
         'reference_table',
-        'name'
+        'name',
+        'stadia_plant_id'
     ];
 
     public function getId()
@@ -31,6 +32,11 @@ class StadiaLevel extends Model
     public function getReferenceTable()
     {
         return $this->reference_table;
+    }
+
+    public function stadiaPlant()
+    {
+        return $this->belongsTo(StadiaPlant::class);
     }
 
 }

@@ -10,7 +10,11 @@ Route::get('/', function () {
 });
 
 Route::resource("stadia-plants", StadiaPlantController::class);
-Route::resource("stadia-levels", StadiaLevelController::class);
+
+
+Route::resource("stadia-levels", StadiaLevelController::class)->except(['index', 'show']);
+Route::get('stadia-levels/index-with-plant/{stadiaPlant}', 'JohanKladder\\Stadia\\Http\\Controllers\\StadiaLevelController@index')->name('stadia-levels.index');
+
 
 Route::get("calendar/{stadiaPlant}/{country?}", 'JohanKladder\\Stadia\\Http\\Controllers\\CalendarController@index')->name('calendar.index');
 Route::post("calendar/{stadiaPlant}", 'JohanKladder\\Stadia\\Http\\Controllers\\CalendarController@storeCalendarRange')->name('calendar.store');

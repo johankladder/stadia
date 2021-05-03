@@ -14,24 +14,17 @@ class StadiaLevelControllerTest extends TestCase
     /** @test */
     public function index_with_unknown_plant()
     {
-        $response = $this->get(route('stadia-levels.index', [
-            'stadia_plant' => $this->createStadiaPlant()->id
-        ]));
-        $response->assertOk();
-        $response->assertViewIs('stadia::stadia-levels.index');
-        $response->assertViewHas(['items']);
+        $response = $this->get("stadia/stadia-levels/index-with-plant/123");
+        $response->assertNotFound();
     }
 
     /** @test */
     public function index_with_plant_when_no_stadia_levels()
     {
-        $response = $this->get(route('stadia-levels.index', [
-            'stadia_plant' => $this->createStadiaPlant()->id
-        ]));
+        $response = $this->get("stadia/stadia-levels/index-with-plant/" . $this->createStadiaPlant()->id);
         $response->assertOk();
         $response->assertViewIs('stadia::stadia-levels.index');
         $response->assertViewHas(['items']);
-
         $items = $response->viewData('items');
         $this->assertCount(0, $items);
     }
@@ -39,24 +32,26 @@ class StadiaLevelControllerTest extends TestCase
     /** @test */
     public function index_with_plant_when_stadia_levels()
     {
-        $response = $this->get(route('stadia-levels.index', [
-            'stadia_plant' => $this->createStadiaPlant()->id
-        ]));
+        $stadiaPlant = $this->createStadiaPlant();
+        $stadiaLevel = $this->createStadiaLevel('Test', $stadiaPlant);
+        $response = $this->get("stadia/stadia-levels/index-with-plant/" . $stadiaPlant->id);
         $response->assertOk();
         $response->assertViewIs('stadia::stadia-levels.index');
         $response->assertViewHas(['items']);
 
         $items = $response->viewData('items');
         $this->assertCount(1, $items);
+        $this->assertEquals($stadiaLevel->id, $items[0]->id);
     }
 
     /** @test */
     public function remove_stadia_level()
     {
+        $stadiaPlant = $this->createStadiaPlant();
         $response = $this->delete(route('stadia-levels.destroy', [
-            'stadia_level' => $this->createStadiaLevel()->id
+            $this->createStadiaLevel("test", $stadiaPlant)->id
         ]));
-        $response->assertRedirect(route("stadia-levels.index"));
+        $response->assertRedirect();
         $response->assertSessionHas('message', "Level deleted!");
         $response->assertSessionHas('alert', "alert-success");
         $this->assertDatabaseCount('stadia_levels', 0);

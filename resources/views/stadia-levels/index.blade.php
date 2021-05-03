@@ -37,21 +37,7 @@
                         </a>
                     </td>
                     <td>
-                        @if($item->calendarRanges()->count() > 0)
-                            <div class="row">
-                                <span class="badge badge-pill badge-primary">Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})</span>
-                            </div>
-                        @endif
-                        @if($item->calendarRanges()->whereNull('country_id')->count() > 0)
-                            <div class="row mt-1">
-                                <span class="badge badge-pill badge-success">Globally supported!</span>
-                            </div>
-                        @endif
-                        @if($item->calendarRanges()->count() <= 0)
-                            <div class="row mt-1">
-                                <span class="badge badge-pill badge-danger">Globally unsupported!</span>
-                            </div>
-                        @endif
+
                     </td>
                     <td>
                         <form action="{{ route('stadia-plants.destroy', $item->getId())}}" method="POST">
