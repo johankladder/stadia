@@ -1,9 +1,9 @@
 <html>
 
 <head>
-    <link href={{ asset("css/app.css") }} rel="stylesheet"/>
 
     @if(!App::runningUnitTests())
+        <link href={{ asset("css/app.css") }} rel="stylesheet"/>
         <script src="{{ mix('js/app.js') }}"></script>
     @endif
 
