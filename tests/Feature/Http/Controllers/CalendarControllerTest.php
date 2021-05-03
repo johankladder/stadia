@@ -4,6 +4,8 @@
 namespace JohanKladder\Stadia\Tests\Feature\Http\Controllers;
 
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaPlant;
 use JohanKladder\Stadia\Tests\TestCase;

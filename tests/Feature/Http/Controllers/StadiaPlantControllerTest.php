@@ -1,14 +1,15 @@
 <?php
 
 
-namespace JohanKladder\Stadia\Tests\Feature;
+namespace JohanKladder\Stadia\Tests\Feature\Http\Controllers;
+
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use JohanKladder\Stadia\Models\StadiaPlant;
 use JohanKladder\Stadia\Tests\TestCase;
 
-class CalendarControllerFeatureTest extends TestCase
+class StadiaPlantControllerTest extends TestCase
 {
 
     /** @test */
@@ -53,6 +54,7 @@ class CalendarControllerFeatureTest extends TestCase
         $this->assertCount(5, StadiaPlant::all());
     }
 
+
     private function createPlantRelatedTable($tableName)
     {
         Schema::create($tableName, function ($table) {
@@ -63,7 +65,7 @@ class CalendarControllerFeatureTest extends TestCase
         });
     }
 
-    public function insertPlantInPlantRelatedTable($tableName, $n = 5, $fromId = 0)
+    private function insertPlantInPlantRelatedTable($tableName, $n = 5, $fromId = 0)
     {
         for ($i = 0; $i < $n; $i++) {
             DB::insert("insert into " . $tableName . " (id, name) values (?, ?)", [($i + $fromId), 'Name']);

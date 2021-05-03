@@ -8,16 +8,19 @@ use JohanKladder\Stadia\Models\StadiaPlant;
 
 class SyncLogic
 {
-    public function syncPlants(string $tableName, $nameCallBack = null): Collection
+    public function syncPlants($nameCallBack = null): Collection
     {
         $syncedEntities = Collection::make();
-        $results = DB::select($this->queryFactory($tableName, config('stadia.soft_deleted_tables', [])));
+        $results = DB::select($this->queryFactory(
+            config('stadia.plants_table_name'),
+            config('stadia.plant_table_soft_deleted', false)
+        ));
         foreach ($results as $plantEntity) {
             $entityId = $plantEntity->id;
             $entityName = $nameCallBack == null ? $plantEntity->name : call_user_func($nameCallBack, $plantEntity);
             $entity = StadiaPlant::firstOrCreate([
                 'reference_id' => $entityId,
-                'reference_table' => $tableName,
+                'reference_table' => config('stadia.plants_table_name'),
                 'name' => $entityName
             ]);
             $syncedEntities->add($entity);
@@ -26,9 +29,9 @@ class SyncLogic
         return $syncedEntities;
     }
 
-    private function queryFactory($table, $softDeletedTables)
+    private function queryFactory($table, $isSoftDeleted)
     {
-        if (in_array($table, $softDeletedTables)) {
+        if ($isSoftDeleted) {
             return "select * from {$table} where deleted_at IS NULL";
         }
         return "select * from {$table}";

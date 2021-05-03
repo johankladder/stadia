@@ -26,7 +26,7 @@ class StadiaPlantController extends Controller
     public function sync()
     {
         try {
-            $syncedEntities = (new SyncLogic())->syncPlants("plants");
+            $syncedEntities = (new SyncLogic())->syncPlants();
             return redirect()->route('stadia-plants.index')->with(['message' => "Sync completed - added {$syncedEntities->count()} items!", 'alert' => 'alert-success']);
         } catch (QueryException $exception) {
             return redirect()->route('stadia-plants.index')->with(['message' => "Could'nt sync items! {$exception->getMessage()}", 'alert' => 'alert-danger']);

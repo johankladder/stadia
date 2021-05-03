@@ -41,7 +41,7 @@ class SyncLogicFeatureTest extends TestCase
     {
         $this->createPlantRelatedTable('plants');
         $this->insertPlantInPlantRelatedTable('plants');
-        $collection = $this->syncLogic->syncPlants('plants');
+        $collection = $this->syncLogic->syncPlants();
         $this->assertCount(5, $collection);
 
         $collection->each(function ($item, $index) {
@@ -59,7 +59,7 @@ class SyncLogicFeatureTest extends TestCase
             "en" => "English name",
             "nl" => "Dutch name"
         ]));
-        $collection = $this->syncLogic->syncPlants('plants', function ($entity) {
+        $collection = $this->syncLogic->syncPlants(function ($entity) {
             return json_decode($entity->name)->en;
         });
         $this->assertCount(5, $collection);
@@ -74,11 +74,11 @@ class SyncLogicFeatureTest extends TestCase
     /** @test */
     public function sync_existing_database_when_provided_as_soft_deleted_table()
     {
-        Config::set("stadia.soft_deleted_tables", ['plants']);
+        Config::set("stadia.plant_table_soft_deleted", true);
         $this->createPlantRelatedTable('plants', true);
         $this->insertPlantInPlantRelatedTable("plants", 5, "name", 0, true, null);
         $this->insertPlantInPlantRelatedTable("plants", 5, "soft_deleted", 5, true, now());
-        $collection = $this->syncLogic->syncPlants('plants');
+        $collection = $this->syncLogic->syncPlants();
         $this->assertCount(5, $collection);
         $collection->each(function ($item, $index) {
             $this->assertEquals("name", $item->name);
