@@ -124,7 +124,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="collapse" id="collapse-{{str_replace(' ', '', $countryName)}}">
+                            <div id="collapse-{{str_replace(' ', '', $countryName)}}">
 
                                 <table class="table">
                                     <thead>
@@ -184,7 +184,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="collapse" id="collapse-{{str_replace(' ', '', $countryName)}}">
+                        <div id="collapse-{{str_replace(' ', '', $countryName)}}">
 
                             <table class="table">
                                 <thead>
