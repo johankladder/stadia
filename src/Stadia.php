@@ -29,7 +29,7 @@ class Stadia
 
     public function getCalendarRanges(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
-        return Cache::remember('calendar-ranges-' . $stadiaPlant->id . ($country != null ? '-' . $country->id : ''), 60 * 60, function () use ($country, $stadiaPlant) {
+        return Cache::remember('calendar-ranges-' . $stadiaPlant->id . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), 60 * 60, function () use ($country, $stadiaPlant) {
             return $this->calendarRangesFactory($stadiaPlant, $country)->get();
         });
     }
