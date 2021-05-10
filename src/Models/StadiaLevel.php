@@ -44,4 +44,9 @@ class StadiaLevel extends Model
         return $this->hasMany(StadiaLevelDuration::class);
     }
 
+    public function getSupportedCountries()
+    {
+        return $this->durations()->whereNotNull('country_id')->get()->groupBy('country_id');
+    }
+
 }

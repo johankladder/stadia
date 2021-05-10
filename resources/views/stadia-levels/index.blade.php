@@ -35,25 +35,25 @@
                     </td>
                     <td>
                         <a href="{{route('durations.index', $item->getId())}}" class="btn btn-outline-primary">
-                            Durations ()
+                            Durations
                         </a>
                     </td>
                     <td>
-{{--                        @if($item->durations()->count() > 0)--}}
-{{--                            <div class="row">--}}
-{{--                                <span class="badge badge-pill badge-primary">Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})</span>--}}
-{{--                            </div>--}}
-{{--                        @endif--}}
-{{--                        @if($item->durations()->whereNull('country_id')->count() > 0)--}}
-{{--                            <div class="row mt-1">--}}
-{{--                                <span class="badge badge-pill badge-success">Globally supported!</span>--}}
-{{--                            </div>--}}
-{{--                        @endif--}}
-{{--                        @if($item->durations()->count() <= 0)--}}
-{{--                            <div class="row mt-1">--}}
-{{--                                <span class="badge badge-pill badge-danger">Globally unsupported!</span>--}}
-{{--                            </div>--}}
-{{--                        @endif--}}
+                        @if($item->durations()->count() > 0)
+                            <div class="row">
+                                <span class="badge badge-pill badge-primary">Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})</span>
+                            </div>
+                        @endif
+                        @if($item->durations()->whereNull('country_id')->count() > 0)
+                            <div class="row mt-1">
+                                <span class="badge badge-pill badge-success">Globally supported!</span>
+                            </div>
+                        @endif
+                        @if($item->durations()->count() <= 0)
+                            <div class="row mt-1">
+                                <span class="badge badge-pill badge-danger">Globally unsupported!</span>
+                            </div>
+                        @endif
                     </td>
                     <td>
                         <form action="{{ route('stadia-levels.destroy', $item->getId())}}" method="POST">
