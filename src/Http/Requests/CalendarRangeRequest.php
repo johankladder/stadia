@@ -26,7 +26,7 @@ class CalendarRangeRequest extends FormRequest
         return [
             'range_from' => 'required|date',
             'range_to' => 'required|date',
-            'country_id' => 'required_with:climate_code_id|integer|nullable|exists:countries,id',
+            'country_id' => 'required_with:climate_code_id|integer|nullable|exists:stadia_countries,id',
             'climate_code_id' => 'sometimes|integer|nullable|exists:climate_codes,id',
         ];
     }

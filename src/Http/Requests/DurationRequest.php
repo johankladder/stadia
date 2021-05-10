@@ -25,7 +25,7 @@ class DurationRequest extends FormRequest
     {
         return [
             'duration' => 'required|integer',
-            'country_id' => 'required_with:climate_code_id|integer|nullable|exists:countries,id',
+            'country_id' => 'required_with:climate_code_id|integer|nullable|exists:stadia_countries,id',
             'climate_code_id' => 'sometimes|integer|nullable|exists:climate_codes,id',
         ];
     }
