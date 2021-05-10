@@ -16,4 +16,9 @@ class ClimateCode extends Model
         return $this->hasMany(StadiaPlantCalendarRange::class);
     }
 
+    public function durations()
+    {
+        return $this->hasMany(StadiaLevelDuration::class);
+    }
+
 }

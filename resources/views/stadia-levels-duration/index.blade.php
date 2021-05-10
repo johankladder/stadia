@@ -73,8 +73,7 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th scope="col">Date from</th>
-                            <th scope="col">Date to</th>
+                            <th scope="col">Duration</th>
                             <th scope="col">Options</th>
                         </tr>
                         </thead>
@@ -82,14 +81,11 @@
                         @foreach($itemsGlobal as $item)
                             <tr>
                                 <td>
-                                    {{date('d-m', strtotime($item->getDateFrom()))}}
-                                </td>
-                                <td>
-                                    {{date('d-m', strtotime($item->getDateTo()))}}
+                                    {{$item->duration}}
                                 </td>
                                 <td>
 
-                                    <form action="{{ route('calendar.destroy', $item->id)}}" method="POST">
+                                    <form action="{{ route('durations.destroy', $item->id)}}" method="POST">
                                         @method('delete')
                                         @csrf
                                         <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
@@ -133,8 +129,7 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th scope="col">Date from</th>
-                                        <th scope="col">Date to</th>
+                                        <th scope="col">Duration</th>
                                         <th scope="col">Options</th>
                                     </tr>
                                     </thead>
@@ -142,13 +137,10 @@
                                     @foreach($items as $item)
                                         <tr>
                                             <td>
-                                                {{date('d-m', strtotime($item->getDateFrom()))}}
+                                                {{$item->duration}}
                                             </td>
                                             <td>
-                                                {{date('d-m', strtotime($item->getDateTo()))}}
-                                            </td>
-                                            <td>
-                                                <form action="{{ route('calendar.destroy', $item->id)}}" method="POST">
+                                                <form action="{{ route('durations.destroy', $item->id)}}" method="POST">
                                                     @method('delete')
                                                     @csrf
                                                     <button class="btn btn-sm btn-outline-danger" type="submit">Remove
@@ -197,8 +189,7 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Date from</th>
-                                    <th scope="col">Date to</th>
+                                    <th scope="col">Duration</th>
                                     <th scope="col">Climate code</th>
                                     <th scope="col">Options</th>
                                 </tr>
@@ -207,17 +198,14 @@
                                 @foreach($items as $item)
                                     <tr>
                                         <td>
-                                            {{date('d-m', strtotime($item->getDateFrom()))}}
-                                        </td>
-                                        <td>
-                                            {{date('d-m', strtotime($item->getDateTo()))}}
+                                            {{$item->duration}}
                                         </td>
                                         <td>
                                             {{$item->climateCode->code}}
                                         </td>
                                         <td>
                                             <form
-                                                action="{{ route('calendar.destroy', $item->id)}}"
+                                                action="{{ route('durations.destroy', $item->id)}}"
                                                 method="POST">
                                                 @method('delete')
                                                 @csrf
@@ -287,32 +275,29 @@
         </div>
 
 
-        @empty($selectedCalendar)
+        @empty($selectedDurations)
         @else
             <div class="">
                 <hr/>
                 <div class="row">
-                    @if(count($selectedCalendar) > 0)
+                    @if(count($selectedDurations) > 0)
                         <div class="col">
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Date from</th>
-                                    <th scope="col">Date to</th>
+                                    <th scope="col">Duration</th>
                                     <th scope="col">Options</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($selectedCalendar as $item)
+                                @foreach($selectedDurations as $item)
                                     <tr>
                                         <td>
-                                            {{date('d-m', strtotime($item->getDateFrom()))}}
+                                            {{$item->duration}}
                                         </td>
+
                                         <td>
-                                            {{date('d-m', strtotime($item->getDateTo()))}}
-                                        </td>
-                                        <td>
-                                            <form action="{{ route('calendar.destroy', $item->id)}}"
+                                            <form action="{{ route('durations.destroy', $item->id)}}"
                                                   method="POST">
                                                 @method('delete')
                                                 @csrf

@@ -4,9 +4,12 @@
 namespace JohanKladder\Stadia\Tests\Feature\Http\Controllers;
 
 
+use Illuminate\Database\Eloquent\Collection;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaLevel;
+use JohanKladder\Stadia\Models\StadiaLevelDuration;
+use JohanKladder\Stadia\Models\StadiaPlant;
 use JohanKladder\Stadia\Tests\TestCase;
 
 class DurationControllerTest extends TestCase
@@ -109,10 +112,137 @@ class DurationControllerTest extends TestCase
 
     }
 
+    /** @test */
+    public function get_durations_when_none()
+    {
+        $response = $this->get(route("durations.index", $this->createStadiaLevel()));
+        $response->assertOk();
+        $response->assertViewHas("itemsGlobal", Collection::make([]));
+        $response->assertViewHas("itemsCountry", Collection::make([]));
+        $response->assertViewHas("itemsClimateCode", Collection::make([]));
+    }
+
+    /** @test */
+    public function get_durations_when_only_globally()
+    {
+        $stadiaLevel = $this->createStadiaLevel();
+        StadiaLevelDuration::create([
+            'stadia_level_id' => $stadiaLevel->id,
+            'duration' => 5
+        ]);
+
+        $response = $this->get(route("durations.index", $stadiaLevel->id));
+        $response->assertOk();
+        $itemsGlobal = $response->viewData('itemsGlobal');
+        $itemsCountry = $response->viewData('itemsCountry');
+        $this->assertCount(1, $itemsGlobal);
+        $this->assertCount(0, $itemsCountry);
+        $response->assertViewHas("itemsClimateCode", Collection::make([]));
+    }
+
+
+    /** @test */
+    public function get_durations_when_globally_and_country()
+    {
+        $stadiaLevel = $this->createStadiaLevel();
+        StadiaLevelDuration::create([
+            'stadia_level_id' => $stadiaLevel->id,
+            'duration' => 5
+        ]);
+
+        StadiaLevelDuration::create([
+            'stadia_level_id' => $stadiaLevel->id,
+            'duration' => 5,
+            'country_id' => $this->createCountry()->id
+        ]);
+
+        $response = $this->get(route("durations.index", $stadiaLevel->id));
+        $response->assertOk();
+        $itemsGlobal = $response->viewData('itemsGlobal');
+        $itemsCountry = $response->viewData('itemsCountry');
+        $this->assertCount(1, $itemsGlobal);
+        $this->assertCount(1, $itemsCountry);
+
+    }
+
+    /** @test */
+    public function get_durations_when_climate_code()
+    {
+        $stadiaLevel = $this->createStadiaLevel();
+
+        StadiaLevelDuration::create([
+            'stadia_level_id' => $stadiaLevel->id,
+            'duration' => 5,
+            'country_id' => $this->createCountry()->id,
+            'climate_code_id' => $this->createClimateCode()->id,
+        ]);
+
+        $response = $this->get(route("durations.index", $stadiaLevel->id));
+        $response->assertOk();
+
+        $itemsGlobal = $response->viewData('itemsGlobal');
+        $itemsCountry = $response->viewData('itemsCountry');
+        $itemsClimateCode = $response->viewData('itemsClimateCode');
+        $this->assertCount(0, $itemsGlobal);
+        $this->assertCount(0, $itemsCountry);
+        $this->assertCount(1, $itemsClimateCode);
+
+    }
+
+    /** @test */
+    public function get_durations_with_country_when_none()
+    {
+        $response = $this->get("stadia/durations/" . $this->createStadiaLevel()->id . "?country=" . $this->createCountry()->id);
+        $response->assertOk();
+        $itemsCountry = $response->viewData('selectedDurations');
+        $this->assertCount(0, $itemsCountry);
+    }
+
+    /** @test */
+    public function get_durations_with_country_when_only_globally()
+    {
+        $stadiaLevel = $this->createStadiaLevel();
+
+        StadiaLevelDuration::create([
+            'stadia_level_id' => $stadiaLevel->id,
+            'duration' => 5,
+        ]);
+
+        $response = $this->get("stadia/durations/" . $stadiaLevel->id . "?country=" . $this->createCountry()->id);
+        $response->assertOk();
+        $itemsCountry = $response->viewData('selectedDurations');
+        $this->assertCount(1, $itemsCountry);
+    }
+
+    /** @test */
+    public function get_durations_with_country_when_defined()
+    {
+        $stadiaLevel = $this->createStadiaLevel();
+        $country = $this->createCountry();
+
+        $incorrect = StadiaLevelDuration::create([
+            'stadia_level_id' => $stadiaLevel->id,
+            'duration' => 5
+        ]);
+
+        $correct = StadiaLevelDuration::create([
+            'stadia_level_id' => $stadiaLevel->id,
+            'duration' => 5,
+            'country_id' => $country->id
+        ]);
+        $response = $this->get("stadia/durations/" . $stadiaLevel->id . "?country=" . $country->id);
+        $response->assertOk();
+        $itemsCountry = $response->viewData('selectedDurations');
+        $this->assertCount(1, $itemsCountry);
+        $this->assertEquals($correct->id, $itemsCountry[0]->id);
+        $this->assertNotEquals($incorrect->id, $itemsCountry[0]->id);
+    }
+
     private function createStadiaLevel()
     {
         return StadiaLevel::create([
-            'name' => 'Level'
+            'name' => 'Level',
+            'stadia_plant_id' => StadiaPlant::create()->id
         ]);
     }
 
