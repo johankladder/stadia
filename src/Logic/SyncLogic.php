@@ -23,8 +23,10 @@ class SyncLogic
                 'reference_id' => $entityId,
                 'reference_table' => config('stadia.plants_table_name'),
             ]);
-            $entity->name = $entityName;
-            $entity->save();
+            if ($entity->name == null) {
+                $entity->name = $entityName;
+                $entity->save();
+            }
             $syncedEntities->add($entity);
 
         }
