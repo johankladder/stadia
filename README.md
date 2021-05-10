@@ -11,10 +11,12 @@ Run the following command: `composer require johankladder/stadia` and following 
 After installation run `php artisan migrate`
 
 ### Seed countries and climate codes
-After migrating the database, please run the following commands to publish the seeders: `php artisan vendor:publish --tag=stadia-country-seeds`
+After migrating the database, please run the following commands to publish the seeders: `php artisan vendor:publish --tag=stadia-seeds`
 and perform a `composer dump-autoload` to reload the newly added resources.
 
-Run the seeder by the following command: `php artisan db:seed --class=CountriesTableSeeder`
+Run the seeder by the following commands: 
+`php artisan db:seed --class=CountriesTableSeeder`
+`php artisan db:seed --class=ClimateCodesTableSeeder`
 
 ### Sync existing plants and levels
 In your application you can now access the backend of the stadia environment. Go to `/stadia` to see it. Before you 

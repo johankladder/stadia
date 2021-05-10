@@ -51,7 +51,8 @@ class StadiaPackageServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../database/seeds/CountriesTableSeeder.php' => database_path('seeds/CountriesTableSeeder.php'),
-        ], 'stadia-country-seeds');
+            __DIR__ . '/../database/seeds/ClimateCodesTableSeeder.php' => database_path('seeds/ClimateCodesTableSeeder.php'),
+        ], 'stadia-seeds');
     }
 
 }
