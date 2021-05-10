@@ -21,7 +21,7 @@ Route::post("calendar/{stadiaPlant}", 'JohanKladder\\Stadia\\Http\\Controllers\\
 Route::delete("calendar/{calendarRange}", 'JohanKladder\\Stadia\\Http\\Controllers\\CalendarController@destroy')->name('calendar.destroy');
 
 Route::get("durations/{stadiaLevel}/{country?}", 'JohanKladder\\Stadia\\Http\\Controllers\\DurationController@index')->name('durations.index');
-Route::post("durations/{stadiaLevel}", 'JohanKladder\\Stadia\\Http\\Controllers\\DurationController@storeCalendarRange')->name('durations.store');
+Route::post("durations/{stadiaLevel}", 'JohanKladder\\Stadia\\Http\\Controllers\\DurationController@storeDuration')->name('durations.store');
 Route::delete("durations/{stadiaDuration}", 'JohanKladder\\Stadia\\Http\\Controllers\\DurationController@destroy')->name('durations.destroy');
 
 Route::get("stadia-plants/database/sync", "JohanKladder\\Stadia\\Http\\Controllers\\StadiaPlantController@sync")->name('stadia-plants.sync');
