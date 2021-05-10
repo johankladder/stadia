@@ -47,7 +47,12 @@
 
                     <div class="form-group mt-3">
                         <label for="form-select-country-code">Select climate code</label>
-                        <select class="form-control" id="form-select-country-code">
+                        <select class="form-control" id="form-select-climate-code" name="climate_id">
+                            <option label=" "></option>
+
+                            @foreach($climateCodes as $code)
+                                <option value="{{$code->id}}">{{$code->code}}</option>
+                            @endforeach
                         </select>
                     </div>
 

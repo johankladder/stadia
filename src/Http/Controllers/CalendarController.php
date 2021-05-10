@@ -5,6 +5,7 @@ namespace JohanKladder\Stadia\Http\Controllers;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use JohanKladder\Stadia\Http\Requests\CalendarRangeRequest;
+use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaPlant;
 use JohanKladder\Stadia\Models\StadiaPlantCalendarRange;
@@ -22,6 +23,7 @@ class CalendarController extends Controller
                 return $item->country->name;
             }),
             'countries' => Country::all(),
+            'climateCodes' => ClimateCode::all(),
             'plant' => $stadiaPlant,
             'selectedCalendar' => $selectedCalendar->count() > 0 ? $selectedCalendar : $stadiaPlant->calendarRanges()->whereNull('country_id')->get(),
             'selectedCountry' => $country

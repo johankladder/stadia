@@ -5,6 +5,7 @@ namespace JohanKladder\Stadia\Tests\Feature\Http\Controllers;
 
 
 use Illuminate\Database\Eloquent\Collection;
+use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaPlant;
 use JohanKladder\Stadia\Models\StadiaPlantCalendarRange;
@@ -51,6 +52,31 @@ class CalendarControllerTest extends TestCase
             'range_to' => $to,
             'country_id' => $country->id,
             'stadia_plant_id' => $stadiaPlant->id
+        ]);
+        $response->assertStatus(302);
+    }
+
+    /** @test */
+    public function store_calendar_ranges_happy_flow_with_climate_code_and_country()
+    {
+        $stadiaPlant = $this->createPlant();
+        $country = $this->createCountry();
+        $climateCode = $this->createClimateCode();
+        $from = now();
+        $to = now();
+        $response = $this->post(route('calendar.store', $stadiaPlant->id), [
+            'range_from' => $from,
+            'range_to' => $to,
+            'country_id' => $country->id,
+            'climate_code_id' => $climateCode->id
+        ]);
+
+        $this->assertDatabaseHas('stadia_plant_calendar_ranges', [
+            'range_from' => $from,
+            'range_to' => $to,
+            'country_id' => $country->id,
+            'stadia_plant_id' => $stadiaPlant->id,
+            'climate_code_id' => $climateCode->id
         ]);
         $response->assertStatus(302);
     }
@@ -214,6 +240,13 @@ class CalendarControllerTest extends TestCase
     private function createCountry()
     {
         return Country::create();
+    }
+
+    private function createClimateCode()
+    {
+        return ClimateCode::create([
+            'code' => 'Code'
+        ]);
     }
 
 }

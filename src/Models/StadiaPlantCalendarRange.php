@@ -10,11 +10,13 @@ class StadiaPlantCalendarRange extends Model
         'range_from',
         'range_to',
         'stadia_plant_id',
-        'country_id'
+        'country_id',
+        'climate_code_id'
     ];
 
     protected $with = [
-        'country'
+        'country',
+        'climateCode'
     ];
 
     public function getDateFrom()
@@ -30,5 +32,10 @@ class StadiaPlantCalendarRange extends Model
     public function country()
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function climateCode()
+    {
+        return $this->belongsTo(ClimateCode::class);
     }
 }
