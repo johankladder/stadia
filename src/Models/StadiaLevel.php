@@ -39,4 +39,9 @@ class StadiaLevel extends Model
         return $this->belongsTo(StadiaPlant::class);
     }
 
+    public function durations()
+    {
+        return $this->hasMany(StadiaLevelDuration::class);
+    }
+
 }

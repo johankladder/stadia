@@ -5,6 +5,7 @@ namespace JohanKladder\Stadia\Tests\Unit\models;
 
 
 use JohanKladder\Stadia\Models\StadiaLevel;
+use JohanKladder\Stadia\Models\StadiaLevelDuration;
 use JohanKladder\Stadia\Tests\TestCase;
 
 class StadiaLevelUnitTest extends TestCase
@@ -46,6 +47,22 @@ class StadiaLevelUnitTest extends TestCase
 
         $this->assertEquals("Test", $entity->name);
         $this->assertEquals(1, $entity->stadia_plant_id);
+    }
+
+    /** @test */
+    public function get_durations()
+    {
+        $entity = StadiaLevel::create([
+            'name' => 'Test',
+            'stadia_plant_id' => 1
+        ]);
+
+        StadiaLevelDuration::create([
+            'duration' => 5,
+            'stadia_level_id' => $entity->id
+        ]);
+
+        $this->assertCount(1, $entity->durations);
     }
 
 }
