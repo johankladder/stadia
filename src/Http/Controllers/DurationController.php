@@ -48,8 +48,8 @@ class DurationController extends Controller
 
     public function storeDuration(DurationRequest $request, StadiaLevel $stadiaLevel)
     {
-        StadiaLevelDuration::create(array_merge(
-            $request->all(),
+        StadiaLevelDuration::firstOrCreate(array_merge(
+            $request->validated(),
             ['stadia_level_id' => $stadiaLevel->id]
         ));
 
