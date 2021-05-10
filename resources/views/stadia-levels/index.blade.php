@@ -12,7 +12,7 @@
                 <th scope="col"># (reference)</th>
                 <th scope="col">Reference table</th>
                 <th scope="col">Name</th>
-                <th scope="col">Calendar</th>
+                <th scope="col">Durations</th>
                 <th scope="col">Support</th>
                 <th scope="col">Options</th>
             </tr>
@@ -34,15 +34,29 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{route('calendar.index', $item->getId())}}" class="btn btn-outline-primary">
-                            Calendar
+                        <a href="{{route('durations.index', $item->getId())}}" class="btn btn-outline-primary">
+                            Durations ()
                         </a>
                     </td>
                     <td>
-
+{{--                        @if($item->durations()->count() > 0)--}}
+{{--                            <div class="row">--}}
+{{--                                <span class="badge badge-pill badge-primary">Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})</span>--}}
+{{--                            </div>--}}
+{{--                        @endif--}}
+{{--                        @if($item->durations()->whereNull('country_id')->count() > 0)--}}
+{{--                            <div class="row mt-1">--}}
+{{--                                <span class="badge badge-pill badge-success">Globally supported!</span>--}}
+{{--                            </div>--}}
+{{--                        @endif--}}
+{{--                        @if($item->durations()->count() <= 0)--}}
+{{--                            <div class="row mt-1">--}}
+{{--                                <span class="badge badge-pill badge-danger">Globally unsupported!</span>--}}
+{{--                            </div>--}}
+{{--                        @endif--}}
                     </td>
                     <td>
-                        <form action="{{ route('stadia-plants.destroy', $item->getId())}}" method="POST">
+                        <form action="{{ route('stadia-levels.destroy', $item->getId())}}" method="POST">
                             @method('delete')
                             @csrf
                             <button class="btn btn-danger" type="submit">Remove</button>
