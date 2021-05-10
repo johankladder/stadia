@@ -38,4 +38,14 @@ class StadiaPlantCalendarRangeUnitTest extends TestCase
         ]);
         $this->assertEquals(1, $range->country_id);
     }
+
+    public function test_get_climate_code_id()
+    {
+        $range = StadiaPlantCalendarRange::create([
+            'range_from' => now(),
+            'range_to' => now(),
+            'climate_code_id' => 1
+        ]);
+        $this->assertEquals(1, $range->climate_code_id);
+    }
 }
