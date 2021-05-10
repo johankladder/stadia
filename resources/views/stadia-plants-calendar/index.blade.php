@@ -197,54 +197,54 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="collapse" id="collapse-{{str_replace(' ', '', $countryName)}}">
-
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Date from</th>
-                                        <th scope="col">Date to</th>
-                                        <th scope="col">Climate code</th>
-                                        <th scope="col">Options</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($items as $item)
-                                        <tr>
-                                            <td>
-                                                {{date('d-m', strtotime($item->getDateFrom()))}}
-                                            </td>
-                                            <td>
-                                                {{date('d-m', strtotime($item->getDateTo()))}}
-                                            </td>
-                                            <td>
-                                                {{$item->climateCode->code}}
-                                            </td>
-                                            <td>
-                                                <form action="{{ route('calendar.destroy', $item->id)}}"
-                                                      method="POST">
-                                                    @method('delete')
-                                                    @csrf
-                                                    <button class="btn btn-sm btn-outline-danger" type="submit">
-                                                        Remove
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                                @endforeach
-
-
-                            </div>
-
                         </div>
-                        @endif
+                        <div class="collapse" id="collapse-{{str_replace(' ', '', $countryName)}}">
+
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Date from</th>
+                                    <th scope="col">Date to</th>
+                                    <th scope="col">Climate code</th>
+                                    <th scope="col">Options</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($items as $item)
+                                    <tr>
+                                        <td>
+                                            {{date('d-m', strtotime($item->getDateFrom()))}}
+                                        </td>
+                                        <td>
+                                            {{date('d-m', strtotime($item->getDateTo()))}}
+                                        </td>
+                                        <td>
+                                            {{$item->climateCode->code}}
+                                        </td>
+                                        <td>
+                                            <form
+                                                action="{{ route('calendar.destroy', $item->id)}}"
+                                                method="POST">
+                                                @method('delete')
+                                                @csrf
+                                                <button
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    type="submit">
+                                                    Remove
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
-
     </div>
+
 
 @endsection
 
@@ -318,10 +318,12 @@
                                             {{date('d-m', strtotime($item->getDateTo()))}}
                                         </td>
                                         <td>
-                                            <form action="{{ route('calendar.destroy', $item->id)}}" method="POST">
+                                            <form action="{{ route('calendar.destroy', $item->id)}}"
+                                                  method="POST">
                                                 @method('delete')
                                                 @csrf
-                                                <button class="btn btn-sm btn-outline-danger" type="submit">Remove
+                                                <button class="btn btn-sm btn-outline-danger" type="submit">
+                                                    Remove
                                                 </button>
                                             </form>
                                         </td>
