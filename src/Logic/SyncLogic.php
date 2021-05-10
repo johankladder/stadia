@@ -22,8 +22,9 @@ class SyncLogic
             $entity = StadiaPlant::firstOrCreate([
                 'reference_id' => $entityId,
                 'reference_table' => config('stadia.plants_table_name'),
-                'name' => $entityName
             ]);
+            $entity->name = $entityName;
+            $entity->save();
             $syncedEntities->add($entity);
 
         }
