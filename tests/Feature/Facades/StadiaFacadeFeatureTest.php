@@ -103,7 +103,7 @@ class StadiaFacadeFeatureTest extends TestCase
         $stadiaPlantOther = $this->createStadiaPlant();
         $calendarRange = $this->createCalendarRange($stadiaPlant);
         $calendarRangeOther = $this->createCalendarRange($stadiaPlantOther);
-        $items = Stadia::getCalendarRangesOfStadiaPlants(Collection::make([$stadiaPlant, $stadiaPlantOther]));
+        $items = Stadia::getCalendarRangesOf(Collection::make([$stadiaPlant, $stadiaPlantOther]));
         $this->assertCount(2, $items);
         $this->assertCount(1, $items[0]);
         $this->assertCount(1, $items[1]);
@@ -118,7 +118,7 @@ class StadiaFacadeFeatureTest extends TestCase
         $stadiaPlantOther = $this->createStadiaPlant();
         $calendarRange = $this->createCalendarRange($stadiaPlant);
         $calendarRangeOther = $this->createCalendarRange($stadiaPlantOther);
-        $items = Stadia::getCalendarRangesOfAllStadiaPlants();
+        $items = Stadia::getCalendarRangesOfAllPlants();
         $this->assertCount(2, $items);
         $this->assertCount(1, $items[0]);
         $this->assertCount(1, $items[1]);
