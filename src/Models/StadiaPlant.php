@@ -43,6 +43,11 @@ class StadiaPlant extends Model
         return $this->hasMany(StadiaLevel::class);
     }
 
+    public function durations()
+    {
+        return $this->hasManyThrough(StadiaLevelDuration::class, StadiaLevel::class);
+    }
+
     public function getSupportedCountries()
     {
         return $this->calendarRanges()->whereNotNull('country_id')->get()->groupBy('country_id');
