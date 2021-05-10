@@ -47,7 +47,7 @@
 
                     <div class="form-group mt-3">
                         <label for="form-select-country-code">Select climate code</label>
-                        <select class="form-control" id="form-select-climate-code" name="climate_id">
+                        <select class="form-control" id="form-select-climate-code" name="climate_code_id">
                             <option label=" "></option>
 
                             @foreach($climateCodes as $code)
@@ -179,11 +179,68 @@
             </div>
 
             <div class="card-body">
-                @empty($itemsClimateCodes)
+                @empty($itemsClimateCode)
                     <span class="text-muted">No date ranges given yet...</span>
                 @else
+                    @foreach($itemsClimateCode as $countryName => $items)
 
-                @endif
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        {{$countryName}} ({{count($items)}})
+                                    </div>
+                                    <div class="col-sm-auto">
+                                        <button class="btn btn-link" data-toggle="collapse"
+                                                data-target="#collapse-{{str_replace(' ', '', $countryName)}}">Show
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collapse" id="collapse-{{str_replace(' ', '', $countryName)}}">
+
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Date from</th>
+                                        <th scope="col">Date to</th>
+                                        <th scope="col">Climate code</th>
+                                        <th scope="col">Options</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($items as $item)
+                                        <tr>
+                                            <td>
+                                                {{date('d-m', strtotime($item->getDateFrom()))}}
+                                            </td>
+                                            <td>
+                                                {{date('d-m', strtotime($item->getDateTo()))}}
+                                            </td>
+                                            <td>
+                                                {{$item->climateCode->code}}
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('calendar.destroy', $item->id)}}"
+                                                      method="POST">
+                                                    @method('delete')
+                                                    @csrf
+                                                    <button class="btn btn-sm btn-outline-danger" type="submit">
+                                                        Remove
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                                @endforeach
+
+
+                            </div>
+
+                        </div>
+                        @endif
             </div>
         </div>
 
@@ -216,13 +273,19 @@
                 </div>
                 <div class="form-group">
                     <label for="form-select-climate-code">Climate code</label>
-                    <select class="form-control" id="form-select-climate-code">
+                    <select class="form-control" id="form-select-country-code" name="climateCode">
                         <option label=" "></option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
+                        @foreach($climateCodes as $code)
+                            <option
+                                value="{{$code->id}}"
+                            @empty($selectedClimateCode)
+                                @else
+                                @if($selectedClimateCode != null && ($code->id == $selectedClimateCode->id))
+                                    {{'selected'}}
+                                    @endif
+                                @endif
+                            >{{$code->code}}</option>
+                        @endforeach
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Get calendar</button>

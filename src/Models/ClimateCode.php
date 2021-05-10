@@ -11,4 +11,9 @@ class ClimateCode extends Model
         'code'
     ];
 
+    public function calendarRanges()
+    {
+        return $this->hasMany(StadiaPlantCalendarRange::class);
+    }
+
 }

@@ -15,18 +15,33 @@ class CalendarController extends Controller
     public function index(Request $request, StadiaPlant $stadiaPlant)
     {
         $country = Country::find($request->query("country"));
-        $selectedCalendar = $country ? $country->calendarRanges()->where('stadia_plant_id', $stadiaPlant->id)->get() : Collection::make();
+        $climateCode = ClimateCode::find($request->query("climateCode"));
+
+        $selectedCalendar = $country ? $country->calendarRanges()
+            ->where('stadia_plant_id', $stadiaPlant->id)
+            ->whereNull('climate_code_id')
+            ->get() : Collection::make();
+
+        $selectedCalendar = $climateCode && $country ? $climateCode->calendarRanges()
+            ->where('stadia_plant_id', $stadiaPlant->id)
+            ->where('country_id', $country->id)
+            ->get()
+            : $selectedCalendar;
 
         return view("stadia::stadia-plants-calendar.index", [
             'itemsGlobal' => $stadiaPlant->calendarRanges()->whereNull('country_id')->get(),
-            'itemsCountry' => $stadiaPlant->calendarRanges()->whereNotNull('country_id')->get()->groupBy(function ($item) {
+            'itemsCountry' => $stadiaPlant->calendarRanges()->whereNotNull('country_id')->whereNull('climate_code_id')->get()->groupBy(function ($item) {
+                return $item->country->name;
+            }),
+            'itemsClimateCode' => $stadiaPlant->calendarRanges()->whereNotNull(['country_id', 'climate_code_id'])->get()->groupBy(function ($item) {
                 return $item->country->name;
             }),
             'countries' => Country::all(),
             'climateCodes' => ClimateCode::all(),
             'plant' => $stadiaPlant,
             'selectedCalendar' => $selectedCalendar->count() > 0 ? $selectedCalendar : $stadiaPlant->calendarRanges()->whereNull('country_id')->get(),
-            'selectedCountry' => $country
+            'selectedCountry' => $country,
+            'selectedClimateCode' => $climateCode
         ]);
     }
 

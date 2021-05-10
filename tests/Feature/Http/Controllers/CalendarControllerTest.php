@@ -82,6 +82,25 @@ class CalendarControllerTest extends TestCase
     }
 
     /** @test */
+    public function store_calendar_ranges_with_climate_code_and_missing_country()
+    {
+        $stadiaPlant = $this->createPlant();
+        $climateCode = $this->createClimateCode();
+        $from = now();
+        $to = now();
+        $response = $this->post(route('calendar.store', $stadiaPlant->id), [
+            'range_from' => $from,
+            'range_to' => $to,
+            'climate_code_id' => $climateCode->id
+        ]);
+
+        $this->assertDatabaseMissing('stadia_plant_calendar_ranges', [
+            'stadia_plant_id' => $stadiaPlant->id,
+        ]);
+        $response->assertSessionHasErrors(['country_id']);
+    }
+
+    /** @test */
     public function store_calendar_ranges_with_missing_plant()
     {
         $response = $this->post("/stadia/calendar/");
@@ -179,6 +198,30 @@ class CalendarControllerTest extends TestCase
         $itemsCountry = $response->viewData('itemsCountry');
         $this->assertCount(1, $itemsGlobal);
         $this->assertCount(1, $itemsCountry);
+
+    }
+
+    /** @test */
+    public function get_calendar_ranges_when_climate_code()
+    {
+        $stadiaPlant = $this->createPlant();
+
+        StadiaPlantCalendarRange::create([
+            'stadia_plant_id' => $stadiaPlant->id,
+            'range_from' => now(),
+            'range_to' => now(),
+            'country_id' => $this->createCountry()->id,
+            'climate_code_id' => $this->createClimateCode()->id
+        ]);
+        $response = $this->get("stadia/calendar/" . $stadiaPlant->id);
+        $response->assertOk();
+
+        $itemsGlobal = $response->viewData('itemsGlobal');
+        $itemsCountry = $response->viewData('itemsCountry');
+        $itemsClimateCode = $response->viewData('itemsClimateCode');
+        $this->assertCount(0, $itemsGlobal);
+        $this->assertCount(0, $itemsCountry);
+        $this->assertCount(1, $itemsClimateCode);
 
     }
 
