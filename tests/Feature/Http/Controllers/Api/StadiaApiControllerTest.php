@@ -34,10 +34,7 @@ class StadiaApiControllerTest extends TestCase
         $this->assertEquals($stadiaPlant->id, $result[0]["id"]);
         $this->assertCount(1, $result[0]["ranges"]);
         $this->assertEquals($calendarRange->id, $result[0]["ranges"][0]['id']);
-
-        $this->assertArrayHasKey("id", $result[0]["ranges"][0]);
-        $this->assertArrayHasKey("range_from", $result[0]["ranges"][0]);
-        $this->assertArrayHasKey("range_to", $result[0]["ranges"][0]);
+        $this->checkRangeContent($result[0]["ranges"][0]);
     }
 
     /** @test */
@@ -65,9 +62,7 @@ class StadiaApiControllerTest extends TestCase
         $this->assertCount(1, $result[0]["ranges"]);
         $this->assertEquals($calendarRange->id, $result[0]["ranges"][0]['id']);
 
-        $this->assertArrayHasKey("id", $result[0]["ranges"][0]);
-        $this->assertArrayHasKey("range_from", $result[0]["ranges"][0]);
-        $this->assertArrayHasKey("range_to", $result[0]["ranges"][0]);
+        $this->checkRangeContent($result[0]["ranges"][0]);
     }
 
     /** @test */
@@ -97,6 +92,37 @@ class StadiaApiControllerTest extends TestCase
         $this->assertCount(1, $result[0]["ranges"]);
         $this->assertEquals($calendarRange->id, $result[0]["ranges"][0]['id']);
         $this->checkRangeContent($result[0]["ranges"][0]);
+    }
+
+    /** @test */
+    public function get_calendar_ranges_plant_successful_empty()
+    {
+        $stadiaPlant = $this->createPlant();
+        $response = $this->get("/stadia/api/calendar-plant/" . $stadiaPlant->id);
+        $response->assertOk();
+        $result = $response->json()['data'];
+        $this->assertEmpty($result['ranges']);
+    }
+
+
+    /** @test */
+    public function get_calendar_ranges_successful_filled()
+    {
+        $stadiaPlant = $this->createPlant();
+        $this->createCalendarRanges($stadiaPlant);
+        $response = $this->get("/stadia/api/calendar-plant/" . $stadiaPlant->id);
+        $response->assertOk();
+        $result = $response->json()['data'];
+        $this->assertEquals($stadiaPlant->id, $result["id"]);
+        $this->assertCount(1, $result["ranges"]);
+        $this->checkRangeContent($result['ranges'][0]);
+    }
+
+    /** @test */
+    public function get_calendar_ranges_incorrect_plant()
+    {
+        $response = $this->get("/stadia/api/calendar-plant/1223333");
+        $response->assertNotFound();
     }
 
     private function checkRangeContent($range, $contentKeys = ['id', 'range_from', 'range_to'])
