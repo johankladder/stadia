@@ -30,7 +30,24 @@ After that you can fill in date ranges and climate relative information about th
 The Stadia environment will be available at the `/stadia` prefix and using only the `web` middleware. To customize this you can publish 
 the config file with the following command: 
 `php artisan vendor:publish --provider="JohanKladder\Stadia\StadiaPackageServiceProvider" --tag="config"`. 
-After that the `stadia.php` config file is located in your `/config` folder and can be changed accordingly.
+After that the `stadia.php` config file is located in your `/config` folder and can be changed accordingly. An example of this 
+file is:
+
+```php
+<?php
+
+return [
+    'prefix' => 'stadia',
+    'middleware' => ['web'],
+    'api-prefix' => 'stadia/api',
+    'api-middleware' => ['api'],
+    'plant_table_soft_deleted' => false,
+    'plants_table_name' => 'plants',
+    'plants_name_column' => 'name',
+    'levels_table_name' => 'levels',
+    'levels_name_column' => 'name',
+];
+```
 
 
 
