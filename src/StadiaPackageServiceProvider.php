@@ -37,6 +37,11 @@ class StadiaPackageServiceProvider extends ServiceProvider
         Route::group($this->routeConfiguration(), function () {
             $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
         });
+
+        Route::group($this->routeConfigurationApi(), function () {
+
+            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+        });
     }
 
     protected function routeConfiguration()
@@ -44,6 +49,14 @@ class StadiaPackageServiceProvider extends ServiceProvider
         return [
             'prefix' => config('stadia.prefix'),
             'middleware' => config('stadia.middleware'),
+        ];
+    }
+
+    protected function routeConfigurationApi()
+    {
+        return [
+            'prefix' => config('stadia.api-prefix'),
+            'middleware' => config('stadia.api-middleware'),
         ];
     }
 

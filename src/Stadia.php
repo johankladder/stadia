@@ -43,9 +43,9 @@ class Stadia
         });
     }
 
-    public function getCalendarRangesOfAllPlants($country = null)
+    public function getCalendarRangesOfAllPlants($country = null, $climateCode = null)
     {
-        return $this->getCalendarRangesOf(StadiaPlant::all(), $country);
+        return $this->getCalendarRangesOf(StadiaPlant::all(), $country, $climateCode);
     }
 
     public function getGrowTime(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
