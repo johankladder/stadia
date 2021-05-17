@@ -52,14 +52,18 @@ class Stadia
     {
         $levels = $stadiaPlant->stadiaLevels;
         if ($levels->count() > 0) {
-            $durations = Collection::make();
+            $durations = 0;
             foreach ($levels as $level) {
-                $duration = $this->durationsFactory($level, $country, $climateCode)->first();
-                if ($duration != null) {
-                    $durations->add($duration);
+                try {
+                    $duration = $this->getDuration($level, $country, $climateCode);
+                } catch (NoDurationsException $exception) {
+                    $duration = 0;
+                } finally {
+                    $durations += $duration;
                 }
+
             }
-            return $durations->sum('duration');
+            return $durations;
         }
         throw new NoStadiaLevelsException(
             "This plant has no related levels yet."
