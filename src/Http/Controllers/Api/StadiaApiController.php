@@ -6,7 +6,6 @@ namespace JohanKladder\Stadia\Http\Controllers\Api;
 
 use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Http\Controllers\Controller;
-use JohanKladder\Stadia\Http\Resources\CalendarResource;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaPlant;
