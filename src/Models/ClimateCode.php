@@ -21,4 +21,9 @@ class ClimateCode extends Model
         return $this->hasMany(StadiaLevelDuration::class);
     }
 
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
+
 }

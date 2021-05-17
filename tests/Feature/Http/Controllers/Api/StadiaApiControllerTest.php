@@ -41,7 +41,7 @@ class StadiaApiControllerTest extends TestCase
     public function get_all_calendar_ranges_successful_with_country_empty()
     {
         $country = $this->createCountry();
-        $response = $this->get("/stadia/api/calendar/" . $country->id);
+        $response = $this->get("/stadia/api/calendar/" . $country->code);
         $response->assertOk();
         $result = $response->json()['data'];
         $this->assertEmpty($result);
@@ -53,7 +53,7 @@ class StadiaApiControllerTest extends TestCase
         $stadiaPlant = $this->createPlant();
         $country = $this->createCountry();
         $calendarRange = $this->createCalendarRanges($stadiaPlant, $country);
-        $response = $this->get("/stadia/api/calendar/" . $country->id);
+        $response = $this->get("/stadia/api/calendar/" . $country->code);
         $response->assertOk();
         $result = $response->json()['data'];
 
@@ -70,7 +70,7 @@ class StadiaApiControllerTest extends TestCase
     {
         $country = $this->createCountry();
         $climateCode = $this->createClimateCode();
-        $response = $this->get("/stadia/api/calendar/" . $country->id . "/" . $climateCode->id);
+        $response = $this->get("/stadia/api/calendar/" . $country->code . "/" . $climateCode->code);
         $response->assertOk();
         $result = $response->json()['data'];
         $this->assertEmpty($result);
@@ -83,7 +83,7 @@ class StadiaApiControllerTest extends TestCase
         $country = $this->createCountry();
         $climateCode = $this->createClimateCode();
         $calendarRange = $this->createCalendarRanges($stadiaPlant, $country, $climateCode);
-        $response = $this->get("/stadia/api/calendar/" . $country->id . "/" . $climateCode->id);
+        $response = $this->get("/stadia/api/calendar/" . $country->code . "/" . $climateCode->code);
         $response->assertOk();
         $result = $response->json()['data'];
 
@@ -139,7 +139,9 @@ class StadiaApiControllerTest extends TestCase
 
     private function createCountry()
     {
-        return Country::create();
+        return Country::firstOrCreate([
+            'code' => 'NL'
+        ]);
     }
 
     private function createClimateCode()
