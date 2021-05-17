@@ -273,6 +273,25 @@ class StadiaFacadeFeatureTest extends TestCase
         $this->assertEquals($duration2->duration, $durations[1]->duration);
     }
 
+    /** @test */
+    public function get_check_up_date_no_durations()
+    {
+        $this->expectException(NoDurationsException::class);
+        $stadiaPlant = $this->createStadiaPlant();
+        $stadiaLevel = $this->createStadiaLevel($stadiaPlant);
+        Stadia::getCheckupDate($stadiaLevel);
+    }
+
+    /** @test */
+    public function get_check_up_date_when_duration()
+    {
+        $stadiaPlant = $this->createStadiaPlant();
+        $stadiaLevel = $this->createStadiaLevel($stadiaPlant);
+        $duration = $this->createStadiaDuration($stadiaLevel, 5);
+        $newTime = Stadia::getCheckupDate($stadiaLevel);
+        $this->assertEquals(now()->addDays($duration->duration)->roundDay(), $newTime);
+    }
+
     private function createStadiaPlant()
     {
         return StadiaPlant::create();

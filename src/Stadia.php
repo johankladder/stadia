@@ -70,9 +70,10 @@ class Stadia
         );
     }
 
-    public function getCheckupDate(StadiaPlant $stadiaPlant, StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
+    public function getCheckupDate(StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
     {
-
+        $duration = $this->getDuration($stadiaLevel, $country, $climateCode);
+        return now()->addDays($duration)->roundDay();
     }
 
     public function getDuration(StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
