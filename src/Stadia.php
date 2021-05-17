@@ -6,6 +6,7 @@ namespace JohanKladder\Stadia;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use JohanKladder\Stadia\Exceptions\NoDurationsException;
 use JohanKladder\Stadia\Exceptions\NoStadiaLevelsException;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaLevel;
@@ -71,6 +72,17 @@ class Stadia
     }
 
     public function getDuration(StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
+    {
+        $duration = $this->durationsFactory($stadiaLevel, $country, $climateCode)->first();
+        if ($duration != null) {
+            return $duration->duration;
+        }
+        throw new NoDurationsException(
+            "This level has no related durations yet."
+        );
+    }
+
+    public function getDurations(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
 
     }

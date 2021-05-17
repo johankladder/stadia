@@ -3,6 +3,7 @@
 namespace JohanKladder\Stadia\Tests\Feature\Facades;
 
 use Illuminate\Support\Collection;
+use JohanKladder\Stadia\Exceptions\NoDurationsException;
 use JohanKladder\Stadia\Exceptions\NoStadiaLevelsException;
 use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Models\ClimateCode;
@@ -197,16 +198,58 @@ class StadiaFacadeFeatureTest extends TestCase
         $this->assertNotEquals($countryDuration->duration, $growTime);
     }
 
+    /** @test */
+    public function get_duration_when_no_global_durations()
+    {
+        $this->expectException(NoDurationsException::class);
+        $stadiaLevel = $this->createStadiaLevel();
+        Stadia::getDuration($stadiaLevel);
+    }
+
+    /** @test */
+    public function get_duration_when_global_durations()
+    {
+        $stadiaLevel = $this->createStadiaLevel();
+        $levelDuration = $this->createStadiaDuration($stadiaLevel, 5);
+        $duration = Stadia::getDuration($stadiaLevel);
+        $this->assertEquals($levelDuration->duration, $duration);
+    }
+
+    /** @test */
+    public function get_duration_when_global_and_country_durations()
+    {
+        $country = $this->createCountry();
+        $stadiaLevel = $this->createStadiaLevel();
+        $globalDuration = $this->createStadiaDuration($stadiaLevel, 5);
+        $countryDuration = $this->createStadiaDuration($stadiaLevel, 10, $country);
+        $duration = Stadia::getDuration($stadiaLevel, $country);
+        $this->assertEquals($countryDuration->duration, $duration);
+        $this->assertNotEquals($globalDuration->duration, $duration);
+    }
+
+    /** @test */
+    public function get_duration_when_country_and_climate_durations()
+    {
+        $country = $this->createCountry();
+        $climate = $this->createClimateCode();
+        $stadiaLevel = $this->createStadiaLevel();
+        $countryDuration = $this->createStadiaDuration($stadiaLevel, 5, $country);
+        $climateDuration = $this->createStadiaDuration($stadiaLevel, 10, $country, $climate);
+        $duration = Stadia::getDuration($stadiaLevel, $country, $climate);
+        $this->assertEquals($climateDuration->duration, $duration);
+        $this->assertNotEquals($countryDuration->duration, $duration);
+    }
+
     private function createStadiaPlant()
     {
         return StadiaPlant::create();
     }
 
-    private function createStadiaLevel(StadiaPlant $stadiaPlant)
+    private function createStadiaLevel(StadiaPlant $stadiaPlant = null)
     {
         return StadiaLevel::create([
             'name' => 'Level',
-            'stadia_plant_id' => $stadiaPlant->id
+            'stadia_plant_id' => $stadiaPlant ? $stadiaPlant->id : $this->createStadiaPlant()->id
         ]);
     }
 
