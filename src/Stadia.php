@@ -88,7 +88,19 @@ class Stadia
 
     public function getDurations(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
-
+        $levels = $stadiaPlant->stadiaLevels;
+        if ($levels->count() > 0) {
+            $collection = Collection::make();
+            foreach ($levels as $level) {
+                $duration = $this->getDuration($level, $country, $climateCode);
+                $level->duration = $duration;
+                $collection->add($level);
+            }
+            return $collection;
+        }
+        throw new NoStadiaLevelsException(
+            "This plant has no related levels yet."
+        );
     }
 
     private function calendarRangesFactory(StadiaPlant $stadiaPlant, $country)

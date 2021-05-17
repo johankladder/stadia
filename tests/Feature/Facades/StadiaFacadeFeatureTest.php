@@ -240,6 +240,39 @@ class StadiaFacadeFeatureTest extends TestCase
         $this->assertNotEquals($countryDuration->duration, $duration);
     }
 
+    /** @test */
+    public function get_durations_when_no_levels()
+    {
+        $this->expectException(NoStadiaLevelsException::class);
+        $stadiaPlant = $this->createStadiaPlant();
+        Stadia::getDurations($stadiaPlant);
+    }
+
+    /** @test */
+    public function get_durations_happy_flow()
+    {
+        $stadiaPlant = $this->createStadiaPlant();
+        $stadiaLevel = $this->createStadiaLevel($stadiaPlant);
+        $duration = $this->createStadiaDuration($stadiaLevel, 5);
+        $durations = Stadia::getDurations($stadiaPlant);
+        $this->assertCount(1, $durations);
+        $this->assertEquals($duration->duration, $durations[0]->duration);
+    }
+
+    /** @test */
+    public function get_durations_happy_flow_multiple_levels()
+    {
+        $stadiaPlant = $this->createStadiaPlant();
+        $stadiaLevel = $this->createStadiaLevel($stadiaPlant);
+        $stadiaLevel2 = $this->createStadiaLevel($stadiaPlant);
+        $duration = $this->createStadiaDuration($stadiaLevel, 5);
+        $duration2 = $this->createStadiaDuration($stadiaLevel2, 5);
+        $durations = Stadia::getDurations($stadiaPlant);
+        $this->assertCount(2, $durations);
+        $this->assertEquals($duration->duration, $durations[0]->duration);
+        $this->assertEquals($duration2->duration, $durations[1]->duration);
+    }
+
     private function createStadiaPlant()
     {
         return StadiaPlant::create();
