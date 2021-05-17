@@ -6,6 +6,7 @@ namespace JohanKladder\Stadia;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use JohanKladder\Stadia\Exceptions\NoStadiaLevelsException;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaLevel;
 use JohanKladder\Stadia\Models\StadiaPlant;
@@ -48,7 +49,20 @@ class Stadia
 
     public function getGrowTime(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
-
+        $levels = $stadiaPlant->stadiaLevels;
+        if ($levels->count() > 0) {
+            $durations = Collection::make();
+            foreach ($levels as $level) {
+                $duration = $this->durationsFactory($level, $country, $climateCode)->first();
+                if ($duration != null) {
+                    $durations->add($duration);
+                }
+            }
+            return $durations->sum('duration');
+        }
+        throw new NoStadiaLevelsException(
+            "This plant has no related levels yet."
+        );
     }
 
     public function getCheckupDate(StadiaPlant $stadiaPlant, StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
@@ -71,6 +85,26 @@ class Stadia
             }
         }
         return $globalRanges;
+    }
+
+    private function durationsFactory(StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
+    {
+        $globalDurations = $stadiaLevel->durations()->whereNull('country_id')->whereNull('climate_code_id');
+        if ($country) {
+            $countryRelated = $stadiaLevel->durations()->where('country_id', '=', $country->id);
+
+            if ($climateCode) {
+                $climateRelated = $countryRelated->where('climate_code_id', '=', $climateCode->id);
+                if ($climateRelated->count() > 0) {
+                    return $climateRelated;
+                }
+            }
+
+            if ($countryRelated->count() > 0) {
+                return $countryRelated;
+            }
+        }
+        return $globalDurations;
     }
 
 }
