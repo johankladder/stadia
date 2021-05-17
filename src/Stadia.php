@@ -31,8 +31,8 @@ class Stadia
 
     public function getCalendarRanges(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
-        return Cache::remember('calendar-ranges-' . $stadiaPlant->id . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), 60 * 60, function () use ($country, $stadiaPlant) {
-            return $this->calendarRangesFactory($stadiaPlant, $country)->get();
+        return Cache::remember('calendar-ranges-' . $stadiaPlant->id . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), 60 * 60, function () use ($climateCode, $country, $stadiaPlant) {
+            return $this->calendarRangesFactory($stadiaPlant, $country, $climateCode)->get();
         });
     }
 
@@ -104,11 +104,19 @@ class Stadia
         );
     }
 
-    private function calendarRangesFactory(StadiaPlant $stadiaPlant, $country)
+    private function calendarRangesFactory(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
         $globalRanges = $stadiaPlant->calendarRanges()->whereNull('country_id');
         if ($country) {
             $countryRelated = $stadiaPlant->calendarRanges()->where('country_id', '=', $country->id);
+
+            if ($climateCode) {
+                $climateRelated = $countryRelated->where('climate_code_id', '=', $climateCode->id);
+                if ($climateRelated->count() > 0) {
+                    return $climateRelated;
+                }
+            }
+
             if ($countryRelated->count() > 0) {
                 return $countryRelated;
             }

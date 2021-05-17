@@ -79,6 +79,19 @@ class StadiaFacadeFeatureTest extends TestCase
     }
 
     /** @test */
+    public function get_calendar_ranges_of_stadia_plant_when_country_and_climate()
+    {
+        $country = $this->createCountry();
+        $climate = $this->createClimateCode();
+        $stadiaPlant = $this->createStadiaPlant();
+        $this->createCalendarRange($stadiaPlant, $country);
+        $calendarRangeClimate = $this->createCalendarRange($stadiaPlant, $country, $climate);
+        $items = Stadia::getCalendarRanges($stadiaPlant, $country, $climate);
+        $this->assertCount(1, $items);
+        $this->assertEquals($calendarRangeClimate->id, $items[0]->id);
+    }
+
+    /** @test */
     public function get_calendar_ranges_of_stadia_plant_when_only_country()
     {
         $country = $this->createCountry();
@@ -328,11 +341,12 @@ class StadiaFacadeFeatureTest extends TestCase
         ]);
     }
 
-    private function createCalendarRange($stadiaPlant, $country = null)
+    private function createCalendarRange($stadiaPlant, $country = null, $climate = null)
     {
         return StadiaPlantCalendarRange::create([
             'stadia_plant_id' => $stadiaPlant->id,
-            'country_id' => $country ? $country->id : null
+            'country_id' => $country ? $country->id : null,
+            'climate_code_id' => $climate ? $climate->id : null,
         ]);
     }
 
