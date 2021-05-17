@@ -44,50 +44,72 @@
                         <div class="row">
                             <div class="col-sm mr-3">
 
-                                <div class="card">
-                                    <div class="card-header">
-                                        Plant
-                                    </div>
-                                    <ul class="list-group list-group-flush">
+                                <div class="card border-0 shadow-lg">
+                                    <div class="p-3">
+                                        <ul class="list-group list-group-flush">
+                                            @if($item->calendarRanges()->count() > 0)
+                                                <div class="list-group-item border-0">
+                                                    <span class="badge badge-pill badge-primary">Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})</span>
+                                                </div>
+                                            @endif
+                                            @if($item->calendarRanges()->whereNull('country_id')->count() > 0)
+                                                <div class="list-group-item">
+                                                    <div class="card mt-1 shadow-lg border-0">
+                                                        <div class="card-header bg-success text-light">
+                                                            Globally supported
+                                                        </div>
+                                                        <div class="p-3">
+                                                            @foreach($item->calendarRanges as $range)
 
-                                        @if($item->calendarRanges()->count() > 0)
-                                            <div class="list-group-item">
-                                                <span class="badge badge-pill badge-primary">Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})</span>
-                                            </div>
-                                        @endif
-                                        @if($item->calendarRanges()->whereNull('country_id')->count() > 0)
-                                            <div class="list-group-item">
-                                                <span class="badge badge-pill badge-success">Globally supported!</span>
-                                            </div>
-                                        @endif
-                                        @if($item->calendarRanges()->count() <= 0)
-                                            <div class="list-group-item">
-                                                <span class="badge badge-pill badge-danger">Globally unsupported!</span>
-                                            </div>
-                                        @endif
-                                    </ul>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        {{date('d-m', strtotime($range->getDateFrom()))}}
+                                                                    </div>
+
+                                                                    <div class="col text-right font-weight-bold">
+                                                                        {{date('d-m', strtotime($range->getDateTo()))}}
+                                                                    </div>
+                                                                </div>
+
+                                                            @endforeach
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            @endif
+                                            @if($item->calendarRanges()->count() <= 0)
+                                                <div class="list-group-item">
+                                                    <span
+                                                        class="badge badge-pill badge-danger">Globally unsupported!</span>
+                                                </div>
+                                            @endif
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                             @if($item->stadiaLevels()->count() > 0)
                                 <div class="col-sm">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            Levels
-                                        </div>
-                                        <ul class="list-group list-group-flush">
-                                            @if($item->durations()->whereNull('country_id')->count() >= $item->stadiaLevels()->count() && $item->stadiaLevels()->count() != 0)
-                                                <div class="list-group-item">
+                                    <div class="card border-0 shadow-lg">
+                                        <div class="card-body">
+                                            <div class="card-title">
+                                                Levels
+                                            </div>
+                                            <ul class="list-group list-group-flush">
+                                                @if($item->durations()->whereNull('country_id')->count() >= $item->stadiaLevels()->count() && $item->stadiaLevels()->count() != 0)
+                                                    <div class="list-group-item">
                                                     <span
                                                         class="badge badge-pill badge-success">Globally supported!</span>
-                                                </div>
-                                            @endif
+                                                    </div>
+                                                @endif
 
-                                            @if($item->durations()->whereNull('country_id')->count() < $item->stadiaLevels()->count() && $item->stadiaLevels()->count() != 0)
-                                                <div class="list-group-item">
-                                                    <span class="badge badge-pill badge-danger">Globally unsupported ({{$item->durations()->whereNull('country_id')->count()}} / {{$item->stadiaLevels()->count()}})</span>
-                                                </div>
-                                            @endif
-                                        </ul>
+                                                @if($item->durations()->whereNull('country_id')->count() < $item->stadiaLevels()->count() && $item->stadiaLevels()->count() != 0)
+                                                    <div class="list-group-item">
+                                                        <span class="badge badge-pill badge-danger">Globally unsupported ({{$item->durations()->whereNull('country_id')->count()}} / {{$item->stadiaLevels()->count()}})</span>
+                                                    </div>
+                                                @endif
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             @endif
