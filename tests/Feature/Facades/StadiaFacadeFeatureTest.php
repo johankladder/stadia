@@ -123,25 +123,34 @@ class StadiaFacadeFeatureTest extends TestCase
         $calendarRangeOther = $this->createCalendarRange($stadiaPlantOther);
         $items = Stadia::getCalendarRangesOf(Collection::make([$stadiaPlant, $stadiaPlantOther]));
         $this->assertCount(2, $items);
-        $this->assertCount(1, $items[0]);
-        $this->assertCount(1, $items[1]);
-        $this->assertEquals($calendarRange->id, $items[0][0]->id);
-        $this->assertEquals($calendarRangeOther->id, $items[1][0]->id);
+
+        $this->assertCount(1, $items[0]["ranges"]);
+        $this->assertCount(1, $items[1]["ranges"]);
+
+        $this->assertEquals($calendarRange->id, $items[0]["ranges"][0]->id);
+        $this->assertEquals($calendarRangeOther->id, $items[1]["ranges"][0]->id);
     }
 
     /** @test */
     public function get_calendar_ranges_of_all_stadia_plants()
     {
-        $stadiaPlant = $this->createStadiaPlant();
-        $stadiaPlantOther = $this->createStadiaPlant();
+        $stadiaPlant = $this->createStadiaPlant(1);
+        $stadiaPlantOther = $this->createStadiaPlant(2);
+
         $calendarRange = $this->createCalendarRange($stadiaPlant);
         $calendarRangeOther = $this->createCalendarRange($stadiaPlantOther);
+
         $items = Stadia::getCalendarRangesOfAllPlants();
+
         $this->assertCount(2, $items);
-        $this->assertCount(1, $items[0]);
-        $this->assertCount(1, $items[1]);
-        $this->assertEquals($calendarRange->id, $items[0][0]->id);
-        $this->assertEquals($calendarRangeOther->id, $items[1][0]->id);
+        $this->assertCount(1, $items[0]["ranges"]);
+        $this->assertCount(1, $items[1]["ranges"]);
+
+        $this->assertEquals($stadiaPlant->id, $items[0]["reference_id"]);
+        $this->assertEquals($stadiaPlantOther->id, $items[1]["reference_id"]);
+
+        $this->assertEquals($calendarRange->id, $items[0]["ranges"][0]->id);
+        $this->assertEquals($calendarRangeOther->id, $items[1]["ranges"][0]->id);
     }
 
     /** @test */
@@ -305,9 +314,12 @@ class StadiaFacadeFeatureTest extends TestCase
         $this->assertEquals(now()->addDays($duration->duration)->roundDay(), $newTime);
     }
 
-    private function createStadiaPlant()
+    private function createStadiaPlant($refId = 1)
     {
-        return StadiaPlant::create();
+        return StadiaPlant::create([
+            'reference_id' => $refId,
+            'reference_table' => 'plants'
+        ]);
     }
 
     private function createStadiaLevel(StadiaPlant $stadiaPlant = null)

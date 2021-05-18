@@ -39,7 +39,10 @@ class Stadia
     public function getCalendarRangesOf(Collection $stadiaPlants, $country = null, $climateCode = null)
     {
         return $stadiaPlants->map(function ($stadiaPlant) use ($climateCode, $country) {
-            return $this->getCalendarRanges($stadiaPlant, $country, $climateCode);
+            return [
+                'reference_id' => $stadiaPlant->reference_id,
+                'ranges' =>$this->getCalendarRanges($stadiaPlant, $country, $climateCode)
+            ];
         });
     }
 
