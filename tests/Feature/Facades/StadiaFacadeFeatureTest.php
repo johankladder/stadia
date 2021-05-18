@@ -57,6 +57,23 @@ class StadiaFacadeFeatureTest extends TestCase
     }
 
     /** @test */
+    public function get_calendar_ranges_of_reference_when_none()
+    {
+        $stadiaPlant = $this->createStadiaPlant();
+        $items = Stadia::getCalendarRangesWithReference($stadiaPlant->reference_id);
+        $this->assertCount(0, $items);
+    }
+
+    /** @test */
+    public function get_calendar_ranges_of_reference_when_global()
+    {
+        $stadiaPlant = $this->createStadiaPlant();
+        $items = Stadia::getCalendarRangesWithReference($stadiaPlant->reference_id);
+        $this->assertCount(0, $items);
+    }
+
+
+    /** @test */
     public function get_calendar_ranges_of_stadia_plant_when_globally_set()
     {
         $stadiaPlant = $this->createStadiaPlant();

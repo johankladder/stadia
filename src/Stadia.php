@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use JohanKladder\Stadia\Exceptions\NoDurationsException;
 use JohanKladder\Stadia\Exceptions\NoStadiaLevelsException;
+use JohanKladder\Stadia\Exceptions\NoStadiaPlantFoundException;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaLevel;
 use JohanKladder\Stadia\Models\StadiaPlant;
@@ -29,6 +30,17 @@ class Stadia
         });
     }
 
+    public function getCalendarRangesWithReference($referenceId, $country = null, $climateCode = null)
+    {
+        $stadiaPlant = StadiaPlant::where('reference_id', $referenceId)->first();
+        if ($stadiaPlant) {
+            return $this->getCalendarRanges($stadiaPlant, $country, $climateCode);
+        }
+        throw new NoStadiaPlantFoundException(
+            "Can't find a StadiaPlant with the following reference_id: $referenceId"
+        );
+    }
+
     public function getCalendarRanges(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
         return Cache::remember('calendar-ranges-' . $stadiaPlant->id . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), 60 * 60, function () use ($climateCode, $country, $stadiaPlant) {
@@ -41,7 +53,7 @@ class Stadia
         return $stadiaPlants->map(function ($stadiaPlant) use ($climateCode, $country) {
             return [
                 'reference_id' => $stadiaPlant->reference_id,
-                'ranges' =>$this->getCalendarRanges($stadiaPlant, $country, $climateCode)
+                'ranges' => $this->getCalendarRanges($stadiaPlant, $country, $climateCode)
             ];
         });
     }
