@@ -60,7 +60,9 @@ class Stadia
 
     public function getCalendarRangesOfAllPlants($country = null, $climateCode = null)
     {
-        return $this->getCalendarRangesOf(StadiaPlant::all(), $country, $climateCode);
+        return Cache::remember('calendar-ranges-all' . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), (60 * 60) * 24, function () use ($climateCode, $country) {
+            return $this->getCalendarRangesOf(StadiaPlant::all(), $country, $climateCode);
+        });
     }
 
     public function getGrowTime(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
