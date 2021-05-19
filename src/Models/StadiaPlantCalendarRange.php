@@ -19,6 +19,11 @@ class StadiaPlantCalendarRange extends Model
         'climateCode'
     ];
 
+    protected $casts = [
+        'range_from' => 'date',
+        'range_to' => 'date',
+    ];
+
     public function getDateFrom()
     {
         return $this->range_from;
