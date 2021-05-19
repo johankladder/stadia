@@ -58,7 +58,7 @@ class StadiaFacadeSowablePlantsTest extends TestCase
             $mock
         ]), now());
         $this->assertCount(1, $items);
-        $this->assertEquals(now()->addDay()->setHour(0)->roundHour(), $items[0]->sowable_till);
+        $this->assertEquals(now()->addDay()->setHour(0)->roundDay(), $items[0]->sowable_till);
     }
 
     /** @test */

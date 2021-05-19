@@ -126,18 +126,10 @@ class Stadia
     public function getSowable(Collection $referenceItems, CarbonInterface $currentDate, $country = null, $climateCode = null): Collection
     {
         return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($climateCode, $country, $currentDate) {
-            $stadiaPlant = StadiaPlant::where([
-                'reference_id' => $referenceItem->getId(),
-                'reference_table' => $referenceItem->getTableName()
-            ])->first();
-
+            $stadiaPlant = $this->getStadiaPlantWithReference($referenceItem);
             if ($stadiaPlant != null) {
                 $ranges = $this->getCalendarRanges($stadiaPlant, $country, $climateCode)
-                    ->map(function ($item) use ($currentDate) {
-                        $item->range_from = $item->range_from->setYear($currentDate->year);
-                        $item->range_to = $item->range_to->setYear($currentDate->year);
-                        return $item;
-                    })
+                    ->map(fn($item) => $this->mapRangesToCurrentYear($item, $currentDate))
                     ->where('range_from', '<=', $currentDate->toDateTime())
                     ->where('range_to', '>=', $currentDate->toDateTime());
 
@@ -157,17 +149,10 @@ class Stadia
     public function getSowableFromDate(Collection $referenceItems, CarbonInterface $currentDate, $country = null, $climateCode = null)
     {
         return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($currentDate, $climateCode, $country) {
-            $stadiaPlant = StadiaPlant::where([
-                'reference_id' => $referenceItem->getId(),
-                'reference_table' => $referenceItem->getTableName()
-            ])->first();
+            $stadiaPlant = $this->getStadiaPlantWithReference($referenceItem);
             if ($stadiaPlant != null) {
                 $ranges = $this->getCalendarRanges($stadiaPlant, $country, $climateCode)
-                    ->map(function ($item) use ($currentDate) {
-                        $item->range_from = $item->range_from->setYear($currentDate->year);
-                        $item->range_to = $item->range_to->setYear($currentDate->year);
-                        return $item;
-                    });
+                    ->map(fn($item) => $this->mapRangesToCurrentYear($item, $currentDate));
 
                 if ($ranges->count() > 0) {
                     $rangesLater = $ranges
@@ -194,6 +179,22 @@ class Stadia
             return false;
         });
     }
+
+    private function mapRangesToCurrentYear($item, $currentDate)
+    {
+        $item->range_from = $item->range_from->setYear($currentDate->year);
+        $item->range_to = $item->range_to->setYear($currentDate->year);
+        return $item;
+    }
+
+    private function getStadiaPlantWithReference(StadiaRelatedPlant $relatedPlant)
+    {
+        return StadiaPlant::where([
+            'reference_id' => $relatedPlant->getId(),
+            'reference_table' => $relatedPlant->getTableName()
+        ])->first();
+    }
+
 
     private function calendarRangesFactory(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
