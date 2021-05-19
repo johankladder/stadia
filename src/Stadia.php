@@ -154,6 +154,47 @@ class Stadia
         });
     }
 
+    public function getSowableFromDate(Collection $referenceItems, CarbonInterface $currentDate, $country = null, $climateCode = null)
+    {
+        return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($currentDate, $climateCode, $country) {
+            $stadiaPlant = StadiaPlant::where([
+                'reference_id' => $referenceItem->getId(),
+                'reference_table' => $referenceItem->getTableName()
+            ])->first();
+            if ($stadiaPlant != null) {
+                $ranges = $this->getCalendarRanges($stadiaPlant, $country, $climateCode)
+                    ->map(function ($item) use ($currentDate) {
+                        $item->range_from = $item->range_from->setYear($currentDate->year);
+                        $item->range_to = $item->range_to->setYear($currentDate->year);
+                        return $item;
+                    });
+
+                if ($ranges->count() > 0) {
+                    $rangesLater = $ranges
+                        ->sortBy('range_from')
+                        ->pluck('range_from')
+                        ->filter(function (CarbonInterface $item) use ($currentDate) {
+                            return $item->dayOfYear >= $currentDate->dayOfYear;
+                        })
+                        ->first();
+
+                    $rangesBefore = $ranges
+                        ->sortBy('range_from')
+                        ->pluck('range_from')
+                        ->filter(function (CarbonInterface $item) use ($currentDate) {
+                            return $item->dayOfYear <= $currentDate->dayOfYear;
+                        })
+                        ->first();
+
+                    $referenceItem->sowable_from = $rangesLater ? $rangesLater : $rangesBefore;
+
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
     private function calendarRangesFactory(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
         $globalRanges = $stadiaPlant->calendarRanges()->whereNull('country_id');
