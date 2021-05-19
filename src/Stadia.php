@@ -133,6 +133,11 @@ class Stadia
 
             if ($stadiaPlant != null) {
                 $ranges = $this->getCalendarRanges($stadiaPlant, $country, $climateCode)
+                    ->map(function ($item) use ($currentDate) {
+                        $item->range_from = $item->range_from->setYear($currentDate->year);
+                        $item->range_to = $item->range_to->setYear($currentDate->year);
+                        return $item;
+                    })
                     ->where('range_from', '<=', $currentDate->toDateTime())
                     ->where('range_to', '>=', $currentDate->toDateTime());
 

@@ -62,6 +62,24 @@ class StadiaFacadeSowablePlantsTest extends TestCase
     }
 
     /** @test */
+    public function get_sowable_plants_when_references_and_stadia_plant_and_ranges_in_range_other_year()
+    {
+        $stadiaPlant = $this->createStadiaPlant(1);
+        $tomorrow = now()->addDay();
+        $this->createCalendarRange($stadiaPlant, now()->subDay()->addYear(), $tomorrow->addYear());
+
+        $mock = $this->createMock(StadiaRelatedPlant::class);
+        $mock->method('getId')->willReturn(1);
+        $mock->method('getTableName')->willReturn("plants");
+
+        $items = Stadia::getSowable(Collection::make([
+            $mock
+        ]), now());
+        $this->assertCount(1, $items);
+        $this->assertEquals(now()->addDay()->roundDay(), $items[0]->sowable_till);
+    }
+
+    /** @test */
     public function get_sowable_plants_when_references_and_stadia_plant_and_ranges_in_range_multiple()
     {
         $stadiaPlant = $this->createStadiaPlant(1);
