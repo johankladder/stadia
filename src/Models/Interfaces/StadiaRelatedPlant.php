@@ -9,4 +9,5 @@ interface StadiaRelatedPlant
     public function getId();
 
     public function getTableName();
+
 }

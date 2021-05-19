@@ -135,7 +135,15 @@ class Stadia
                 $ranges = $this->getCalendarRanges($stadiaPlant, $country, $climateCode)
                     ->where('range_from', '<=', $currentDate->toDateTime())
                     ->where('range_to', '>=', $currentDate->toDateTime());
-                return $ranges->count() > 0;
+
+                if ($ranges->count() > 0) {
+                    $referenceItem->sowable_till = $ranges->sortBy('range_to')
+                        ->pluck('range_to')
+                        ->filter(function (CarbonInterface $item) use ($currentDate) {
+                            return $item->dayOfYear >= $currentDate->dayOfYear;
+                        })->first();
+                    return true;
+                }
             }
             return false;
         });
