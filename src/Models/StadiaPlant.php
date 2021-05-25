@@ -3,6 +3,7 @@
 namespace JohanKladder\Stadia\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use JohanKladder\Stadia\Models\Information\StadiaHarvestInformation;
 
 class StadiaPlant extends Model
 {
@@ -51,6 +52,11 @@ class StadiaPlant extends Model
     public function getSupportedCountries()
     {
         return $this->calendarRanges()->whereNotNull('country_id')->get()->groupBy('country_id');
+    }
+
+    public function harvestInformation()
+    {
+        return $this->hasMany(StadiaHarvestInformation::class);
     }
 
 }

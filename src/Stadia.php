@@ -203,6 +203,26 @@ class Stadia
         }
     }
 
+    public function getHarvestInformation(StadiaPlant $stadiaPlant, Country $country = null, ClimateCode $climateCode = null): Collection
+    {
+        $builder = $stadiaPlant->harvestInformation();
+
+        if ($country != null) {
+            $builder->where('country_id', $country->id);
+        }
+
+        if ($climateCode != null) {
+            $builder->where('climate_code_id', $climateCode->id);
+        }
+
+        if ($climateCode == null && $country == null) {
+            $builder->whereNull('country_id')
+                ->whereNull('climate_code_id');
+        }
+
+        return $builder->get();
+    }
+
 
     private function mapRangesToCurrentYear($item, $currentDate)
     {
