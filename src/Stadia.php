@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Cache;
 use JohanKladder\Stadia\Exceptions\NoDurationsException;
 use JohanKladder\Stadia\Exceptions\NoStadiaLevelsException;
 use JohanKladder\Stadia\Exceptions\NoStadiaPlantFoundException;
+use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
+use JohanKladder\Stadia\Models\Information\StadiaHarvestInformation;
 use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedPlant;
 use JohanKladder\Stadia\Models\StadiaLevel;
 use JohanKladder\Stadia\Models\StadiaPlant;
@@ -179,6 +181,28 @@ class Stadia
             return false;
         });
     }
+
+
+    public function storeHarvestInformation($referenceId, $sowDate, $harvestDate, $countryCode = null, $climateCodeCode = null)
+    {
+        $stadiaPlant = StadiaPlant::where('reference_id', $referenceId)->first();
+        $country = Country::where('code', $countryCode)->first();
+        $climateCode = ClimateCode::where('code', $climateCodeCode)->first();
+        if ($stadiaPlant != null) {
+            StadiaHarvestInformation::create([
+                'stadia_plant_id' => $stadiaPlant->id,
+                'country_id' => $country != null ? $country->id : null,
+                'climate_code_id' => $climateCode != null ? $climateCode->id : null,
+                'sow_date' => $sowDate,
+                'harvest_date' => $harvestDate
+            ]);
+        } else {
+            throw new NoStadiaPlantFoundException(
+                "Can't find a StadiaPlant with the following reference_id: $referenceId"
+            );
+        }
+    }
+
 
     private function mapRangesToCurrentYear($item, $currentDate)
     {
