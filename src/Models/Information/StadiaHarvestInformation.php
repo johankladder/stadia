@@ -5,6 +5,9 @@ namespace JohanKladder\Stadia\Models\Information;
 
 
 use Illuminate\Database\Eloquent\Model;
+use JohanKladder\Stadia\Models\ClimateCode;
+use JohanKladder\Stadia\Models\Country;
+use JohanKladder\Stadia\Models\StadiaPlant;
 
 class StadiaHarvestInformation extends Model
 {
@@ -21,5 +24,20 @@ class StadiaHarvestInformation extends Model
         'sow_date' => 'date',
         'harvest_date' => 'date',
     ];
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function climateCode()
+    {
+        return $this->belongsTo(ClimateCode::class);
+    }
+
+    public function stadiaPlant()
+    {
+        return $this->belongsTo(StadiaPlant::class);
+    }
 
 }
