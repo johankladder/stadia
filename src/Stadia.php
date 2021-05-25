@@ -5,6 +5,7 @@ namespace JohanKladder\Stadia;
 
 
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use JohanKladder\Stadia\Exceptions\NoDurationsException;
@@ -48,7 +49,7 @@ class Stadia
     public function getCalendarRanges(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
         return Cache::remember('calendar-ranges-' . $stadiaPlant->id . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), 60 * 60, function () use ($climateCode, $country, $stadiaPlant) {
-            return $this->calendarRangesFactory($stadiaPlant, $country, $climateCode)->get();
+            return $this->hasManyToLocation($stadiaPlant->calendarRanges(), $country, $climateCode)->get();
         });
     }
 
@@ -99,7 +100,7 @@ class Stadia
 
     public function getDuration(StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
     {
-        $duration = $this->durationsFactory($stadiaLevel, $country, $climateCode)->first();
+        $duration = $this->hasManyToLocation($stadiaLevel->durations(), $country, $climateCode)->first();
         if ($duration != null) {
             return $duration->duration;
         }
@@ -205,22 +206,7 @@ class Stadia
 
     public function getHarvestInformation(StadiaPlant $stadiaPlant, Country $country = null, ClimateCode $climateCode = null): Collection
     {
-        $builder = $stadiaPlant->harvestInformation();
-
-        if ($country != null) {
-            $builder->where('country_id', $country->id);
-        }
-
-        if ($climateCode != null) {
-            $builder->where('climate_code_id', $climateCode->id);
-        }
-
-        if ($climateCode == null && $country == null) {
-            $builder->whereNull('country_id')
-                ->whereNull('climate_code_id');
-        }
-
-        return $builder->get();
+        return $this->hasManyToLocation($stadiaPlant->harvestInformation(), $country, $climateCode)->get();
     }
 
 
@@ -239,45 +225,23 @@ class Stadia
         ])->first();
     }
 
-
-    private function calendarRangesFactory(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
+    private function hasManyToLocation(HasMany $builder, Country $country = null, ClimateCode $climateCode = null): HasMany
     {
-        $globalRanges = $stadiaPlant->calendarRanges()->whereNull('country_id');
-        if ($country) {
-            $countryRelated = $stadiaPlant->calendarRanges()->where('country_id', '=', $country->id);
-
-            if ($climateCode) {
-                $climateRelated = $countryRelated->where('climate_code_id', '=', $climateCode->id);
-                if ($climateRelated->count() > 0) {
-                    return $climateRelated;
-                }
-            }
-
-            if ($countryRelated->count() > 0) {
-                return $countryRelated;
-            }
+        $newBuilder = clone $builder;
+        if ($country != null) {
+            $newBuilder = $newBuilder->where('country_id', $country->id);
         }
-        return $globalRanges;
-    }
 
-    private function durationsFactory(StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
-    {
-        $globalDurations = $stadiaLevel->durations()->whereNull('country_id')->whereNull('climate_code_id');
-        if ($country) {
-            $countryRelated = $stadiaLevel->durations()->where('country_id', '=', $country->id);
-
-            if ($climateCode) {
-                $climateRelated = $countryRelated->where('climate_code_id', '=', $climateCode->id);
-                if ($climateRelated->count() > 0) {
-                    return $climateRelated;
-                }
-            }
-
-            if ($countryRelated->count() > 0) {
-                return $countryRelated;
-            }
+        if ($climateCode != null) {
+            $newBuilder = $newBuilder->where('climate_code_id', $climateCode->id);
         }
-        return $globalDurations;
+
+        if (($climateCode == null && $country == null) || $newBuilder->count() <= 0) {
+            $newBuilder = $builder->whereNull('country_id')
+                ->whereNull('climate_code_id');
+        }
+
+        return $newBuilder;
     }
 
 }
