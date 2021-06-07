@@ -3,11 +3,34 @@
 
 namespace JohanKladder\Stadia\Tests\Models;
 
+use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaPlantCalendarRange;
 use JohanKladder\Stadia\Tests\TestCase;
 
 class StadiaPlantCalendarRangeUnitTest extends TestCase
 {
+
+    /** @test */
+    public function get_country_when_filled()
+    {
+        $country = Country::create();
+        $range = StadiaPlantCalendarRange::create([
+            'range_from' => now(),
+            'range_to' => now(),
+            'country_id' => $country->id
+        ]);
+        $this->assertEquals($country->id, $range->country->id);
+    }
+
+    /** @test */
+    public function get_country_when_not_filled()
+    {
+        $range = StadiaPlantCalendarRange::create([
+            'range_from' => now(),
+            'range_to' => now(),
+        ]);
+        $this->assertNull($range->country);
+    }
 
     public function test_get_ranges()
     {

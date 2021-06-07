@@ -15,7 +15,6 @@ class AddStadiaPlantCalendarRangesTablePlantId extends Migration
     {
         Schema::table('stadia_plant_calendar_ranges', function (Blueprint $table) {
             $table->bigInteger('stadia_plant_id')->nullable();
-
         });
     }
 

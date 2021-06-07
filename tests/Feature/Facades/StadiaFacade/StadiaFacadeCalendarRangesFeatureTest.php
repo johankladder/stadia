@@ -13,7 +13,6 @@ use JohanKladder\Stadia\Tests\TestCase;
 class StadiaFacadeCalendarRangesFeatureTest extends TestCase
 {
 
-
     /** @test */
     public function get_calendar_ranges_of_stadia_plant_when_none()
     {
@@ -23,24 +22,7 @@ class StadiaFacadeCalendarRangesFeatureTest extends TestCase
     }
 
     /** @test */
-    public function get_calendar_ranges_of_reference_when_none()
-    {
-        $stadiaPlant = $this->createStadiaPlant();
-        $items = Stadia::getCalendarRangesWithReference($stadiaPlant->reference_id);
-        $this->assertCount(0, $items);
-    }
-
-    /** @test */
-    public function get_calendar_ranges_of_reference_when_global()
-    {
-        $stadiaPlant = $this->createStadiaPlant();
-        $items = Stadia::getCalendarRangesWithReference($stadiaPlant->reference_id);
-        $this->assertCount(0, $items);
-    }
-
-
-    /** @test */
-    public function get_calendar_ranges_of_stadia_plant_when_globally_set()
+    public function get_calendar_ranges_of_stadia_plant_when_global()
     {
         $stadiaPlant = $this->createStadiaPlant();
         $calendarRange = $this->createCalendarRange($stadiaPlant);
@@ -54,11 +36,20 @@ class StadiaFacadeCalendarRangesFeatureTest extends TestCase
     {
         $country = $this->createCountry();
         $stadiaPlant = $this->createStadiaPlant();
-        $this->createCalendarRange($stadiaPlant);
+        $this->createCalendarRange($stadiaPlant); // Create global range
         $calendarRangeCountry = $this->createCalendarRange($stadiaPlant, $country);
         $items = Stadia::getCalendarRanges($stadiaPlant, $country);
         $this->assertCount(1, $items);
         $this->assertEquals($calendarRangeCountry->id, $items[0]->id);
+    }
+
+
+    /** @test */
+    public function get_calendar_ranges_of_reference_when_none()
+    {
+        $stadiaPlant = $this->createStadiaPlant();
+        $items = Stadia::getCalendarRangesWithReference($stadiaPlant->reference_id);
+        $this->assertCount(0, $items);
     }
 
     /** @test */
