@@ -3,6 +3,7 @@
 namespace JohanKladder\Stadia\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use JohanKladder\Stadia\Models\Information\StadiaLevelInformation;
 
 class StadiaLevel extends Model
 {
@@ -47,6 +48,11 @@ class StadiaLevel extends Model
     public function getSupportedCountries()
     {
         return $this->durations()->whereNotNull('country_id')->get()->groupBy('country_id');
+    }
+
+    public function levelInformation()
+    {
+        return $this->hasMany(StadiaLevelInformation::class);
     }
 
 }

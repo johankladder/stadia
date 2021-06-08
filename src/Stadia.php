@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use JohanKladder\Stadia\Exceptions\NoDurationsException;
+use JohanKladder\Stadia\Exceptions\NoStadiaLevelFoundException;
 use JohanKladder\Stadia\Exceptions\NoStadiaLevelsException;
 use JohanKladder\Stadia\Exceptions\NoStadiaPlantFoundException;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\Information\StadiaHarvestInformation;
+use JohanKladder\Stadia\Models\Information\StadiaLevelInformation;
 use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedPlant;
 use JohanKladder\Stadia\Models\StadiaLevel;
 use JohanKladder\Stadia\Models\StadiaPlant;
@@ -49,7 +51,7 @@ class Stadia
     public function getCalendarRanges(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
     {
         return Cache::remember('calendar-ranges-' . $stadiaPlant->id . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), 60 * 60, function () use ($climateCode, $country, $stadiaPlant) {
-            return $this->hasManyToLocation($stadiaPlant->calendarRanges(), $country, $climateCode)->get();
+            return $this->locationFactory($stadiaPlant->calendarRanges(), $country, $climateCode)->get();
         });
     }
 
@@ -100,7 +102,7 @@ class Stadia
 
     public function getDuration(StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
     {
-        $duration = $this->hasManyToLocation($stadiaLevel->durations(), $country, $climateCode)->first();
+        $duration = $this->locationFactory($stadiaLevel->durations(), $country, $climateCode)->first();
         if ($duration != null) {
             return $duration->duration;
         }
@@ -204,11 +206,35 @@ class Stadia
         }
     }
 
-    public function getHarvestInformation(StadiaPlant $stadiaPlant, Country $country = null, ClimateCode $climateCode = null): Collection
+    public function storeLevelInformation($referenceId, $startDate, $endDate, $countryCode = null, $climateCodeCode = null)
     {
-        return $this->hasManyToLocation($stadiaPlant->harvestInformation(), $country, $climateCode)->get();
+        $stadiaLevel = StadiaLevel::where('reference_id', $referenceId)->first();
+        $country = Country::where('code', $countryCode)->first();
+        $climateCode = ClimateCode::where('code', $climateCodeCode)->first();
+        if($stadiaLevel != null) {
+            StadiaLevelInformation::create([
+                'stadia_level_id' => $stadiaLevel->id,
+                'country_id' => $country != null ? $country->id : null,
+                'climate_code_id' => $climateCode != null ? $climateCode->id : null,
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+        } else {
+            throw new NoStadiaLevelFoundException(
+                "Can't find a StadiaLevel with the following reference_id: $referenceId"
+            );
+        }
     }
 
+    public function getHarvestInformation(StadiaPlant $stadiaPlant, Country $country = null, ClimateCode $climateCode = null): Collection
+    {
+        return $this->locationFactory($stadiaPlant->harvestInformation(), $country, $climateCode)->get();
+    }
+
+    public function getLevelInformation(StadiaLevel $stadiaLevel, Country $country = null, ClimateCode $climateCode = null): Collection
+    {
+        return $this->locationFactory($stadiaLevel->levelInformation(), $country, $climateCode)->get();
+    }
 
     private function mapRangesToCurrentYear($item, $currentDate)
     {
@@ -225,9 +251,10 @@ class Stadia
         ])->first();
     }
 
-    private function hasManyToLocation(HasMany $builder, Country $country = null, ClimateCode $climateCode = null): HasMany
+    private function locationFactory(HasMany $builder, Country $country = null, ClimateCode $climateCode = null): HasMany
     {
         $newBuilder = clone $builder;
+
         if ($country != null) {
             $newBuilder = $newBuilder->where('country_id', $country->id);
         }
