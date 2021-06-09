@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use JohanKladder\Stadia\Exceptions\ClimateCodeNotFoundException;
+use JohanKladder\Stadia\Exceptions\CountryNotFoundException;
 use JohanKladder\Stadia\Exceptions\NoDurationsException;
 use JohanKladder\Stadia\Exceptions\NoStadiaLevelFoundException;
 use JohanKladder\Stadia\Exceptions\NoStadiaLevelsException;
@@ -258,6 +259,19 @@ class Stadia
         );
     }
 
+    public function getCountry($countryCode): Country
+    {
+        $country = Country::where('code', $countryCode)->first();
+
+        if ($country) {
+            return $country;
+        }
+
+        throw new CountryNotFoundException(
+            "Could'nt find a country for given location"
+        );
+    }
+
     private function roundCoordinates($rawCoord)
     {
         $decimal = fmod($rawCoord, 1);
@@ -270,7 +284,7 @@ class Stadia
             $coord = $rawCoord + (0.75 - $decimal);
         }
 
-        if ($decimal >= -0.5 && $decimal  < 0) {
+        if ($decimal >= -0.5 && $decimal < 0) {
             $coord = $rawCoord + (-0.25 - $decimal);
         }
 

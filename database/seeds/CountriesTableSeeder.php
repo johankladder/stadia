@@ -1,5 +1,6 @@
 <?php
 
+namespace JohanKladder\Stadia\Database\Seeds;
 
 use Illuminate\Database\Seeder;
 use JohanKladder\Stadia\Models\Country;
