@@ -11,16 +11,12 @@ use JohanKladder\Stadia\Tests\TestCase;
 class StadiaFacadeGetCountryLocationFeatureTest extends TestCase
 {
 
-    private $amsterdamLatitude = 52.377956;
-    private $amsterdamLongitude = 4.89707;
-
-
     /** @test */
     public function get_country_empty_tables()
     {
         $this->expectException(CountryNotFoundException::class);
         Stadia::getCountry(
-           "NL"
+            "NL"
         );
     }
 
