@@ -238,10 +238,11 @@ class Stadia
         return $this->locationFactory($stadiaLevel->levelInformation(), $country, $climateCode)->get();
     }
 
-    public function getClimateCode($latitude, $longitude)
+    public function getClimateCode($latitude, $longitude): ClimateCode
     {
         $lat = $this->roundCoordinates($latitude);
         $lon = $this->roundCoordinates($longitude);
+
         $koepenLocation = KoepenLocation::where('latitude', $lat)
             ->where('longitude', $lon)->first();
 

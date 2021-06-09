@@ -2,6 +2,8 @@
 
 namespace JohanKladder\Stadia\Tests\Feature\Facades\StadiaFacade;
 
+use JohanKladder\Stadia\Database\Seeds\ClimateCodesTableSeeder;
+use JohanKladder\Stadia\Database\Seeds\KoepenLocationTableSeeder;
 use JohanKladder\Stadia\Exceptions\ClimateCodeNotFoundException;
 use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Models\ClimateCode;
@@ -46,6 +48,19 @@ class StadiaFacadeGetClimateCodeLocationFeatureTest extends TestCase
         );
 
         $this->assertEquals($addedClimateCode->id, $climateCode->id);
+    }
+
+    /** @test */
+    public function get_climate_code_location_happy_flow_when_seeded()
+    {
+        $this->seed(ClimateCodesTableSeeder::class);
+        $this->seed(KoepenLocationTableSeeder::class);
+
+        $foundClimateCode = Stadia::getClimateCode(
+            $this->amsterdamLatitude,
+            $this->amsterdamLongitude
+        );
+        $this->assertEquals($foundClimateCode->code, 'Cfb');
     }
 
     /** @test */
