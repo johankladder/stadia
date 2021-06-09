@@ -8,12 +8,14 @@ use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use JohanKladder\Stadia\Exceptions\ClimateCodeNotFoundException;
 use JohanKladder\Stadia\Exceptions\NoDurationsException;
 use JohanKladder\Stadia\Exceptions\NoStadiaLevelFoundException;
 use JohanKladder\Stadia\Exceptions\NoStadiaLevelsException;
 use JohanKladder\Stadia\Exceptions\NoStadiaPlantFoundException;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
+use JohanKladder\Stadia\Models\Information\KoepenLocation;
 use JohanKladder\Stadia\Models\Information\StadiaHarvestInformation;
 use JohanKladder\Stadia\Models\Information\StadiaLevelInformation;
 use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedPlant;
@@ -211,7 +213,7 @@ class Stadia
         $stadiaLevel = StadiaLevel::where('reference_id', $referenceId)->first();
         $country = Country::where('code', $countryCode)->first();
         $climateCode = ClimateCode::where('code', $climateCodeCode)->first();
-        if($stadiaLevel != null) {
+        if ($stadiaLevel != null) {
             StadiaLevelInformation::create([
                 'stadia_level_id' => $stadiaLevel->id,
                 'country_id' => $country != null ? $country->id : null,
@@ -234,6 +236,48 @@ class Stadia
     public function getLevelInformation(StadiaLevel $stadiaLevel, Country $country = null, ClimateCode $climateCode = null): Collection
     {
         return $this->locationFactory($stadiaLevel->levelInformation(), $country, $climateCode)->get();
+    }
+
+    public function getClimateCode($latitude, $longitude)
+    {
+        $lat = $this->roundCoordinates($latitude);
+        $lon = $this->roundCoordinates($longitude);
+        $koepenLocation = KoepenLocation::where('latitude', $lat)
+            ->where('longitude', $lon)->first();
+
+        if ($koepenLocation) {
+            $climateCode = ClimateCode::where('code', $koepenLocation->code)->first();
+            if ($climateCode) {
+                return $climateCode;
+            }
+        }
+
+        throw new ClimateCodeNotFoundException(
+            "Could'nt find a climate code for given location"
+        );
+    }
+
+    private function roundCoordinates($rawCoord)
+    {
+        $decimal = fmod($rawCoord, 1);
+
+        if ($decimal >= 0 && $decimal <= 0.5) {
+            $coord = $rawCoord + (0.25 - $decimal);
+        }
+
+        if ($decimal > 0.5 && $decimal < 1) {
+            $coord = $rawCoord + (0.75 - $decimal);
+        }
+
+        if ($decimal >= -0.5 && $decimal  < 0) {
+            $coord = $rawCoord + (-0.25 - $decimal);
+        }
+
+        if ($decimal > -1.00 && $decimal < -0.5) {
+            $coord = $rawCoord + (-0.75 - $decimal);
+        }
+
+        return $coord;
     }
 
     private function mapRangesToCurrentYear($item, $currentDate)
