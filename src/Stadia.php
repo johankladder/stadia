@@ -52,9 +52,12 @@ class Stadia
         );
     }
 
-    public function getCalendarRanges(StadiaPlant $stadiaPlant, ?LocationWrapper $locationWrapper = null)
+    public function getCalendarRanges(StadiaPlant $stadiaPlant, ?LocationWrapper $locationWrapper = null, ?Country $country = null, ?ClimateCode $climateCode = null)
     {
-        [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
+        if ($country == null && $climateCode == null) {
+            [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
+        }
+
         return Cache::remember('calendar-ranges-' . $stadiaPlant->id . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), 60 * 60, function () use ($locationWrapper, $stadiaPlant) {
             return $this->locationFactory($stadiaPlant->calendarRanges(), $locationWrapper)->get();
         });
@@ -62,10 +65,11 @@ class Stadia
 
     public function getCalendarRangesOf(Collection $stadiaPlants, ?LocationWrapper $locationWrapper = null)
     {
-        return $stadiaPlants->map(function ($stadiaPlant) use ($locationWrapper) {
+        [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
+        return $stadiaPlants->map(function ($stadiaPlant) use ($climateCode, $country, $locationWrapper) {
             return [
                 'reference_id' => $stadiaPlant->reference_id,
-                'ranges' => $this->getCalendarRanges($stadiaPlant, $locationWrapper)
+                'ranges' => $this->getCalendarRanges($stadiaPlant, $locationWrapper, $country, $climateCode)
             ];
         });
     }
@@ -136,10 +140,11 @@ class Stadia
 
     public function getSowable(Collection $referenceItems, CarbonInterface $currentDate, ?LocationWrapper $locationWrapper = null): Collection
     {
-        return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($locationWrapper, $currentDate) {
+        [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
+        return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($climateCode, $country, $locationWrapper, $currentDate) {
             $stadiaPlant = $this->getStadiaPlantWithReference($referenceItem);
             if ($stadiaPlant != null) {
-                $ranges = $this->getCalendarRanges($stadiaPlant, $locationWrapper)
+                $ranges = $this->getCalendarRanges($stadiaPlant, $locationWrapper, $country, $climateCode)
                     ->map(fn($item) => $this->mapRangesToCurrentYear($item, $currentDate))
                     ->where('range_from', '<=', $currentDate->toDateTime())
                     ->where('range_to', '>=', $currentDate->toDateTime());
@@ -159,10 +164,11 @@ class Stadia
 
     public function getSowableFromDate(Collection $referenceItems, CarbonInterface $currentDate, ?LocationWrapper $locationWrapper = null)
     {
-        return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($locationWrapper, $currentDate) {
+        [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
+        return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($climateCode, $country, $locationWrapper, $currentDate) {
             $stadiaPlant = $this->getStadiaPlantWithReference($referenceItem);
             if ($stadiaPlant != null) {
-                $ranges = $this->getCalendarRanges($stadiaPlant, $locationWrapper)
+                $ranges = $this->getCalendarRanges($stadiaPlant, $locationWrapper, $country, $climateCode)
                     ->map(fn($item) => $this->mapRangesToCurrentYear($item, $currentDate));
 
                 if ($ranges->count() > 0) {
