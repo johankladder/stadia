@@ -6,12 +6,16 @@ namespace JohanKladder\Stadia\Tests\Feature\Http\Controllers\Api;
 
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
+use JohanKladder\Stadia\Models\Information\KoepenLocation;
 use JohanKladder\Stadia\Models\StadiaPlant;
 use JohanKladder\Stadia\Models\StadiaPlantCalendarRange;
 use JohanKladder\Stadia\Tests\TestCase;
 
 class StadiaApiControllerTest extends TestCase
 {
+
+    private $latitude = -89.75;
+    private $longitude = -179.75;
 
     /** @test */
     public function get_all_calendar_ranges_successful_empty()
@@ -70,7 +74,7 @@ class StadiaApiControllerTest extends TestCase
     {
         $country = $this->createCountry();
         $climateCode = $this->createClimateCode();
-        $response = $this->get("/stadia/api/calendar/" . $country->code . "/" . $climateCode->code);
+        $response = $this->get("/stadia/api/calendar/" . $country->code . "/" . $this->latitude . "/" . $this->longitude);
         $response->assertOk();
         $result = $response->json()['data'];
         $this->assertEmpty($result);
@@ -83,7 +87,7 @@ class StadiaApiControllerTest extends TestCase
         $country = $this->createCountry();
         $climateCode = $this->createClimateCode();
         $calendarRange = $this->createCalendarRanges($stadiaPlant, $country, $climateCode);
-        $response = $this->get("/stadia/api/calendar/" . $country->code . "/" . $climateCode->code);
+        $response = $this->get("/stadia/api/calendar/" . $country->code . "/" . $this->latitude . "/" . $this->longitude);
         $response->assertOk();
         $result = $response->json()['data'];
 
@@ -146,6 +150,11 @@ class StadiaApiControllerTest extends TestCase
 
     private function createClimateCode()
     {
+        KoepenLocation::firstOrCreate([
+            'latitude' => -89.75,
+            'longitude' => -179.75,
+            'code' => 'Code'
+        ]);
         return ClimateCode::create([
             'code' => 'Code'
         ]);

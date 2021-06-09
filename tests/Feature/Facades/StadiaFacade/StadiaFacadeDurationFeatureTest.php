@@ -7,9 +7,11 @@ use JohanKladder\Stadia\Exceptions\NoStadiaLevelsException;
 use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
+use JohanKladder\Stadia\Models\Information\KoepenLocation;
 use JohanKladder\Stadia\Models\StadiaLevel;
 use JohanKladder\Stadia\Models\StadiaLevelDuration;
 use JohanKladder\Stadia\Models\StadiaPlant;
+use JohanKladder\Stadia\Models\Wrappers\LocationWrapper;
 use JohanKladder\Stadia\Tests\TestCase;
 
 class StadiaFacadeDurationFeatureTest extends TestCase
@@ -40,7 +42,9 @@ class StadiaFacadeDurationFeatureTest extends TestCase
         $stadiaLevel = $this->createStadiaLevel();
         $globalDuration = $this->createStadiaDuration($stadiaLevel, 5);
         $countryDuration = $this->createStadiaDuration($stadiaLevel, 10, $country);
-        $duration = Stadia::getDuration($stadiaLevel, $country);
+        $duration = Stadia::getDuration($stadiaLevel, new LocationWrapper(
+            $country->code
+        ));
         $this->assertEquals($countryDuration->duration, $duration);
         $this->assertNotEquals($globalDuration->duration, $duration);
     }
@@ -53,7 +57,11 @@ class StadiaFacadeDurationFeatureTest extends TestCase
         $stadiaLevel = $this->createStadiaLevel();
         $countryDuration = $this->createStadiaDuration($stadiaLevel, 5, $country);
         $climateDuration = $this->createStadiaDuration($stadiaLevel, 10, $country, $climate);
-        $duration = Stadia::getDuration($stadiaLevel, $country, $climate);
+        $duration = Stadia::getDuration($stadiaLevel, new LocationWrapper(
+            $country->code,
+            -89.75,
+            -179.75,
+        ));
         $this->assertEquals($climateDuration->duration, $duration);
         $this->assertNotEquals($countryDuration->duration, $duration);
     }
@@ -126,6 +134,12 @@ class StadiaFacadeDurationFeatureTest extends TestCase
 
     private function createClimateCode()
     {
+        KoepenLocation::firstOrCreate([
+            'latitude' => -89.75,
+            'longitude' => -179.75,
+            'code' => 'test'
+        ]);
+
         return ClimateCode::create([
             'code' => 'test'
         ]);

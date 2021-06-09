@@ -8,8 +8,10 @@ use JohanKladder\Stadia\Exceptions\NoStadiaPlantFoundException;
 use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
+use JohanKladder\Stadia\Models\Information\KoepenLocation;
 use JohanKladder\Stadia\Models\Information\StadiaHarvestInformation;
 use JohanKladder\Stadia\Models\StadiaPlant;
+use JohanKladder\Stadia\Models\Wrappers\LocationWrapper;
 use JohanKladder\Stadia\Tests\TestCase;
 
 class StadiaFacadeHarvestInformationFeatureTest extends TestCase
@@ -64,6 +66,12 @@ class StadiaFacadeHarvestInformationFeatureTest extends TestCase
             'code' => 'NL'
         ]);
 
+        KoepenLocation::firstOrCreate([
+            'latitude' => -89.75,
+            'longitude' => -179.75,
+            'code' => 'Cc'
+        ]);
+
         $climateCode = ClimateCode::create([
             'code' => 'Cc'
         ]);
@@ -72,8 +80,11 @@ class StadiaFacadeHarvestInformationFeatureTest extends TestCase
             $stadiaPlant->reference_id,
             now(),
             now(),
-            $country->code,
-            $climateCode->code
+            new LocationWrapper(
+                $country->code,
+                -89.75,
+                -179.75,
+            )
         );
 
         $this->assertDatabaseHas('stadia_harvest_information', [
@@ -112,6 +123,12 @@ class StadiaFacadeHarvestInformationFeatureTest extends TestCase
         $country = Country::create([
             'code' => 'NL'
         ]);
+
+        KoepenLocation::firstOrCreate([
+            'latitude' => -89.75,
+            'longitude' => -179.75,
+            'code' => 'CC'
+        ]);
         $climateCode = ClimateCode::create([
             'code' => "CC"
         ]);
@@ -122,7 +139,14 @@ class StadiaFacadeHarvestInformationFeatureTest extends TestCase
             'country_id' => $country->id,
             'climate_code_id' => $climateCode->id
         ]);
-        $items = Stadia::getHarvestInformation($stadiaPlant, $country, $climateCode);
+        $items = Stadia::getHarvestInformation(
+            $stadiaPlant,
+            new LocationWrapper(
+                $country->code,
+                -89.75,
+                -179.75,
+            )
+        );
         $this->assertCount(1, $items);
     }
 
@@ -163,6 +187,12 @@ class StadiaFacadeHarvestInformationFeatureTest extends TestCase
         $country = Country::create([
             'code' => 'NL'
         ]);
+
+        KoepenLocation::firstOrCreate([
+            'latitude' => -89.75,
+            'longitude' => -179.75,
+            'code' => 'CC'
+        ]);
         $climateCode = ClimateCode::create([
             'code' => "CC"
         ]);
@@ -180,7 +210,14 @@ class StadiaFacadeHarvestInformationFeatureTest extends TestCase
             'harvest_date' => now()
         ]);
 
-        $items = Stadia::getHarvestInformation($stadiaPlant, $country, $climateCode);
+        $items = Stadia::getHarvestInformation(
+            $stadiaPlant,
+            new LocationWrapper(
+                $country->code,
+                -89.75,
+                -179.75,
+            )
+        );
         $this->assertCount(1, $items);
         $this->assertEquals($correct->id, $items[0]->id);
     }

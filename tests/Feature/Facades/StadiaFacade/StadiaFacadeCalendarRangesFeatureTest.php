@@ -6,12 +6,15 @@ use Illuminate\Support\Collection;
 use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
+use JohanKladder\Stadia\Models\Information\KoepenLocation;
 use JohanKladder\Stadia\Models\StadiaPlant;
 use JohanKladder\Stadia\Models\StadiaPlantCalendarRange;
+use JohanKladder\Stadia\Models\Wrappers\LocationWrapper;
 use JohanKladder\Stadia\Tests\TestCase;
 
 class StadiaFacadeCalendarRangesFeatureTest extends TestCase
 {
+
 
     /** @test */
     public function get_calendar_ranges_of_stadia_plant_when_none()
@@ -38,7 +41,7 @@ class StadiaFacadeCalendarRangesFeatureTest extends TestCase
         $stadiaPlant = $this->createStadiaPlant();
         $this->createCalendarRange($stadiaPlant); // Create global range
         $calendarRangeCountry = $this->createCalendarRange($stadiaPlant, $country);
-        $items = Stadia::getCalendarRanges($stadiaPlant, $country);
+        $items = Stadia::getCalendarRanges($stadiaPlant, new LocationWrapper($country->code));
         $this->assertCount(1, $items);
         $this->assertEquals($calendarRangeCountry->id, $items[0]->id);
     }
@@ -60,7 +63,11 @@ class StadiaFacadeCalendarRangesFeatureTest extends TestCase
         $stadiaPlant = $this->createStadiaPlant();
         $this->createCalendarRange($stadiaPlant, $country);
         $calendarRangeClimate = $this->createCalendarRange($stadiaPlant, $country, $climate);
-        $items = Stadia::getCalendarRanges($stadiaPlant, $country, $climate);
+        $items = Stadia::getCalendarRanges($stadiaPlant, new LocationWrapper(
+            $country->code,
+            -89.75,
+            -179.75
+        ));
         $this->assertCount(1, $items);
         $this->assertEquals($calendarRangeClimate->id, $items[0]->id);
     }
@@ -71,7 +78,9 @@ class StadiaFacadeCalendarRangesFeatureTest extends TestCase
         $country = $this->createCountry();
         $stadiaPlant = $this->createStadiaPlant();
         $calendarRangeCountry = $this->createCalendarRange($stadiaPlant, $country);
-        $items = Stadia::getCalendarRanges($stadiaPlant, $country);
+        $items = Stadia::getCalendarRanges($stadiaPlant, new LocationWrapper(
+            $country->code
+        ));
         $this->assertCount(1, $items);
         $this->assertEquals($calendarRangeCountry->id, $items[0]->id);
     }
@@ -83,7 +92,9 @@ class StadiaFacadeCalendarRangesFeatureTest extends TestCase
         $stadiaPlant = $this->createStadiaPlant();
         $calendarRange = $this->createCalendarRange($stadiaPlant);
         $this->createCalendarRange($stadiaPlant, $this->createCountry());
-        $items = Stadia::getCalendarRanges($stadiaPlant, $country);
+        $items = Stadia::getCalendarRanges($stadiaPlant, new LocationWrapper(
+            $country->code
+        ));
         $this->assertCount(1, $items);
         $this->assertEquals($calendarRange->id, $items[0]->id);
     }
@@ -143,6 +154,11 @@ class StadiaFacadeCalendarRangesFeatureTest extends TestCase
 
     private function createClimateCode()
     {
+        KoepenLocation::firstOrCreate([
+            'latitude' => -89.75,
+            'longitude' => -179.75,
+            'code' => 'test'
+        ]);
         return ClimateCode::create([
             'code' => 'test'
         ]);

@@ -22,6 +22,7 @@ use JohanKladder\Stadia\Models\Information\StadiaLevelInformation;
 use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedPlant;
 use JohanKladder\Stadia\Models\StadiaLevel;
 use JohanKladder\Stadia\Models\StadiaPlant;
+use JohanKladder\Stadia\Models\Wrappers\LocationWrapper;
 
 class Stadia
 {
@@ -40,49 +41,51 @@ class Stadia
         });
     }
 
-    public function getCalendarRangesWithReference($referenceId, $country = null, $climateCode = null)
+    public function getCalendarRangesWithReference($referenceId, ?LocationWrapper $locationWrapper = null)
     {
         $stadiaPlant = StadiaPlant::where('reference_id', $referenceId)->first();
         if ($stadiaPlant) {
-            return $this->getCalendarRanges($stadiaPlant, $country, $climateCode);
+            return $this->getCalendarRanges($stadiaPlant, $locationWrapper);
         }
         throw new NoStadiaPlantFoundException(
             "Can't find a StadiaPlant with the following reference_id: $referenceId"
         );
     }
 
-    public function getCalendarRanges(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
+    public function getCalendarRanges(StadiaPlant $stadiaPlant, ?LocationWrapper $locationWrapper = null)
     {
-        return Cache::remember('calendar-ranges-' . $stadiaPlant->id . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), 60 * 60, function () use ($climateCode, $country, $stadiaPlant) {
-            return $this->locationFactory($stadiaPlant->calendarRanges(), $country, $climateCode)->get();
+        [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
+        return Cache::remember('calendar-ranges-' . $stadiaPlant->id . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), 60 * 60, function () use ($locationWrapper, $stadiaPlant) {
+            return $this->locationFactory($stadiaPlant->calendarRanges(), $locationWrapper)->get();
         });
     }
 
-    public function getCalendarRangesOf(Collection $stadiaPlants, $country = null, $climateCode = null)
+    public function getCalendarRangesOf(Collection $stadiaPlants, ?LocationWrapper $locationWrapper = null)
     {
-        return $stadiaPlants->map(function ($stadiaPlant) use ($climateCode, $country) {
+        return $stadiaPlants->map(function ($stadiaPlant) use ($locationWrapper) {
             return [
                 'reference_id' => $stadiaPlant->reference_id,
-                'ranges' => $this->getCalendarRanges($stadiaPlant, $country, $climateCode)
+                'ranges' => $this->getCalendarRanges($stadiaPlant, $locationWrapper)
             ];
         });
     }
 
-    public function getCalendarRangesOfAllPlants($country = null, $climateCode = null)
+    public function getCalendarRangesOfAllPlants(?LocationWrapper $locationWrapper = null)
     {
-        return Cache::remember('calendar-ranges-all' . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), (60 * 60) * 24, function () use ($climateCode, $country) {
-            return $this->getCalendarRangesOf(StadiaPlant::all(), $country, $climateCode);
+        [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
+        return Cache::remember('calendar-ranges-all' . ($country != null ? '-' . $country->id : '') . ($climateCode != null ? '-' . $climateCode->id : ''), (60 * 60) * 24, function () use ($locationWrapper) {
+            return $this->getCalendarRangesOf(StadiaPlant::all(), $locationWrapper);
         });
     }
 
-    public function getGrowTime(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
+    public function getGrowTime(StadiaPlant $stadiaPlant, ?LocationWrapper $locationWrapper = null)
     {
         $levels = $stadiaPlant->stadiaLevels;
         if ($levels->count() > 0) {
             $durations = 0;
             foreach ($levels as $level) {
                 try {
-                    $duration = $this->getDuration($level, $country, $climateCode);
+                    $duration = $this->getDuration($level, $locationWrapper);
                 } catch (NoDurationsException $exception) {
                     $duration = 0;
                 } finally {
@@ -97,15 +100,15 @@ class Stadia
         );
     }
 
-    public function getCheckupDate(StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
+    public function getCheckupDate(StadiaLevel $stadiaLevel, ?LocationWrapper $locationWrapper = null)
     {
-        $duration = $this->getDuration($stadiaLevel, $country, $climateCode);
+        $duration = $this->getDuration($stadiaLevel, $locationWrapper);
         return now()->addDays($duration)->roundDay();
     }
 
-    public function getDuration(StadiaLevel $stadiaLevel, $country = null, $climateCode = null)
+    public function getDuration(StadiaLevel $stadiaLevel, ?LocationWrapper $locationWrapper = null)
     {
-        $duration = $this->locationFactory($stadiaLevel->durations(), $country, $climateCode)->first();
+        $duration = $this->locationFactory($stadiaLevel->durations(), $locationWrapper)->first();
         if ($duration != null) {
             return $duration->duration;
         }
@@ -114,13 +117,13 @@ class Stadia
         );
     }
 
-    public function getDurations(StadiaPlant $stadiaPlant, $country = null, $climateCode = null)
+    public function getDurations(StadiaPlant $stadiaPlant, ?LocationWrapper $locationWrapper = null)
     {
         $levels = $stadiaPlant->stadiaLevels;
         if ($levels->count() > 0) {
             $collection = Collection::make();
             foreach ($levels as $level) {
-                $duration = $this->getDuration($level, $country, $climateCode);
+                $duration = $this->getDuration($level, $locationWrapper);
                 $level->duration = $duration;
                 $collection->add($level);
             }
@@ -131,12 +134,12 @@ class Stadia
         );
     }
 
-    public function getSowable(Collection $referenceItems, CarbonInterface $currentDate, $country = null, $climateCode = null): Collection
+    public function getSowable(Collection $referenceItems, CarbonInterface $currentDate, ?LocationWrapper $locationWrapper = null): Collection
     {
-        return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($climateCode, $country, $currentDate) {
+        return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($locationWrapper, $currentDate) {
             $stadiaPlant = $this->getStadiaPlantWithReference($referenceItem);
             if ($stadiaPlant != null) {
-                $ranges = $this->getCalendarRanges($stadiaPlant, $country, $climateCode)
+                $ranges = $this->getCalendarRanges($stadiaPlant, $locationWrapper)
                     ->map(fn($item) => $this->mapRangesToCurrentYear($item, $currentDate))
                     ->where('range_from', '<=', $currentDate->toDateTime())
                     ->where('range_to', '>=', $currentDate->toDateTime());
@@ -154,12 +157,12 @@ class Stadia
         });
     }
 
-    public function getSowableFromDate(Collection $referenceItems, CarbonInterface $currentDate, $country = null, $climateCode = null)
+    public function getSowableFromDate(Collection $referenceItems, CarbonInterface $currentDate, ?LocationWrapper $locationWrapper = null)
     {
-        return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($currentDate, $climateCode, $country) {
+        return $referenceItems->filter(function (StadiaRelatedPlant $referenceItem) use ($locationWrapper, $currentDate) {
             $stadiaPlant = $this->getStadiaPlantWithReference($referenceItem);
             if ($stadiaPlant != null) {
-                $ranges = $this->getCalendarRanges($stadiaPlant, $country, $climateCode)
+                $ranges = $this->getCalendarRanges($stadiaPlant, $locationWrapper)
                     ->map(fn($item) => $this->mapRangesToCurrentYear($item, $currentDate));
 
                 if ($ranges->count() > 0) {
@@ -189,11 +192,10 @@ class Stadia
     }
 
 
-    public function storeHarvestInformation($referenceId, $sowDate, $harvestDate, $countryCode = null, $climateCodeCode = null)
+    public function storeHarvestInformation($referenceId, $sowDate, $harvestDate, ?LocationWrapper $locationWrapper = null)
     {
         $stadiaPlant = StadiaPlant::where('reference_id', $referenceId)->first();
-        $country = Country::where('code', $countryCode)->first();
-        $climateCode = ClimateCode::where('code', $climateCodeCode)->first();
+        [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
         if ($stadiaPlant != null) {
             StadiaHarvestInformation::create([
                 'stadia_plant_id' => $stadiaPlant->id,
@@ -209,11 +211,10 @@ class Stadia
         }
     }
 
-    public function storeLevelInformation($referenceId, $startDate, $endDate, $countryCode = null, $climateCodeCode = null)
+    public function storeLevelInformation($referenceId, $startDate, $endDate, ?LocationWrapper $locationWrapper = null)
     {
         $stadiaLevel = StadiaLevel::where('reference_id', $referenceId)->first();
-        $country = Country::where('code', $countryCode)->first();
-        $climateCode = ClimateCode::where('code', $climateCodeCode)->first();
+        [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
         if ($stadiaLevel != null) {
             StadiaLevelInformation::create([
                 'stadia_level_id' => $stadiaLevel->id,
@@ -229,14 +230,14 @@ class Stadia
         }
     }
 
-    public function getHarvestInformation(StadiaPlant $stadiaPlant, Country $country = null, ClimateCode $climateCode = null): Collection
+    public function getHarvestInformation(StadiaPlant $stadiaPlant, ?LocationWrapper $locationWrapper = null): Collection
     {
-        return $this->locationFactory($stadiaPlant->harvestInformation(), $country, $climateCode)->get();
+        return $this->locationFactory($stadiaPlant->harvestInformation(), $locationWrapper)->get();
     }
 
-    public function getLevelInformation(StadiaLevel $stadiaLevel, Country $country = null, ClimateCode $climateCode = null): Collection
+    public function getLevelInformation(StadiaLevel $stadiaLevel, ?LocationWrapper $locationWrapper = null): Collection
     {
-        return $this->locationFactory($stadiaLevel->levelInformation(), $country, $climateCode)->get();
+        return $this->locationFactory($stadiaLevel->levelInformation(), $locationWrapper)->get();
     }
 
     public function getClimateCode($latitude, $longitude): ClimateCode
@@ -310,8 +311,11 @@ class Stadia
         ])->first();
     }
 
-    private function locationFactory(HasMany $builder, Country $country = null, ClimateCode $climateCode = null): HasMany
+    private function locationFactory(HasMany $builder, ?LocationWrapper $locationWrapper = null): HasMany
     {
+
+        [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
+
         $newBuilder = clone $builder;
 
         if ($country != null) {
@@ -328,6 +332,30 @@ class Stadia
         }
 
         return $newBuilder;
+    }
+
+    private function getLocationInformation(?LocationWrapper $locationWrapper = null)
+    {
+        $countryCode = $locationWrapper ? $locationWrapper->countryCode : null;
+        $latitude = $locationWrapper ? $locationWrapper->latitude : null;
+        $longitude = $locationWrapper ? $locationWrapper->longitude : null;
+
+        try {
+            $country = $this->getCountry($countryCode);
+
+        } catch (CountryNotFoundException $exception) {
+            $country = null;
+        }
+
+        try {
+            $climateCode = $this->getClimateCode($latitude, $longitude);
+        } catch (ClimateCodeNotFoundException $exception) {
+            $climateCode = null;
+        }
+
+        return [
+            $country, $climateCode
+        ];
     }
 
 }

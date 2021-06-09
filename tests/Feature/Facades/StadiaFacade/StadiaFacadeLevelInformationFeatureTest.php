@@ -8,8 +8,10 @@ use JohanKladder\Stadia\Exceptions\NoStadiaLevelFoundException;
 use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
+use JohanKladder\Stadia\Models\Information\KoepenLocation;
 use JohanKladder\Stadia\Models\Information\StadiaLevelInformation;
 use JohanKladder\Stadia\Models\StadiaLevel;
+use JohanKladder\Stadia\Models\Wrappers\LocationWrapper;
 use JohanKladder\Stadia\Tests\TestCase;
 
 class StadiaFacadeLevelInformationFeatureTest extends TestCase
@@ -53,6 +55,13 @@ class StadiaFacadeLevelInformationFeatureTest extends TestCase
         $country = Country::create([
             'code' => 'NL'
         ]);
+
+        KoepenLocation::firstOrCreate([
+            'latitude' => -89.75,
+            'longitude' => -179.75,
+            'code' => 'Ca'
+        ]);
+
         $climateCode = ClimateCode::create([
             'code' => 'Ca'
         ]);
@@ -61,8 +70,11 @@ class StadiaFacadeLevelInformationFeatureTest extends TestCase
             1,
             now(),
             now(),
-            $country->code,
-            $climateCode->code
+            new LocationWrapper(
+                $country->code,
+                -89.75,
+                -179.75,
+            )
         );
 
         $this->assertDatabaseHas('stadia_level_information', [
@@ -111,7 +123,12 @@ class StadiaFacadeLevelInformationFeatureTest extends TestCase
             'country_id' => $country->id,
             'climate_code_id' => $climateCode->id
         ]);
-        $items = Stadia::getLevelInformation($stadiaLevel, $country, $climateCode);
+        $items = Stadia::getLevelInformation($stadiaLevel,
+            new LocationWrapper(
+                $country->code,
+                -89.75,
+                -179.75,
+            ));
         $this->assertCount(1, $items);
     }
 
@@ -169,7 +186,12 @@ class StadiaFacadeLevelInformationFeatureTest extends TestCase
             'end_date' => now()
         ]);
 
-        $items = Stadia::getLevelInformation($stadiaLevel, $country, $climateCode);
+        $items = Stadia::getLevelInformation($stadiaLevel,
+            new LocationWrapper(
+                $country->code,
+                -89.75,
+                -179.75,
+            ));
         $this->assertCount(1, $items);
         $this->assertEquals($correct->id, $items[0]->id);
     }
