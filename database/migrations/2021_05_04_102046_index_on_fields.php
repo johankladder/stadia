@@ -29,6 +29,9 @@ class IndexOnFields extends Migration
         });
 
         Schema::table('stadia_plant_calendar_ranges', function (Blueprint $table) {
+            $table->unsignedBigInteger('country_id')->nullable()->change();
+            $table->unsignedBigInteger('climate_code_id')->nullable()->change();
+
             $table->foreign('country_id')->references('id')->on('stadia_countries');
             $table->foreign('climate_code_id')->references('id')->on('climate_codes');
         });
