@@ -14,9 +14,13 @@ After installation run `php artisan migrate`
 After migrating the database, please run the following commands to publish the seeders: `php artisan vendor:publish --tag=stadia-seeds`
 and perform a `composer dump-autoload` to reload the newly added resources.
 
-Run the seeder by the following commands: 
-`php artisan db:seed --class=CountriesTableSeeder`
-`php artisan db:seed --class=ClimateCodesTableSeeder`
+Also publish the needed datasets after the migration for stadia with the following command:
+- `php artisan vendor:publish --tag=stadia-datasets`
+
+Run the seeders by the following commands: 
+- `php artisan db:seed --class=JohanKladder\\Stadia\\Database\\Seeds\\CountriesTableSeeder`
+- `php artisan db:seed --class=JohanKladder\\Stadia\\Database\\Seeds\\ClimateCodesTableSeeder`
+- `php artisan db:seed --class=JohanKladder\\Stadia\\Database\\Seeds\\KoepenLocationTableSeeder`
 
 ### Sync existing plants and levels
 In your application you can now access the backend of the stadia environment. Go to `/stadia` to see it. Before you 

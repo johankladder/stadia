@@ -2,6 +2,7 @@
 
 namespace JohanKladder\Stadia\Tests\Feature\Facades\StadiaFacade;
 
+
 use JohanKladder\Stadia\Database\Seeds\ClimateCodesTableSeeder;
 use JohanKladder\Stadia\Database\Seeds\KoepenLocationTableSeeder;
 use JohanKladder\Stadia\Exceptions\ClimateCodeNotFoundException;
@@ -9,6 +10,7 @@ use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Information\KoepenLocation;
 use JohanKladder\Stadia\Tests\TestCase;
+
 
 class StadiaFacadeGetClimateCodeLocationFeatureTest extends TestCase
 {

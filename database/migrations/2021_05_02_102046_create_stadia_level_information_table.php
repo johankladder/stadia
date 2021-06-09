@@ -25,7 +25,7 @@ class CreateStadiaLevelInformationTable extends Migration
 
             $table->foreignId('country_id')
                 ->nullable()
-                ->constrained()
+                ->constrained('stadia_countries')
                 ->onDelete('cascade');
 
             $table->foreignId('climate_code_id')
