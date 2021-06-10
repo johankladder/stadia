@@ -6,6 +6,7 @@ use ConsoleTVs\Charts\Registrar as Charts;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use JohanKladder\Stadia\Charts\HarvestChart;
+use JohanKladder\Stadia\Charts\LevelChart;
 
 class StadiaPackageServiceProvider extends ServiceProvider
 {
@@ -22,7 +23,8 @@ class StadiaPackageServiceProvider extends ServiceProvider
     public function boot(Charts $charts)
     {
         $charts->register([
-            HarvestChart::class
+            HarvestChart::class,
+            LevelChart::class
         ]);
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
