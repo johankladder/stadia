@@ -431,9 +431,12 @@ class Stadia
      */
     private function locationFactory(HasMany $builder, ?LocationWrapper $locationWrapper = null): HasMany
     {
-
         [$country, $climateCode] = $this->getLocationInformation($locationWrapper);
+        return $this->locationFactoryDefined($builder, $country, $climateCode);
+    }
 
+    public function locationFactoryDefined(HasMany $builder, ?Country $country = null, ?ClimateCode $climateCode = null, bool $canBeEmpty = false)
+    {
         $newBuilder = clone $builder;
 
         if ($country != null) {
@@ -444,9 +447,11 @@ class Stadia
             $newBuilder = $newBuilder->where('climate_code_id', $climateCode->id);
         }
 
-        if (($climateCode == null && $country == null) || $newBuilder->count() <= 0) {
-            $newBuilder = $builder->whereNull('country_id')
-                ->whereNull('climate_code_id');
+        if (!$canBeEmpty) {
+            if (($climateCode == null && $country == null) || $newBuilder->count() <= 0) {
+                $newBuilder = $builder->whereNull('country_id')
+                    ->whereNull('climate_code_id');
+            }
         }
 
         return $newBuilder;

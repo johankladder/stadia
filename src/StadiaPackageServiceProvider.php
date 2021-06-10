@@ -24,7 +24,7 @@ class StadiaPackageServiceProvider extends ServiceProvider
     {
         $charts->register([
             HarvestChart::class,
-            LevelChart::class
+            LevelChart::class,
         ]);
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
@@ -77,7 +77,7 @@ class StadiaPackageServiceProvider extends ServiceProvider
         ], 'stadia-seeds');
 
         $this->publishes([
-            __DIR__.'/../database/seeds/datasets/' => database_path('seeds/datasets')
+            __DIR__ . '/../database/seeds/datasets/' => database_path('seeds/datasets')
         ], 'stadia-datasets');
     }
 

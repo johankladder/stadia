@@ -4,6 +4,7 @@ namespace JohanKladder\Stadia\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Http\Requests\CalendarRangeRequest;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
@@ -41,8 +42,24 @@ class CalendarController extends Controller
             'plant' => $stadiaPlant,
             'selectedCalendar' => $selectedCalendar->count() > 0 ? $selectedCalendar : $stadiaPlant->calendarRanges()->whereNull('country_id')->get(),
             'selectedCountry' => $country,
-            'selectedClimateCode' => $climateCode
+            'selectedClimateCode' => $climateCode,
+            'scatterInformation' => $this->getScatterInformation(
+                $stadiaPlant,
+                $country,
+                $climateCode
+            )
         ]);
+    }
+
+    private function getScatterInformation(StadiaPlant $stadiaPlant, ?Country $country, ?ClimateCode $climateCode)
+    {
+        $entries = Stadia::locationFactoryDefined($stadiaPlant->harvestInformation(), $country, $climateCode, true)->get();
+        return $entries->map(function ($item) {
+            return [
+                'x' => $item->sow_date->dayOfYear,
+                'y' => $item->harvest_date->dayOfYear
+            ];
+        });
     }
 
     public function storeCalendarRange(CalendarRangeRequest $request, StadiaPlant $stadiaPlant)

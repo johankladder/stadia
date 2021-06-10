@@ -248,7 +248,7 @@
 
 @endsection
 
-@section('title-side', 'Show calendar')
+@section('title-side', 'Check calendar ranges')
 @section('content-side')
     <div>
         <div>
@@ -341,21 +341,91 @@
             </div>
 
             {{-- Show the scatter plot of the sowing to harvest ratio:  --}}
+            <div class="card border-0 shadow-lg">
+                <div class="">
 
-            @if($selectedCountry)
-                <div class="card">
-                    <div class="card-header">
-                        Scatter plot of this plant in this country:
-                    </div>
-                    <div class="card-body">
+                    @if(count($scatterInformation) <= 0)
+                        <div class="alert alert-danger" role="alert">
+                            Not information gathered yet...
+                        </div>
+                    @endif
+
+                    @if(count($scatterInformation) > 0 && count($scatterInformation) < 100)
+                        <div class="alert alert-warning" role="alert">
+                            Not enough information gathered yet...
+                        </div>
+                    @endif
+
+                    <canvas class="p-3" id="chart-calendar" height="100" width="100%">
+                    </canvas>
+
+
+                    <div class="alert alert-secondary m-3" role="alert">
+                        Found {{count($scatterInformation)}} entries
                     </div>
                 </div>
-            @endif
+            </div>
 
         @endif
     </div>
 
+    <script>
+        var data = <?php echo $scatterInformation; ?>;
+        var lineDate = [];
+        var barChartData = {
+            datasets: [
+                {
+                    type: 'scatter',
+                    label: 'Entries',
+                    backgroundColor: "red",
+                    data: data,
+                    order: 2,
+                },
+                {
+                    type: 'line',
+                    fill: false,
+                    borderColor: 'blue',
+                    label: 'Regression line',
+                    backgroundColor: "blue",
+                    data: lineDate,
+                    order: 1,
+                }
+            ],
+        };
+
+        window.onload = function () {
+            var ctx = document.getElementById("chart-calendar").getContext("2d");
+            window.myBar = new Chart(ctx, {
+                type: 'scatter',
+                data: barChartData,
+                options: {
+                    tooltips: {
+                        enabled: false
+                    },
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    precision: 0,
+                                },
+                            },
+                        ],
+                        xAxes: [
+                            {
+                                ticks: {
+                                    precision: 0,
+                                },
+                            },
+                        ],
+                    }
+                }
+            });
+        };
+    </script>
+
 @endsection
+
+
 
 
 
