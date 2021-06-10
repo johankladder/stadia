@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "doctrine/dbal": "^2.12"
+        "doctrine/dbal": "^2.12",
+        "consoletvs/charts": "7.*"
     },
     "autoload": {
         "psr-4": {

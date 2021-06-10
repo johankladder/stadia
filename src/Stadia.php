@@ -369,30 +369,31 @@ class Stadia
 
     /**
      * Rounds a given coordinate (i.e. a latitude or longitude) to two decimals.
-     * @param $rawCoord float|int The actual raw coordinate
+     * @param $rawCoordinate float|int The actual raw coordinate
      * @return float|int A rounded coordinate
      */
-    private function roundCoordinates($rawCoord)
+    private function roundCoordinates($rawCoordinate)
     {
-        $decimal = fmod($rawCoord, 1);
+        $decimal = fmod($rawCoordinate, 1);
+        $coordinate = $rawCoordinate;
 
         if ($decimal >= 0 && $decimal <= 0.5) {
-            $coord = $rawCoord + (0.25 - $decimal);
+            $coordinate = $rawCoordinate + (0.25 - $decimal);
         }
 
         if ($decimal > 0.5 && $decimal < 1) {
-            $coord = $rawCoord + (0.75 - $decimal);
+            $coordinate = $rawCoordinate + (0.75 - $decimal);
         }
 
         if ($decimal >= -0.5 && $decimal < 0) {
-            $coord = $rawCoord + (-0.25 - $decimal);
+            $coordinate = $rawCoordinate + (-0.25 - $decimal);
         }
 
         if ($decimal > -1.00 && $decimal < -0.5) {
-            $coord = $rawCoord + (-0.75 - $decimal);
+            $coordinate = $rawCoordinate + (-0.75 - $decimal);
         }
 
-        return $coord;
+        return $coordinate;
     }
 
     /**
@@ -464,7 +465,6 @@ class Stadia
 
         try {
             $country = $this->getCountry($countryCode);
-
         } catch (CountryNotFoundException $exception) {
             $country = null;
         }

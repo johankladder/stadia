@@ -59,7 +59,7 @@
                                                             Globally supported
                                                         </div>
                                                         <div class="p-3">
-                                                            @foreach($item->calendarRanges as $range)
+                                                            @foreach($item->calendarRanges()->whereNull('country_id')->get() as $range)
 
                                                                 <div class="row">
                                                                     <div class="col">

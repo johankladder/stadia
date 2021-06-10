@@ -2,8 +2,10 @@
 
 namespace JohanKladder\Stadia;
 
+use ConsoleTVs\Charts\Registrar as Charts;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use JohanKladder\Stadia\Charts\HarvestChart;
 
 class StadiaPackageServiceProvider extends ServiceProvider
 {
@@ -17,8 +19,12 @@ class StadiaPackageServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'stadia');
     }
 
-    public function boot()
+    public function boot(Charts $charts)
     {
+        $charts->register([
+            HarvestChart::class
+        ]);
+
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->registerRoutes();
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'stadia');

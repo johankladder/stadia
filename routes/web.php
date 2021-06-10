@@ -26,3 +26,5 @@ Route::delete("durations/{stadiaDuration}", 'JohanKladder\\Stadia\\Http\\Control
 
 Route::get("stadia-plants/database/sync", "JohanKladder\\Stadia\\Http\\Controllers\\StadiaPlantController@sync")->name('stadia-plants.sync');
 Route::get("stadia-levels/database/sync/{stadiaPlant}", "JohanKladder\\Stadia\\Http\\Controllers\\StadiaLevelController@sync")->name('stadia-levels.sync');
+
+Route::get("user-information", "JohanKladder\\Stadia\\Http\\Controllers\\UserInformationController@index")->name('user-information.index');
