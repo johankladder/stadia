@@ -17,8 +17,8 @@
             </div>
         @endif
 
-        <div class="card">
-            <div class="card-body">
+        <div class="card border-0">
+            <div class="card-body border-bottom">
                 <form action="{{ route('calendar.store', $plant->getId())}}" method="POST">
                     <div class="row">
 
@@ -66,11 +66,11 @@
             </div>
         </div>
 
-        <div class="card mt-5">
-            <div class="card-header bg-primary text-light">
+        <div class="card border-0 shadow-lg mt-5">
+            <div class="card-header">
                 Global calendar dates
             </div>
-            <div class="card-body">
+            <div class="">
                 @if(count($itemsGlobal) <= 0)
                     <div class="alert alert-danger">
                         No default dates set yet!
@@ -109,8 +109,8 @@
             </div>
         </div>
 
-        <div class="card mt-3">
-            <div class="card-header bg-primary text-light">
+        <div class="card border-0 shadow-lg mt-3">
+            <div class="card-header">
                 Calendar dates per country
             </div>
 
@@ -127,15 +127,10 @@
                                     <div class="col">
                                         {{$countryName}} ({{count($items)}})
                                     </div>
-                                    <div class="col-sm-auto">
-                                        <button class="btn btn-link" data-toggle="collapse"
-                                                data-target="#collapse-{{str_replace(' ', '', $countryName)}}">Show
-                                        </button>
-                                    </div>
+
                                 </div>
                             </div>
                             <div id="collapse-{{str_replace(' ', '', $countryName)}}">
-
                                 <table class="table">
                                     <thead>
                                     <tr>
@@ -173,8 +168,8 @@
             </div>
         </div>
 
-        <div class="card mt-3">
-            <div class="card-header bg-primary text-light">
+        <div class="card border-0 shadow-lg mt-3">
+            <div class="card-header">
                 Calendar dates per country and climate codes:
             </div>
 
@@ -346,7 +341,7 @@
 
                     @if(count($scatterInformation) <= 0)
                         <div class="alert alert-danger" role="alert">
-                            Not information gathered yet...
+                            No information gathered yet...
                         </div>
                     @endif
 
