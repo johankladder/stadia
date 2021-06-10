@@ -4,8 +4,8 @@
 
 @section('content')
     <div>
-        <table class="table">
-            <thead>
+        <table class="table table-bordered">
+            <thead class="">
             <tr>
                 <th scope="col"># (reference)</th>
                 <th scope="col">Reference table</th>

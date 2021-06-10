@@ -39,28 +39,38 @@
         </div>
     @endif
 
-    <div>
-        <a href="@yield('backUrl', url()->previous() )">Back</a>
-    </div>
-
-    <div class="row mt-3">
+    <div class="row">
         @hasSection('content-side')
             <div class="col-8">
-                <div class="card">
-                    <div class="card-header">
-                        @yield('title')
-                    </div>
+                <div class="card border-0 shadow-lg">
                     <div class="card-body">
+                        <div class="row border-bottom p-1 mb-3">
+                            <div class="col">
+                                <a class="btn btn-outline-primary" href="@yield('backUrl', url()->previous() )">Back</a>
+                            </div>
+                            <div class="col text-center">
+                                <h3 class="card-title mb-3 font-weight-bold">
+                                    @yield('title')
+                                </h3>
+                            </div>
+                            <div class="col">
+
+                            </div>
+                        </div>
                         @yield('content')
                     </div>
                 </div>
             </div>
             <div class="col-4">
                 <div class="card">
-                    <div class="card-header">
-                        @yield('title-side')
-                    </div>
                     <div class="card-body">
+                        <div class="row border-bottom p-1 mb-3">
+                            <div class="col text-center">
+                                <h3 class="card-title mb-3 font-weight-bold">
+                                    @yield('title-side')
+                                </h3>
+                            </div>
+                        </div>
                         @yield('content-side')
                     </div>
                 </div>
@@ -68,11 +78,22 @@
         @else
 
             <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        @yield('title')
-                    </div>
+                <div class="card border-0 shadow-lg">
+
                     <div class="card-body">
+                        <div class="row border-bottom p-1 mb-3">
+                            <div class="col">
+                                <a class="btn btn-outline-primary" href="@yield('backUrl', url()->previous() )">Back</a>
+                            </div>
+                            <div class="col text-center">
+                                <h3 class="card-title mb-3 font-weight-bold">
+                                    @yield('title')
+                                </h3>
+                            </div>
+                            <div class="col">
+
+                            </div>
+                        </div>
                         @yield('content')
                     </div>
                 </div>
