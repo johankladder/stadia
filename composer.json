@@ -9,7 +9,9 @@
             "email": "johankladder@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "doctrine/dbal": "^2.12"
+    },
     "autoload": {
         "psr-4": {
             "JohanKladder\\Stadia\\": "src/",
