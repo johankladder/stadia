@@ -44,6 +44,7 @@
                 hooks: new ChartisanHooks()
                     .title("Harvest entries this year")
                     .tooltip()
+                    .datasets(['line'])
             });
 
             const chartLevelInformation = new Chartisan({
@@ -52,6 +53,7 @@
                 hooks: new ChartisanHooks()
                     .title("Stadia entries this year")
                     .tooltip()
+                    .datasets(['line'])
             });
         </script>
 
