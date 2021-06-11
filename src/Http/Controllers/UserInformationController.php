@@ -3,7 +3,10 @@
 namespace JohanKladder\Stadia\Http\Controllers;
 
 
-use JohanKladder\Stadia\Charts\HarvestChart;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use JohanKladder\Stadia\Models\Information\StadiaHarvestInformation;
+use JohanKladder\Stadia\Models\StadiaPlant;
 
 class UserInformationController extends Controller
 {
@@ -11,7 +14,26 @@ class UserInformationController extends Controller
     public function index()
     {
         return view("stadia::user-information.index", [
-
+            'mostHarvest' => $this->getMostHarvest()
         ]);
+    }
+
+    private function getMostHarvest(): Collection
+    {
+        $currentMonth = now()->month;
+        $previousMonth = ($currentMonth - 1 > 0) ? $currentMonth - 1 : 12;
+        $items = StadiaHarvestInformation::orderBy('count', 'desc')
+            ->whereMonth('created_at', '>=', $previousMonth)
+            ->whereMonth('created_at', '<=', $currentMonth)
+            ->select(DB::raw('stadia_plant_id,count(*) as count'))
+            ->groupBy('stadia_plant_id')
+            ->limit(5)
+            ->get();
+
+        return $items->map(function ($item) {
+            $stadiaPlant = StadiaPlant::find($item["stadia_plant_id"]);
+            $stadiaPlant->harvest_count = $item['count'];
+            return $stadiaPlant;
+        });
     }
 }
