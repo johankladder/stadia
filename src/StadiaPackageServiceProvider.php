@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use JohanKladder\Stadia\Charts\HarvestChart;
 use JohanKladder\Stadia\Charts\LevelChart;
+use JohanKladder\Stadia\Charts\LevelMonthlyChart;
 
 class StadiaPackageServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,7 @@ class StadiaPackageServiceProvider extends ServiceProvider
         $charts->register([
             HarvestChart::class,
             LevelChart::class,
+            LevelMonthlyChart::class
         ]);
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');

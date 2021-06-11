@@ -9,11 +9,6 @@
             <div class="col">
                 <div class="card border-0 shadow-lg">
                     <div class="card-body">
-                        <div class="alert alert-info" role="alert">
-                            {{ \JohanKladder\Stadia\Models\Information\StadiaHarvestInformation::count() }} information
-                            entries
-                            gathered in total!
-                        </div>
                         <div id="chart-harvest" style="height: 300px;">
                         </div>
 
@@ -21,15 +16,9 @@
                 </div>
             </div>
             <div class="col">
-                <div class="card border-0 shadow-lg">
-
+                <div class="card border-0 shadow-lg h-100">
                     <div class="card-body">
-                        <div class="alert alert-info" role="alert">
-                            {{ \JohanKladder\Stadia\Models\Information\StadiaLevelInformation::count() }} information
-                            entries gathered in total!
-                        </div>
-
-                        <div id="chart-level" style="height: 300px;">
+                        <div id="chart-level">
                         </div>
                     </div>
                 </div>
@@ -38,14 +27,14 @@
 
         <div class="row mt-3">
             <div class="col">
-                <div class="card border-0 shadow-lg">
+                <div class="card border-0 shadow-lg h-100">
                     <div class="card-body">
-                        <div class="alert alert-info" role="alert">
+                        <h5 class="mb-3 font-weight-bold">
                             Top 5 most harvested plants this month and previous month
-                        </div>
-                        <ul class="list-group list-group-numbered">
+                        </h5>
+                        <ul class="list-group list-group-flush">
                             @foreach($mostHarvest as $stadiaPlant)
-                                <li class="list-group-item">
+                                <li class="list-group-item {{$loop->index == 0 ? 'list-group-item-success' : ''}}">
                                     <div class="row">
                                         <div class="col font-weight-bold">
                                             {{$loop->index + 1}}.
@@ -61,20 +50,32 @@
                                         </div>
                                         <div class="col">
                                             <h4 class="mb-0">
-                                               <span class="badge badge-primary float-right">
+                                               <span class="badge badge-secondary float-right">
                                                     {{$stadiaPlant->harvest_count}}
                                                </span>
                                             </h4>
                                         </div>
                                     </div>
-
                                 </li>
                             @endforeach
                         </ul>
+
+
                     </div>
+                    @if(count($mostHarvest) < 5)
+                        <div class="alert alert-warning m-3" role="alert">
+                            Not enough entries to show a top 5...
+                        </div>
+                    @endif
                 </div>
             </div>
             <div class="col">
+                <div class="card border-0 shadow-lg h-100">
+                    <div class="card-body">
+                        <div id="chart-level-monthly" style="min-height: 300px">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -94,6 +95,15 @@
                 url: "@chart('level_chart')",
                 hooks: new ChartisanHooks()
                     .title("Stadia entries this year")
+                    .tooltip()
+                    .datasets(['line'])
+            });
+
+            const chartLevelMonthlyInformation = new Chartisan({
+                el: '#chart-level-monthly',
+                url: "@chart('level_monthly_chart')",
+                hooks: new ChartisanHooks()
+                    .title("Stadia entries this month")
                     .tooltip()
                     .datasets(['line'])
             });

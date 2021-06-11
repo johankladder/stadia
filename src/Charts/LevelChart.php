@@ -35,7 +35,9 @@ class LevelChart extends BaseChart
         $montlyCounts = [];
 
         for ($m = 1; $m <= 12; $m++) {
-            $montlyCounts[] = StadiaLevelInformation::whereMonth('created_at', $m)->count();
+            $montlyCounts[] = StadiaLevelInformation::whereMonth('created_at', $m)
+                ->whereYear('created_at', now()->year)
+                ->count();
         }
 
         return $montlyCounts;
