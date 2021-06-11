@@ -10,4 +10,6 @@ interface StadiaRelatedPlant
 
     public function getTableName();
 
+    public function getFormattedName();
+
 }
