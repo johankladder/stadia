@@ -345,7 +345,7 @@
                         </div>
                     @endif
 
-                    @if(count($scatterInformation) > 0 && count($scatterInformation) < 100)
+                    @if(count($scatterInformation) > 0 && count($scatterInformation) < 1000)
                         <div class="alert alert-warning" role="alert">
                             Not enough information gathered yet...
                         </div>
@@ -371,20 +371,20 @@
             datasets: [
                 {
                     type: 'scatter',
-                    label: 'Entries',
+                    label: 'Datapoints',
                     backgroundColor: "red",
                     data: data,
                     order: 2,
                 },
-                {
-                    type: 'line',
-                    fill: false,
-                    borderColor: 'blue',
-                    label: 'Regression line',
-                    backgroundColor: "blue",
-                    data: lineDate,
-                    order: 1,
-                }
+                // {
+                //     type: 'line',
+                //     fill: false,
+                //     borderColor: 'blue',
+                //     label: 'Regression line',
+                //     backgroundColor: "blue",
+                //     data: lineDate,
+                //     order: 1,
+                // }
             ],
         };
 
@@ -401,6 +401,10 @@
                     scales: {
                         yAxes: [
                             {
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Day of year sowed'
+                                },
                                 ticks: {
                                     precision: 0,
                                     beginAtZero: true,
@@ -410,6 +414,10 @@
                         ],
                         xAxes: [
                             {
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Day of year harvested'
+                                },
                                 ticks: {
                                     precision: 0,
                                     beginAtZero: true,
