@@ -55,9 +55,11 @@ class CalendarController extends Controller
     {
         $entries = Stadia::locationFactoryDefined($stadiaPlant->harvestInformation(), $country, $climateCode, true)->get();
         return $entries->map(function ($item) {
+            $sowDay = $item->sow_date->dayOfYear;
+            $duration = $item->harvest_date->diffInDays($item->sow_date);
             return [
-                'x' => $item->sow_date->dayOfYear,
-                'y' => $item->harvest_date->dayOfYear
+                'x' => $sowDay,
+                'y' => $sowDay + $duration
             ];
         });
     }

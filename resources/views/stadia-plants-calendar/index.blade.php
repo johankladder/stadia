@@ -393,6 +393,7 @@
             window.myBar = new Chart(ctx, {
                 type: 'scatter',
                 data: barChartData,
+
                 options: {
                     tooltips: {
                         enabled: false
@@ -402,6 +403,8 @@
                             {
                                 ticks: {
                                     precision: 0,
+                                    beginAtZero: true,
+                                    max: 365
                                 },
                             },
                         ],
@@ -409,6 +412,8 @@
                             {
                                 ticks: {
                                     precision: 0,
+                                    beginAtZero: true,
+                                    max: 500,
                                 },
                             },
                         ],

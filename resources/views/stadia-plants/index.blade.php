@@ -45,7 +45,7 @@
                             <div class="col-sm mr-3">
 
                                 <div class="card border-0 shadow-lg">
-                                    <div class="p-3">
+                                    <div class="">
                                         <ul class="list-group list-group-flush">
                                             @if($item->calendarRanges()->count() > 0)
                                                 <div class="list-group-item border-0">
@@ -54,34 +54,16 @@
                                             @endif
                                             @if($item->calendarRanges()->whereNull('country_id')->count() > 0)
                                                 <div class="list-group-item">
-                                                    <div class="card mt-1 shadow-lg border-0">
-                                                        <div class="card-header bg-success text-light">
-                                                            Globally supported
-                                                        </div>
-                                                        <div class="p-3">
-                                                            @foreach($item->calendarRanges()->whereNull('country_id')->get() as $range)
-
-                                                                <div class="row">
-                                                                    <div class="col">
-                                                                        {{date('d-m', strtotime($range->getDateFrom()))}}
-                                                                    </div>
-
-                                                                    <div class="col text-right font-weight-bold">
-                                                                        {{date('d-m', strtotime($range->getDateTo()))}}
-                                                                    </div>
-                                                                </div>
-
-                                                            @endforeach
-                                                        </div>
-
-                                                    </div>
-
+                                                    <span class="badge badge-pill badge-success">
+                                                            Globally supported!
+                                                    </span>
                                                 </div>
                                             @endif
                                             @if($item->calendarRanges()->count() <= 0)
                                                 <div class="list-group-item">
-                                                    <span
-                                                        class="badge badge-pill badge-danger">Globally unsupported!</span>
+                                                    <span class="badge badge-pill badge-danger">
+                                                        Globally unsupported!
+                                                    </span>
                                                 </div>
                                             @endif
                                         </ul>
