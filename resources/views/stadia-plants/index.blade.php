@@ -4,6 +4,9 @@
 
 @section('content')
     <div>
+        <div class="d-flex justify-content-center">
+            {{ $items->links() }}
+        </div>
         <table class="table table-bordered">
             <thead class="">
             <tr>
@@ -109,6 +112,10 @@
             @endforeach
             </tbody>
         </table>
+
+        <div class="d-flex justify-content-center">
+            {{ $items->links() }}
+        </div>
 
         <a href="{{ route('stadia-plants.sync') }}" class="btn btn-outline-primary">
             Sync

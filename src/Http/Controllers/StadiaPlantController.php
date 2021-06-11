@@ -13,7 +13,7 @@ class StadiaPlantController extends Controller
     public function index()
     {
         return view("stadia::stadia-plants.index", [
-            'items' => StadiaPlant::all()
+            'items' => StadiaPlant::orderBy('name')->simplePaginate(10)
         ]);
     }
 
