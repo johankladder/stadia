@@ -12,4 +12,7 @@ interface StadiaRelatedPlant
 
     public function getFormattedName();
 
+    public function getImageUrl();
+
+
 }

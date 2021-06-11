@@ -4,6 +4,7 @@ namespace JohanKladder\Stadia\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use JohanKladder\Stadia\Models\Information\StadiaHarvestInformation;
+use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedPlant;
 
 class StadiaPlant extends Model
 {
@@ -13,6 +14,7 @@ class StadiaPlant extends Model
         'reference_table',
         'name',
     ];
+
 
     public function getId()
     {
@@ -58,5 +60,15 @@ class StadiaPlant extends Model
     {
         return $this->hasMany(StadiaHarvestInformation::class);
     }
+
+    public function getReferencePlant(): ?StadiaRelatedPlant
+    {
+        $modelName = config("stadia.plant_model", null);
+        if ($modelName) {
+            return $modelName::find($this->reference_id);
+        }
+        return null;
+    }
+
 
 }

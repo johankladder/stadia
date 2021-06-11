@@ -10,9 +10,10 @@
         <table class="table table-bordered">
             <thead class="">
             <tr>
-                <th  scope="col">Name</th>
+                <th scope="col">Name</th>
+                <th scope="col" style="width: 125px">Image</th>
                 <th scope="col">Relations</th>
-                <th  scope="col">Support</th>
+                <th scope="col">Support</th>
             </tr>
             </thead>
             <tbody>
@@ -24,6 +25,10 @@
                         @else
                             {{$item->getName()}}
                         @endif
+                    </td>
+                    <td>
+                        <img src="{{$item->getReferencePlant() ? $item->getReferencePlant()->getImageUrl() : ""}}"
+                             style="height: 100px; width: 100px; object-fit: cover; background: url(https://via.placeholder.com/100);">
                     </td>
                     <td class="text-center">
                         <a href="{{route('calendar.index', $item->getId())}}" class="btn btn-outline-primary">
