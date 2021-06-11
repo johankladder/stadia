@@ -395,9 +395,6 @@
                 data: barChartData,
 
                 options: {
-                    tooltips: {
-                        enabled: false
-                    },
                     scales: {
                         yAxes: [
                             {
