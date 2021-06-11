@@ -58,8 +58,8 @@ class CalendarController extends Controller
             $sowDay = $item->sow_date->dayOfYear;
             $duration = $item->harvest_date->diffInDays($item->sow_date);
             return [
-                'x' => $sowDay,
-                'y' => $sowDay + $duration
+                'y' => $sowDay,
+                'x' => $sowDay + $duration
             ];
         });
     }
