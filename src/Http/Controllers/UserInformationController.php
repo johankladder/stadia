@@ -25,6 +25,7 @@ class UserInformationController extends Controller
         $items = StadiaHarvestInformation::orderBy('count', 'desc')
             ->whereMonth('created_at', '>=', $previousMonth)
             ->whereMonth('created_at', '<=', $currentMonth)
+            ->whereYear('created_at', now()->year)
             ->select(DB::raw('stadia_plant_id,count(*) as count'))
             ->groupBy('stadia_plant_id')
             ->limit(5)

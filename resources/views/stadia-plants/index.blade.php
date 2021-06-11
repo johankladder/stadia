@@ -10,23 +10,14 @@
         <table class="table table-bordered">
             <thead class="">
             <tr>
-                <th scope="col"># (reference)</th>
-                <th scope="col">Reference table</th>
-                <th scope="col">Name</th>
+                <th  scope="col">Name</th>
                 <th scope="col">Relations</th>
-                <th scope="col">Support</th>
-                <th scope="col">Options</th>
+                <th  scope="col">Support</th>
             </tr>
             </thead>
             <tbody>
             @foreach($items as $item)
                 <tr>
-                    <td>
-                        {{$item->getReferenceId()}}
-                    </td>
-                    <td>
-                        {{$item->getReferenceTable()}}
-                    </td>
                     <td>
                         @empty($item->getName())
                             No name found...
@@ -34,7 +25,7 @@
                             {{$item->getName()}}
                         @endif
                     </td>
-                    <td>
+                    <td class="text-center">
                         <a href="{{route('calendar.index', $item->getId())}}" class="btn btn-outline-primary">
                             Calendar
                         </a>
@@ -45,68 +36,56 @@
 
                     <td>
                         <div class="row">
-                            <div class="col-sm mr-3">
-
-                                <div class="card border-0 shadow-lg">
-                                    <div class="">
-                                        <ul class="list-group list-group-flush">
-                                            @if($item->calendarRanges()->count() > 0)
-                                                <div class="list-group-item border-0">
-                                                    <span class="badge badge-pill badge-primary">Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})</span>
-                                                </div>
-                                            @endif
-                                            @if($item->calendarRanges()->whereNull('country_id')->count() > 0)
-                                                <div class="list-group-item">
-                                                    <span class="badge badge-pill badge-success">
-                                                            Globally supported!
-                                                    </span>
-                                                </div>
-                                            @endif
-                                            @if($item->calendarRanges()->count() <= 0)
-                                                <div class="list-group-item">
-                                                    <span class="badge badge-pill badge-danger">
-                                                        Globally unsupported!
-                                                    </span>
-                                                </div>
-                                            @endif
-                                        </ul>
-                                    </div>
+                            <div class="col text-center">
+                                <div class="border p-3 rounded">
+                                    @if($item->calendarRanges()->count() > 0)
+                                        <span class="badge badge-pill badge-primary">
+                                                Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})
+                                            </span>
+                                    @endif
+                                    @if($item->calendarRanges()->whereNull('country_id')->count() > 0)
+                                        <span class="badge badge-pill badge-success">
+                                                Globally supported!
+                                            </span>
+                                    @endif
+                                    @if($item->calendarRanges()->count() <= 0)
+                                        <span class="badge badge-pill badge-danger">
+                                        Globally unsupported!
+                                    </span>
+                                    @endif
                                 </div>
                             </div>
+                        </div>
+                        <div class="row mt-1">
                             @if($item->stadiaLevels()->count() > 0)
-                                <div class="col-sm">
-                                    <div class="card border-0 shadow-lg">
-                                        <div class="card-body">
-                                            <div class="card-title">
-                                                Levels
-                                            </div>
-                                            <ul class="list-group list-group-flush">
-                                                @if($item->durations()->whereNull('country_id')->count() >= $item->stadiaLevels()->count() && $item->stadiaLevels()->count() != 0)
-                                                    <div class="list-group-item">
-                                                    <span
-                                                        class="badge badge-pill badge-success">Globally supported!</span>
-                                                    </div>
-                                                @endif
+                                <div class="col text-center">
+                                    <div class="border p-3 rounded">
+                                        @if($item->durations()->whereNull('country_id')->count() >= $item->stadiaLevels()->count() && $item->stadiaLevels()->count() != 0)
+                                            <span class="badge badge-pill badge-success">
+                                                Globally supported!
+                                            </span>
+                                        @endif
 
-                                                @if($item->durations()->whereNull('country_id')->count() < $item->stadiaLevels()->count() && $item->stadiaLevels()->count() != 0)
-                                                    <div class="list-group-item">
-                                                        <span class="badge badge-pill badge-danger">Globally unsupported ({{$item->durations()->whereNull('country_id')->count()}} / {{$item->stadiaLevels()->count()}})</span>
-                                                    </div>
-                                                @endif
-                                            </ul>
-                                        </div>
+                                        @if($item->durations()->whereNull('country_id')->count() < $item->stadiaLevels()->count() && $item->stadiaLevels()->count() != 0)
+                                            <span class="badge badge-pill badge-danger">
+                                                Globally unsupported ({{$item->durations()->whereNull('country_id')->count()}} / {{$item->stadiaLevels()->count()}})
+                                            </span>
+                                        @endif
                                     </div>
+
                                 </div>
                             @endif
                         </div>
 
                     </td>
                     <td>
-                        <form action="{{ route('stadia-plants.destroy', $item->getId())}}" method="POST">
-                            @method('delete')
-                            @csrf
-                            <button class="btn btn-danger" type="submit">Remove</button>
-                        </form>
+                        <div class="h-100">
+                            <form action="{{ route('stadia-plants.destroy', $item->getId())}}" method="POST">
+                                @method('delete')
+                                @csrf
+                                <button class="btn btn-danger" type="submit">Remove</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @endforeach

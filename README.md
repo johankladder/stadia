@@ -7,6 +7,9 @@ using plants and stadia in combination with multiple country support.
 ### Installation
 Run the following command: `composer require johankladder/stadia` and following the instructions.
 
+And publish the assets:
+`php artisan vendor:publish --tag=public --force`
+ 
 ### Migration of the database
 After installation run `php artisan migrate`
 

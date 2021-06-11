@@ -38,8 +38,11 @@ class StadiaPackageServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../config/config.php' => config_path('stadia.php'),
             ], 'config');
-
         }
+
+        $this->publishes([
+            __DIR__ . '/../public' => public_path('johankladder/stadia'),
+        ], 'public');
     }
 
     protected function registerRoutes()
