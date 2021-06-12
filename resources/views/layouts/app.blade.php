@@ -46,7 +46,7 @@
                     <div class="card-body">
                         <div class="row border-bottom p-1 mb-3">
                             <div class="col">
-                                <a class="btn btn-outline-primary" href="@yield('backUrl', url()->previous() )">Back</a>
+                                <a class="btn btn-outline-dark" href="@yield('backUrl', url()->previous() )">Back</a>
                             </div>
                             <div class="col text-center">
                                 <h3 class="card-title mb-3 font-weight-bold">
@@ -83,7 +83,7 @@
                     <div class="card-body">
                         <div class="row border-bottom p-1 mb-3">
                             <div class="col">
-                                <a class="btn btn-outline-primary" href="@yield('backUrl', url()->previous() )">Back</a>
+                                <a class="btn btn-outline-dark" href="@yield('backUrl', url()->previous() )">Back</a>
                             </div>
                             <div class="col text-center">
                                 <h3 class="card-title mb-3 font-weight-bold">
