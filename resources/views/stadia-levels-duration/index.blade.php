@@ -313,26 +313,103 @@
                         </div>
                     @else
                         <div class="col">
-                            <p class="text-danger">No dates are found for this country</p>
+                            <p class="text-danger">No durations are found for this country</p>
                         </div>
                     @endif
                 </div>
             </div>
 
-            {{-- Show the scatter plot of the sowing to harvest ratio:  --}}
+            <div class="card border-0 shadow-lg">
+                <div class="">
 
-            @if($selectedCountry)
-                <div class="card">
-                    <div class="card-header">
-                        Scatter plot of this plant in this country:
-                    </div>
-                    <div class="card-body">
+                    @if(count($scatterInformation) <= 0)
+                        <div class="alert alert-danger" role="alert">
+                            No information gathered yet...
+                        </div>
+                    @endif
+
+                    @if(count($scatterInformation) > 0 && count($scatterInformation) < 1000)
+                        <div class="alert alert-warning" role="alert">
+                            Not enough information gathered yet...
+                        </div>
+                    @endif
+
+                    <canvas class="p-3" id="chart-durations" height="100" width="100%">
+                    </canvas>
+
+
+                    <div class="alert alert-secondary m-3" role="alert">
+                        Found {{count($scatterInformation)}} entries
                     </div>
                 </div>
-            @endif
-
+            </div>
         @endif
     </div>
+
+
+    <script>
+        var data = <?php echo $scatterInformation; ?>;
+        var lineDate = [];
+        var barChartData = {
+            datasets: [
+                {
+                    type: 'scatter',
+                    label: 'Datapoints',
+                    backgroundColor: "red",
+                    data: data,
+                    order: 2,
+                },
+                // {
+                //     type: 'line',
+                //     fill: false,
+                //     borderColor: 'blue',
+                //     label: 'Regression line',
+                //     backgroundColor: "blue",
+                //     data: lineDate,
+                //     order: 1,
+                // }
+            ],
+        };
+
+        window.onload = function () {
+            var ctx = document.getElementById("chart-durations").getContext("2d");
+            window.myBar = new Chart(ctx, {
+                type: 'scatter',
+                data: barChartData,
+
+                options: {
+                    scales: {
+                        yAxes: [
+                            {
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Day of year started'
+                                },
+                                ticks: {
+                                    precision: 0,
+                                    beginAtZero: true,
+                                    max: 365
+                                },
+                            },
+                        ],
+                        xAxes: [
+                            {
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Day of year completed'
+                                },
+                                ticks: {
+                                    precision: 0,
+                                    beginAtZero: true,
+                                    max: 500,
+                                },
+                            },
+                        ],
+                    }
+                }
+            });
+        };
+    </script>
 
 @endsection
 

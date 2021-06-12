@@ -4,6 +4,7 @@ namespace JohanKladder\Stadia\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Http\Requests\DurationRequest;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
@@ -42,8 +43,26 @@ class DurationController extends Controller
             }),
             'selectedDurations' => $selectedDurations->count() > 0 ? $selectedDurations : $stadiaLevel->durations()->whereNull('country_id')->get(),
             'selectedCountry' => $country,
-            'selectedClimateCode' => $climateCode
+            'selectedClimateCode' => $climateCode,
+            'scatterInformation' => $this->getScatterInformation(
+                $stadiaLevel,
+                $country,
+                $climateCode
+            )
         ]);
+    }
+
+    private function getScatterInformation(StadiaLevel $stadiaLevel, ?Country $country, ?ClimateCode $climateCode)
+    {
+        $entries = Stadia::locationFactoryDefined($stadiaLevel->levelInformation(), $country, $climateCode, true)->get();
+        return $entries->map(function ($item) {
+            $startDate = $item->start_date->dayOfYear;
+            $duration = $item->end_date->diffInDays($item->start_date);
+            return [
+                'y' => $startDate,
+                'x' => $startDate + $duration
+            ];
+        });
     }
 
     public function storeDuration(DurationRequest $request, StadiaLevel $stadiaLevel)
