@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedLevel;
 use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedPlant;
 use JohanKladder\Stadia\Models\StadiaLevel;
+use JohanKladder\Stadia\Models\StadiaLevelDuration;
 use JohanKladder\Stadia\Models\StadiaPlant;
 
 class SyncLogic
@@ -100,6 +101,12 @@ class SyncLogic
                     $entity->stadia_plant_id = $stadiaPlant->id;
                 }
                 $entity->save();
+
+                // Duration
+                $duration = $this->getOrCreateFirstGlobalDuration($entity->refresh());
+                $duration->duration = $levelEntity->getDurationInDays();
+                $duration->save();
+
                 return $entity->refresh();
             }
         }
@@ -126,6 +133,15 @@ class SyncLogic
         return StadiaLevel::firstOrCreate([
             'reference_id' => $referenceId,
             'reference_table' => $tableName,
+        ]);
+    }
+
+    private function getOrCreateFirstGlobalDuration(StadiaLevel $stadiaLevel): StadiaLevelDuration
+    {
+        return StadiaLevelDuration::firstOrCreate([
+            'stadia_level_id' => $stadiaLevel->id,
+            'country_id' => null,
+            'climate_code_id' => null,
         ]);
     }
 
