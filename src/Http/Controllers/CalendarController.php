@@ -86,6 +86,7 @@ class CalendarController extends Controller
         return [
             'intercept' => $intercept,
             'slope' => $slope,
+            'r2' => 'Unavailable',
             'line-values' => json_encode([
                 [
                     'x' => 0,

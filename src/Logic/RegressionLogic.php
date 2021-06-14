@@ -6,6 +6,8 @@ namespace JohanKladder\Stadia\Logic;
 
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
+use Phpml\CrossValidation\StratifiedRandomSplit;
+use Phpml\Dataset\ArrayDataset;
 use Phpml\Regression\LeastSquares;
 
 class RegressionLogic
@@ -29,6 +31,21 @@ class RegressionLogic
                 $duration = $harvestInformation->harvest_date->diffInDays($harvestInformation->sow_date);
                 $targets[] = $sowDay + $duration;
             }
+
+            $dataset = new ArrayDataset(
+                $samples,
+                $targets
+            );
+
+            $dataset = new StratifiedRandomSplit($dataset, 0.3);
+
+            [$xTrain, $xTest, $yTrain, $yTest] = [
+                $dataset->getTrainSamples(),
+                $dataset->getTestSamples(),
+                $dataset->getTrainLabels(),
+                $dataset->getTestLabels()
+            ];
+
             $regression->train($samples, $targets);
         }
 
@@ -39,6 +56,4 @@ class RegressionLogic
     {
         return ($slope * $x) + $intercept;
     }
-
-
 }

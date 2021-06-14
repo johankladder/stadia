@@ -373,6 +373,7 @@
                         <ul class="mt-1">
                             <li>Intercept: {{$lineInformation['intercept']}}</li>
                             <li>Slope: {{$lineInformation['slope']}}</li>
+                            <li>r2 based on 70/30: {{$lineInformation['r2']}}</li>
                         </ul>
                     </div>
 
