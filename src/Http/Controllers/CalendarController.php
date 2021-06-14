@@ -2,6 +2,7 @@
 
 namespace JohanKladder\Stadia\Http\Controllers;
 
+use App\Logic\RegressionLogic;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use JohanKladder\Stadia\Facades\Stadia;
@@ -47,6 +48,11 @@ class CalendarController extends Controller
                 $stadiaPlant,
                 $country,
                 $climateCode
+            ),
+            'lineInformation' => $this->getRegressionLine(
+                $stadiaPlant,
+                $country,
+                $climateCode
             )
         ]);
     }
@@ -63,6 +69,30 @@ class CalendarController extends Controller
             ];
         });
     }
+
+    private function getRegressionLine(StadiaPlant $stadiaPlant, ?Country $country, ?ClimateCode $climateCode)
+    {
+        $entries = Stadia::locationFactoryDefined($stadiaPlant->harvestInformation(), $country, $climateCode, true)->get();
+        $logic = new RegressionLogic();
+        $regression = $logic->createAndTrainHarvestPrediction($entries);
+        $slope = $regression->getCoefficients()[0];
+        $intercept = $regression->getIntercept();
+        return [
+            'intercept' => $intercept,
+            'slope' => $slope,
+            'line-values' => json_encode([
+                [
+                    'x' => 0,
+                    'y' => $logic->getYCoordinateBestFit(0, $slope, $intercept)
+                ],
+                [
+                    'x' => 500,
+                    'y' => $logic->getYCoordinateBestFit(500, $slope, $intercept)
+                ]
+            ])
+        ];
+    }
+
 
     public function storeCalendarRange(CalendarRangeRequest $request, StadiaPlant $stadiaPlant)
     {

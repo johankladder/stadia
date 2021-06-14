@@ -368,10 +368,19 @@
                     <canvas class="p-3" id="chart-calendar" height="100" width="100%">
                     </canvas>
 
+                    <div class="alert alert-info m-3" role="alert">
+                        Regression information:
+                        <ul class="mt-1">
+                            <li>Intercept: {{$lineInformation['intercept']}}</li>
+                            <li>Slope: {{$lineInformation['slope']}}</li>
+                        </ul>
+                        @dump($lineInformation)
+                    </div>
 
                     <div class="alert alert-secondary m-3" role="alert">
                         Found {{count($scatterInformation)}} entries
                     </div>
+
                 </div>
             </div>
 
@@ -380,7 +389,7 @@
 
     <script>
         var data = <?php echo $scatterInformation; ?>;
-        var lineDate = [];
+        var lineDate = <?php echo $lineInformation['line-values'] ?>;
         var barChartData = {
             datasets: [
                 {
@@ -390,15 +399,15 @@
                     data: data,
                     order: 2,
                 },
-                // {
-                //     type: 'line',
-                //     fill: false,
-                //     borderColor: 'blue',
-                //     label: 'Regression line',
-                //     backgroundColor: "blue",
-                //     data: lineDate,
-                //     order: 1,
-                // }
+                {
+                    type: 'line',
+                    fill: false,
+                    borderColor: 'red',
+                    label: 'Regression line',
+                    backgroundColor: "red",
+                    data: lineDate,
+                    order: 1,
+                }
             ],
         };
 

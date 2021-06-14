@@ -11,7 +11,8 @@
     ],
     "require": {
         "doctrine/dbal": "^2.12",
-        "consoletvs/charts": "7.*"
+        "consoletvs/charts": "7.*",
+        "php-ai/php-ml": "^0.9.0"
     },
     "autoload": {
         "psr-4": {
