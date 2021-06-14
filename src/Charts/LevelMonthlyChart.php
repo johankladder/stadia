@@ -16,9 +16,11 @@ class LevelMonthlyChart extends BaseChart
      */
     public function handler(Request $request): Chartisan
     {
+        $dailyCounts = $this->getDailyCounts();
         return Chartisan::build()
             ->labels($this->getDayLabels())
-            ->dataset('Entries', $this->getDailyCounts());
+            ->dataset('Entries', $dailyCounts)
+            ->dataset('Average', $this->getDailyAverage($dailyCounts));
     }
 
     private function getDayLabels(): array
@@ -43,5 +45,17 @@ class LevelMonthlyChart extends BaseChart
         }
 
         return $dailyCounts;
+    }
+
+    private function getDailyAverage(array $dailyCounts): array
+    {
+        $sum = 0;
+        foreach ($dailyCounts as $dailyCount) {
+            $sum += $dailyCount;
+        }
+
+        $average = $sum / count($dailyCounts);
+
+        return array_fill(0, count($dailyCounts), $average);
     }
 }

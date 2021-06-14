@@ -53,12 +53,6 @@ class HarvestChart extends BaseChart
 
         $average = $sum / count($monthlyCounts);
 
-        $averageLineValues = [];
-
-        for ($m = 1; $m <= 12; $m++) {
-            $averageLineValues[] = $average;
-        }
-
-        return $averageLineValues;
+        return array_fill(0, count($monthlyCounts), $average);
     }
 }
