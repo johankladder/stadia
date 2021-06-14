@@ -64,8 +64,8 @@ class CalendarController extends Controller
             $sowDay = $item->sow_date->dayOfYear;
             $duration = $item->harvest_date->diffInDays($item->sow_date);
             return [
-                'y' => $sowDay,
-                'x' => $sowDay + $duration
+                'x' => $sowDay,
+                'y' => $sowDay + $duration
             ];
         });
     }
@@ -88,12 +88,12 @@ class CalendarController extends Controller
             'slope' => $slope,
             'line-values' => json_encode([
                 [
-                    'x' => 0,
-                    'y' => $logic->getYCoordinateBestFit(0, $slope, $intercept)
+                    'y' => 0,
+                    'x' => $logic->getYCoordinateBestFit(0, $slope, $intercept)
                 ],
                 [
-                    'x' => 500,
-                    'y' => $logic->getYCoordinateBestFit(500, $slope, $intercept)
+                    'y' => 500,
+                    'x' => $logic->getYCoordinateBestFit(500, $slope, $intercept)
                 ]
             ])
         ];

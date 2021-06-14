@@ -422,7 +422,7 @@
                             {
                                 scaleLabel: {
                                     display: true,
-                                    labelString: 'Day of year sowed'
+                                    labelString: 'Delta harvest'
                                 },
                                 ticks: {
                                     precision: 0,
@@ -435,7 +435,7 @@
                             {
                                 scaleLabel: {
                                     display: true,
-                                    labelString: 'Day of year harvested'
+                                    labelString: 'Day sowed'
                                 },
                                 ticks: {
                                     precision: 0,
