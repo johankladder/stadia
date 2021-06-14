@@ -79,6 +79,57 @@
             </div>
         </div>
 
+        <div class="row mt-3">
+            <div class="col">
+                <div class="card border-0 shadow-lg h-100">
+                    <div class="card-body">
+                        <h5 class="mb-3 font-weight-bold">
+                            Top 5 levels most activity
+                        </h5>
+                        <ul class="list-group list-group-flush">
+                            @foreach($mostActivity as $stadiaLevel)
+                                <li class="list-group-item {{$loop->index == 0 ? 'list-group-item-dark' : ''}}">
+                                    <div class="row">
+                                        <div class="col font-weight-bold">
+                                            {{$loop->index + 1}}.
+                                        </div>
+                                        <div class="col-6 text-center">
+                                            <a href="{{route('durations.index', $stadiaLevel->getId())}}"
+                                               target="_blank">
+                                                <h5 class="mb-0">
+                                                    {{$stadiaLevel->name}} | {{$stadiaLevel->stadiaPlant->name}}
+                                                </h5>
+                                            </a>
+
+                                        </div>
+                                        <div class="col">
+                                            <h4 class="mb-0">
+                                               <span class="badge badge-secondary float-right">
+                                                    {{$stadiaLevel->activity_count}}
+                                               </span>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+
+
+                    </div>
+                    @if(count($mostActivity) < 5)
+                        <div class="alert alert-warning m-3" role="alert">
+                            Not enough entries to show a top 5...
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="col">
+
+            </div>
+
+        </div>
+
 
         <script>
             const chartHarvestInformation = new Chartisan({
