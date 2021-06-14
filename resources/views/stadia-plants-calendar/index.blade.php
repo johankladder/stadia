@@ -427,7 +427,7 @@
                                 ticks: {
                                     precision: 0,
                                     beginAtZero: true,
-                                    max: 365
+                                    max: 500
                                 },
                             },
                         ],
@@ -440,7 +440,7 @@
                                 ticks: {
                                     precision: 0,
                                     beginAtZero: true,
-                                    max: 500,
+                                    max: 365,
                                 },
                             },
                         ],

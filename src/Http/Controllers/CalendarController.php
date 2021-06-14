@@ -88,12 +88,12 @@ class CalendarController extends Controller
             'slope' => $slope,
             'line-values' => json_encode([
                 [
-                    'y' => 0,
-                    'x' => $logic->getYCoordinateBestFit(0, $slope, $intercept)
+                    'x' => 0,
+                    'y' => $logic->getYCoordinateBestFit(0, $slope, $intercept)
                 ],
                 [
-                    'y' => 500,
-                    'x' => $logic->getYCoordinateBestFit(500, $slope, $intercept)
+                    'x' => 365,
+                    'y' => $logic->getYCoordinateBestFit(365, $slope, $intercept)
                 ]
             ])
         ];
