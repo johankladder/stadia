@@ -9,9 +9,8 @@
         <table class="table">
             <thead>
             <tr>
-                <th scope="col"># (reference)</th>
-                <th scope="col">Reference table</th>
                 <th scope="col">Name</th>
+                <th scope="col" style="width: 125px">Image</th>
                 <th scope="col">Durations</th>
                 <th scope="col">Support</th>
                 <th scope="col">Options</th>
@@ -21,17 +20,15 @@
             @foreach($items as $item)
                 <tr>
                     <td>
-                        {{$item->getReferenceId()}}
-                    </td>
-                    <td>
-                        {{$item->getReferenceTable()}}
-                    </td>
-                    <td>
                         @empty($item->getName())
                             No name found...
                         @else
                             {{$item->getName()}}
                         @endif
+                    </td>
+                    <td>
+                        <img src="{{$item->getReferenceLevel() ? $item->getReferenceLevel()->getImageUrl() : ""}}"
+                             style="height: 100px; width: 100px; object-fit: cover; background: url(https://via.placeholder.com/100);">
                     </td>
                     <td>
                         <a href="{{route('durations.index', $item->getId())}}" class="btn btn-outline-primary">

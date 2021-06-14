@@ -4,6 +4,7 @@ namespace JohanKladder\Stadia\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use JohanKladder\Stadia\Models\Information\StadiaLevelInformation;
+use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedLevel;
 
 class StadiaLevel extends Model
 {
@@ -53,6 +54,15 @@ class StadiaLevel extends Model
     public function levelInformation()
     {
         return $this->hasMany(StadiaLevelInformation::class);
+    }
+
+    public function getReferenceLevel(): ?StadiaRelatedLevel
+    {
+        $modelName = config("stadia.level_model", null);
+        if ($modelName) {
+            return $modelName::find($this->reference_id);
+        }
+        return null;
     }
 
 }
