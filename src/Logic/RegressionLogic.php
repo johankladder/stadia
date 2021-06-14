@@ -24,8 +24,10 @@ class RegressionLogic
             $samples = [];
             $targets = [];
             foreach ($harvestInformations as $harvestInformation) {
-                $samples[] = [$harvestInformation->sow_date->dayOfYear];
-                $targets[] = $harvestInformation->harvest_date->dayOfYear;
+                $sowDay = $harvestInformation->sow_date->dayOfYear;
+                $samples[] = [$sowDay];
+                $duration = $harvestInformation->harvest_date->diffInDays($harvestInformation->sow_date);
+                $targets[] = $sowDay + $duration;
             }
             $regression->train($samples, $targets);
         }

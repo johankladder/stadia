@@ -401,7 +401,7 @@
                 {
                     type: 'line',
                     fill: false,
-                    borderColor: 'red',
+                    borderColor: 'rgba(0,0,0,0.67)',
                     label: 'Regression line',
                     backgroundColor: "red",
                     data: lineDate,
