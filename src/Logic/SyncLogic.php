@@ -79,7 +79,7 @@ class SyncLogic
         }
 
         foreach ($results as $levelEntity) {
-            $entity = $this->syncLevelEntity($levelEntity, $nameCallBack);
+            $entity = $this->syncLevelEntity($levelEntity, $nameCallBack, $modelName);
             if ($entity) {
                 $syncedEntities->add($entity);
             }
