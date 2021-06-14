@@ -17,54 +17,68 @@
             </div>
         @endif
 
-        <div class="card border-0">
-            <div class="card-body border-bottom">
-                <form action="{{ route('calendar.store', $plant->getId())}}" method="POST">
-                    <div class="row">
+        <div class="row">
+            @if($plant->getReferencePlant() && $plant->getReferencePlant()->getImageUrl())
+                <div class="col-3 justify-content-center align-self-center text-center">
+                    <img src="{{$plant->getReferencePlant() ? $plant->getReferencePlant()->getImageUrl() : ""}}"
+                         style="height: 300px; width: 300px; object-fit: cover; background: url(https://via.placeholder.com/300);">
+                </div>
+            @endif
+            <div class="col">
+                <div class="card border-0">
+                    <div class="card-body border-bottom">
+                        <form action="{{ route('calendar.store', $plant->getId())}}" method="POST">
+                            <div class="row">
 
-                        <div class="col">
-                            Date from:
-                            <input class="form-control datepicker mt-2" placeholder="Select from" name="range_from"
-                                   type="date">
-                        </div>
-                        <div class="col">
-                            Date to
-                            <input class="form-control datepicker mt-2" placeholder="Select from" name="range_to"
-                                   type="date">
-                        </div>
+                                <div class="col">
+                                    Date from:
+                                    <input class="form-control datepicker mt-2" placeholder="Select from"
+                                           name="range_from"
+                                           type="date">
+                                </div>
+                                <div class="col">
+                                    Date to
+                                    <input class="form-control datepicker mt-2" placeholder="Select from"
+                                           name="range_to"
+                                           type="date">
+                                </div>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="form-select-country-code">Select country</label>
+                                <select class="form-control" id="form-select-country-code" name="country_id">
+                                    <option label=" "></option>
+
+                                    @foreach($countries as $country)
+                                        <option value="{{$country->id}}">{{$country->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="form-select-country-code">Select climate code</label>
+                                <select class="form-control" id="form-select-climate-code" name="climate_code_id">
+                                    <option label=" "></option>
+
+                                    @foreach($climateCodes as $code)
+                                        <option value="{{$code->id}}">{{$code->code}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="mt-3">
+                                @method('post')
+                                @csrf
+                                <button class="btn btn-outline-primary btn-block" type="submit">Create new date range
+                                </button>
+
+                            </div>
+                        </form>
                     </div>
-
-                    <div class="form-group mt-3">
-                        <label for="form-select-country-code">Select country</label>
-                        <select class="form-control" id="form-select-country-code" name="country_id">
-                            <option label=" "></option>
-
-                            @foreach($countries as $country)
-                                <option value="{{$country->id}}">{{$country->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group mt-3">
-                        <label for="form-select-country-code">Select climate code</label>
-                        <select class="form-control" id="form-select-climate-code" name="climate_code_id">
-                            <option label=" "></option>
-
-                            @foreach($climateCodes as $code)
-                                <option value="{{$code->id}}">{{$code->code}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mt-3">
-                        @method('post')
-                        @csrf
-                        <button class="btn btn-outline-primary btn-block" type="submit">Create new date range</button>
-
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
+
 
         <div class="card border-0 shadow-lg mt-5">
             <div class="card-header">
@@ -429,7 +443,6 @@
     </script>
 
 @endsection
-
 
 
 
