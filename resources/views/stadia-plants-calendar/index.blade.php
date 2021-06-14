@@ -174,7 +174,7 @@
             </div>
 
             <div class="card-body">
-                @empty($itemsClimateCode)
+                @if(count($itemsClimateCode) <= 0)
                     <span class="text-muted">No date ranges given yet...</span>
                 @else
                     @foreach($itemsClimateCode as $countryName => $items)
