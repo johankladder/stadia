@@ -6,7 +6,6 @@ namespace JohanKladder\Stadia\Logic;
 
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
-use Phpml\CrossValidation\StratifiedRandomSplit;
 use Phpml\Dataset\ArrayDataset;
 use Phpml\Regression\LeastSquares;
 
@@ -20,36 +19,76 @@ class RegressionLogic
 
     public function createAndTrainHarvestPrediction(Collection $harvestInformations)
     {
-        $regression = new LeastSquares();
+        $regressor = new LeastSquares();
 
         if ($harvestInformations->isNotEmpty()) {
-            $samples = [];
-            $targets = [];
-            foreach ($harvestInformations as $harvestInformation) {
-                $sowDay = $harvestInformation->sow_date->dayOfYear;
-                $samples[] = [$sowDay];
-                $duration = $harvestInformation->harvest_date->diffInDays($harvestInformation->sow_date);
-                $targets[] = $sowDay + $duration;
-            }
+            [$samples, $targets] = $this->createSamplesAndTargets(
+                $harvestInformations,
+                'sow_date',
+                'harvest_date'
+            );
 
             $dataset = new ArrayDataset(
                 $samples,
                 $targets
             );
 
-            $dataset = new StratifiedRandomSplit($dataset, 0.3);
-
-            [$xTrain, $xTest, $yTrain, $yTest] = [
-                $dataset->getTrainSamples(),
-                $dataset->getTestSamples(),
-                $dataset->getTrainLabels(),
-                $dataset->getTestLabels()
-            ];
-
-            $regression->train($samples, $targets);
+            $regressor = $this->trainRegressor(
+                $dataset,
+                $regressor
+            );
         }
 
-        return $regression;
+        return $regressor;
+    }
+
+    public function createAndTrainLevelPrediction(Collection $levelInformations)
+    {
+        $regressor = new LeastSquares();
+
+        if ($levelInformations->isNotEmpty()) {
+            [$samples, $targets] = $this->createSamplesAndTargets(
+                $levelInformations,
+                'start_date',
+                'end_date'
+            );
+
+            $dataset = new ArrayDataset(
+                $samples,
+                $targets
+            );
+
+            $regressor = $this->trainRegressor(
+                $dataset,
+                $regressor
+            );
+        }
+
+        return $regressor;
+    }
+
+    private function createSamplesAndTargets(Collection $items, string $fromKey, string $toKey)
+    {
+        $samples = [];
+        $targets = [];
+        foreach ($items as $item) {
+            $startDate = $item[$fromKey]->dayOfYear;
+            $samples[] = [$startDate];
+            $duration = $item[$toKey]->diffInDays($item[$fromKey]);
+            $targets[] = $startDate + $duration;
+        }
+
+        return [
+            $samples,
+            $targets
+        ];
+
+    }
+
+    private function trainRegressor(ArrayDataset $dataset, LeastSquares $regressor): LeastSquares
+    {
+        $regressor->train($dataset->getSamples(), $dataset->getTargets());
+        return $regressor;
     }
 
     public function getYCoordinateBestFit($x, $slope, $intercept)

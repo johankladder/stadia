@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Http\Requests\DurationRequest;
+use JohanKladder\Stadia\Logic\RegressionLogic;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaLevel;
 use JohanKladder\Stadia\Models\StadiaLevelDuration;
+use JohanKladder\Stadia\Models\StadiaPlant;
 
 class DurationController extends Controller
 {
@@ -48,6 +50,11 @@ class DurationController extends Controller
                 $stadiaLevel,
                 $country,
                 $climateCode
+            ),
+            'lineInformation' => $this->getRegressionLine(
+                $stadiaLevel,
+                $country,
+                $climateCode
             )
         ]);
     }
@@ -59,11 +66,42 @@ class DurationController extends Controller
             $startDate = $item->start_date->dayOfYear;
             $duration = $item->end_date->diffInDays($item->start_date);
             return [
-                'y' => $startDate,
-                'x' => $startDate + $duration
+                'x' => $startDate,
+                'y' => $startDate + $duration
             ];
         });
     }
+
+    private function getRegressionLine(StadiaLevel $stadiaLevel, ?Country $country, ?ClimateCode $climateCode)
+    {
+        $entries = Stadia::locationFactoryDefined($stadiaLevel->levelInformation(), $country, $climateCode, true)->get();
+        $logic = new RegressionLogic();
+        $regression = $logic->createAndTrainLevelPrediction($entries);
+
+        $slope = 0;
+        $intercept = 0;
+        if (count($regression->getCoefficients()) > 0) {
+            $slope = $regression->getCoefficients()[0];
+            $intercept = $regression->getIntercept();
+        }
+
+        return [
+            'intercept' => $intercept,
+            'slope' => $slope,
+            'r2' => 'Unavailable',
+            'line-values' => json_encode([
+                [
+                    'x' => 0,
+                    'y' => $logic->getYCoordinateBestFit(0, $slope, $intercept)
+                ],
+                [
+                    'x' => 365,
+                    'y' => $logic->getYCoordinateBestFit(365, $slope, $intercept)
+                ]
+            ])
+        ];
+    }
+
 
     public function storeDuration(DurationRequest $request, StadiaLevel $stadiaLevel)
     {

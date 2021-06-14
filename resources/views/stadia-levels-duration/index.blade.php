@@ -337,6 +337,15 @@
                     <canvas class="p-3" id="chart-durations" height="100" width="100%">
                     </canvas>
 
+                    <div class="alert alert-info m-3" role="alert">
+                        Regression information:
+                        <ul class="mt-1">
+                            <li>Intercept: {{$lineInformation['intercept']}}</li>
+                            <li>Slope: {{$lineInformation['slope']}}</li>
+                            <li>r2 based on 70/30: {{$lineInformation['r2']}}</li>
+                        </ul>
+                    </div>
+
 
                     <div class="alert alert-secondary m-3" role="alert">
                         Found {{count($scatterInformation)}} entries
@@ -349,7 +358,7 @@
 
     <script>
         var data = <?php echo $scatterInformation; ?>;
-        var lineDate = [];
+        var lineDate = <?php echo $lineInformation['line-values'] ?>;
         var barChartData = {
             datasets: [
                 {
@@ -359,15 +368,15 @@
                     data: data,
                     order: 2,
                 },
-                // {
-                //     type: 'line',
-                //     fill: false,
-                //     borderColor: 'blue',
-                //     label: 'Regression line',
-                //     backgroundColor: "blue",
-                //     data: lineDate,
-                //     order: 1,
-                // }
+                {
+                    type: 'line',
+                    fill: false,
+                    borderColor: 'rgba(0,0,0,0.67)',
+                    label: 'Regression line',
+                    backgroundColor: "red",
+                    data: lineDate,
+                    order: 1,
+                }
             ],
         };
 
@@ -379,7 +388,7 @@
 
                 options: {
                     scales: {
-                        yAxes: [
+                        xAxes: [
                             {
                                 scaleLabel: {
                                     display: true,
@@ -392,11 +401,11 @@
                                 },
                             },
                         ],
-                        xAxes: [
+                        yAxes: [
                             {
                                 scaleLabel: {
                                     display: true,
-                                    labelString: 'Day of year completed'
+                                    labelString: 'Delta completed'
                                 },
                                 ticks: {
                                     precision: 0,
