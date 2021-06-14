@@ -13,8 +13,8 @@ class SyncLogic
     public function syncPlants($nameCallBack = null): Collection
     {
         $syncedEntities = Collection::make();
-        $modelName = config("stadia.plant_model", null);
 
+        $modelName = config("stadia.plant_model", null);
         if ($modelName) {
             $results = $modelName::all();
         } else {
@@ -36,7 +36,10 @@ class SyncLogic
     {
         if ($modelName) {
             if (new $modelName() instanceof StadiaRelatedPlant) {
-                $entity = $this->getOrCreateStadiaPlant($plantEntity->getId(), $plantEntity->getTableName());
+                $entity = $this->getOrCreateStadiaPlant(
+                    $plantEntity->getId(),
+                    $plantEntity->getTableName()
+                );
                 $entity->name = $plantEntity->getFormattedName();
                 $entity->save();
                 return $entity->refresh();
