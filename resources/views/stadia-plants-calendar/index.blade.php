@@ -374,7 +374,6 @@
                             <li>Intercept: {{$lineInformation['intercept']}}</li>
                             <li>Slope: {{$lineInformation['slope']}}</li>
                         </ul>
-                        @dump($lineInformation)
                     </div>
 
                     <div class="alert alert-secondary m-3" role="alert">

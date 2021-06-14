@@ -2,11 +2,11 @@
 
 namespace JohanKladder\Stadia\Http\Controllers;
 
-use App\Logic\RegressionLogic;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use JohanKladder\Stadia\Facades\Stadia;
 use JohanKladder\Stadia\Http\Requests\CalendarRangeRequest;
+use JohanKladder\Stadia\Logic\RegressionLogic;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaPlant;
