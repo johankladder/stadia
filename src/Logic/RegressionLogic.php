@@ -35,7 +35,7 @@ class RegressionLogic
 
     public function getYCoordinateBestFit($x, $slope, $intercept)
     {
-        return ($intercept * $x) + $slope;
+        return ($slope * $x) + $intercept;
     }
 
 
