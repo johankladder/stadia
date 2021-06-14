@@ -16,9 +16,11 @@ class HarvestChart extends BaseChart
      */
     public function handler(Request $request): Chartisan
     {
+        $monthlyCounts = $this->getMonthlyCounts();
         return Chartisan::build()
             ->labels($this->getMonthLabels())
-            ->dataset('Entries', $this->getMontlyCounts());
+            ->dataset('Entries', $monthlyCounts)
+            ->dataset('Avarage', $this->getAvarageLineCounts($monthlyCounts));
     }
 
     private function getMonthLabels(): array
@@ -30,14 +32,33 @@ class HarvestChart extends BaseChart
         return $months;
     }
 
-    private function getMontlyCounts(): array
+    private function getMonthlyCounts(): array
     {
-        $montlyCounts = [];
+        $monthlyCounts = [];
 
         for ($m = 1; $m <= 12; $m++) {
-            $montlyCounts[] = StadiaHarvestInformation::whereMonth('created_at', $m)->count();
+            $monthlyCounts[] = StadiaHarvestInformation::whereMonth('created_at', $m)->count();
         }
 
-        return $montlyCounts;
+        return $monthlyCounts;
+    }
+
+    private function getAvarageLineCounts(array $monthlyCounts): array
+    {
+        $sum = 0;
+
+        foreach ($monthlyCounts as $count) {
+            $sum += $count;
+        }
+
+        $average = $sum / count($monthlyCounts);
+
+        $averageLineValues = [];
+
+        for ($m = 1; $m <= 12; $m++) {
+            $averageLineValues[] = $average;
+        }
+
+        return $averageLineValues;
     }
 }
