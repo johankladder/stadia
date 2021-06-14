@@ -30,21 +30,24 @@
                         <img src="{{$item->getReferencePlant() ? $item->getReferencePlant()->getImageUrl() : ""}}"
                              style="height: 100px; width: 100px; object-fit: cover; background: url(https://via.placeholder.com/100);">
                     </td>
-                    <td class="text-center">
-                        <a href="{{route('calendar.index', $item->getId())}}" class="btn btn-outline-primary">
+                    <td>
+                        <a href="{{route('calendar.index', $item->getId())}}" class="btn btn-outline-dark btn-block">
                             Calendar
                         </a>
-                        <a href="{{route('stadia-levels.index', $item->getId())}}" class="btn btn-outline-primary">
+                        <a href="{{route('stadia-levels.index', $item->getId())}}"
+                           class="btn btn-outline-dark btn-block">
                             Levels ({{$item->stadiaLevels()->count()}})
                         </a>
                     </td>
 
-                    <td>
+                    <td class="text-muted font-italic">
                         <div class="row">
-                            <div class="col text-center">
-                                <div class="border p-3 rounded">
+                            <div class="col">
+                                Calendar:
+                                <div class="border p-3 rounded text-center bg-light mt-1">
+
                                     @if($item->calendarRanges()->count() > 0)
-                                        <span class="badge badge-pill badge-primary">
+                                        <span class="badge badge-pill badge-dark">
                                                 Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})
                                             </span>
                                     @endif
@@ -61,10 +64,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-1">
+                        <div class="row mt-2">
                             @if($item->stadiaLevels()->count() > 0)
-                                <div class="col text-center">
-                                    <div class="border p-3 rounded">
+                                <div class="col">
+                                    Levels:
+                                    <div class="border p-3 rounded text-center bg-light mt-1">
                                         @if($item->durations()->whereNull('country_id')->count() >= $item->stadiaLevels()->count() && $item->stadiaLevels()->count() != 0)
                                             <span class="badge badge-pill badge-success">
                                                 Globally supported!
@@ -101,7 +105,7 @@
             {{ $items->links() }}
         </div>
 
-        <a href="{{ route('stadia-plants.sync') }}" class="btn btn-outline-primary">
+        <a href="{{ route('stadia-plants.sync') }}" class="btn btn-outline-dark">
             Sync
         </a>
 

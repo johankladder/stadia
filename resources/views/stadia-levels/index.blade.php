@@ -6,14 +6,14 @@
 
 @section('content')
     <div>
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
             <tr>
                 <th scope="col">Name</th>
                 <th scope="col" style="width: 125px">Image</th>
                 <th scope="col">Durations</th>
                 <th scope="col">Support</th>
-                <th scope="col">Options</th>
+
             </tr>
             </thead>
             <tbody>
@@ -28,29 +28,30 @@
                     </td>
                     <td>
                         <img src="{{$item->getReferenceLevel() ? $item->getReferenceLevel()->getImageUrl() : ""}}"
-                             style="height: 100px; width: 100px; object-fit: cover; background: url(https://via.placeholder.com/100);">
+                             style="height: 100px; width: 100px; object-fit: cover;">
                     </td>
                     <td>
-                        <a href="{{route('durations.index', $item->getId())}}" class="btn btn-outline-primary">
+                        <a href="{{route('durations.index', $item->getId())}}" class="btn btn-outline-dark btn-block">
                             Durations
                         </a>
                     </td>
                     <td>
-                        @if($item->durations()->count() > 0)
-                            <div class="row">
-                                <span class="badge badge-pill badge-primary">Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})</span>
+                        <div class="row ">
+                            <div class="col text-muted font-italic">
+                                Durations:
+                                <div class="border p-3 rounded bg-light text-center mt-1">
+                                    @if($item->durations()->count() > 0)
+                                        <span class="badge badge-pill badge-dark">Countries ({{$item->getSupportedCountries()->count()}} / {{\JohanKladder\Stadia\Models\Country::count()}})</span>
+                                    @endif
+                                    @if($item->durations()->whereNull('country_id')->count() > 0)
+                                        <span class="badge badge-pill badge-success">Globally supported!</span>
+                                    @endif
+                                    @if($item->durations()->count() <= 0)
+                                        <span class="badge badge-pill badge-danger">Globally unsupported!</span>
+                                    @endif
+                                </div>
                             </div>
-                        @endif
-                        @if($item->durations()->whereNull('country_id')->count() > 0)
-                            <div class="row mt-1">
-                                <span class="badge badge-pill badge-success">Globally supported!</span>
-                            </div>
-                        @endif
-                        @if($item->durations()->count() <= 0)
-                            <div class="row mt-1">
-                                <span class="badge badge-pill badge-danger">Globally unsupported!</span>
-                            </div>
-                        @endif
+                        </div>
                     </td>
                     <td>
                         <form action="{{ route('stadia-levels.destroy', $item->getId())}}" method="POST">
@@ -64,7 +65,7 @@
             </tbody>
         </table>
 
-        <a href="{{ route('stadia-levels.sync', $stadiaPlant) }}" class="btn btn-outline-primary">
+        <a href="{{ route('stadia-levels.sync', $stadiaPlant) }}" class="btn btn-outline-dark">
             Sync
         </a>
 

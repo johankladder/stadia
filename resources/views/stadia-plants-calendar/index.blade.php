@@ -69,7 +69,7 @@
                             <div class="mt-3">
                                 @method('post')
                                 @csrf
-                                <button class="btn btn-outline-primary btn-block" type="submit">Create new date range
+                                <button class="btn btn-outline-dark btn-block" type="submit">Create new date range
                                 </button>
 
                             </div>
@@ -81,7 +81,7 @@
 
 
         <div class="card border-0 shadow-lg mt-5">
-            <div class="card-header">
+            <div class="card-header  bg-dark text-light">
                 Global calendar dates
             </div>
             <div class="">
@@ -124,7 +124,7 @@
         </div>
 
         <div class="card border-0 shadow-lg mt-3">
-            <div class="card-header">
+            <div class="card-header bg-dark text-light">
                 Calendar dates per country
             </div>
 
@@ -183,7 +183,7 @@
         </div>
 
         <div class="card border-0 shadow-lg mt-3">
-            <div class="card-header">
+            <div class="card-header  bg-dark text-light">
                 Calendar dates per country and climate codes:
             </div>
 
@@ -297,7 +297,7 @@
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Get calendar</button>
+                <button type="submit" class="btn btn-outline-dark btn-block">Get calendar</button>
             </form>
         </div>
 
@@ -386,7 +386,7 @@
                 {
                     type: 'scatter',
                     label: 'Datapoints',
-                    backgroundColor: "red",
+                    backgroundColor: "#5600e1",
                     data: data,
                     order: 2,
                 },

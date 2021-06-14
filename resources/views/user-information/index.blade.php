@@ -34,7 +34,7 @@
                         </h5>
                         <ul class="list-group list-group-flush">
                             @foreach($mostHarvest as $stadiaPlant)
-                                <li class="list-group-item {{$loop->index == 0 ? 'list-group-item-success' : ''}}">
+                                <li class="list-group-item {{$loop->index == 0 ? 'list-group-item-dark' : ''}}">
                                     <div class="row">
                                         <div class="col font-weight-bold">
                                             {{$loop->index + 1}}.
@@ -87,7 +87,8 @@
                 hooks: new ChartisanHooks()
                     .title("Harvest entries this year")
                     .tooltip()
-                    .datasets(['line'])
+                    .colors(['rgba(0,0,0,0.67)', '#5600e1'])
+                    .datasets([{type: 'bar', fill: false}, {type: 'line', fill: false}])
             });
 
             const chartLevelInformation = new Chartisan({
@@ -96,7 +97,8 @@
                 hooks: new ChartisanHooks()
                     .title("Stadia entries this year")
                     .tooltip()
-                    .datasets(['line'])
+                    .colors(['rgba(0,0,0,0.67)', '#5600e1'])
+                    .datasets([{type: 'bar', fill: false}, {type: 'line', fill: false}])
             });
 
             const chartLevelMonthlyInformation = new Chartisan({
@@ -105,6 +107,7 @@
                 hooks: new ChartisanHooks()
                     .title("Stadia entries this month")
                     .tooltip()
+                    .colors(['rgba(0,0,0,0.67)', '#5600e1'])
                     .datasets(['line'])
             });
         </script>

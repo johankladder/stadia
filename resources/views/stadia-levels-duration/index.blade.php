@@ -53,7 +53,7 @@
                     <div class="mt-3">
                         @method('post')
                         @csrf
-                        <button class="btn btn-outline-primary btn-block" type="submit">Create new duration</button>
+                        <button class="btn btn-outline-dark btn-block" type="submit">Create new duration</button>
 
                     </div>
                 </form>
@@ -61,7 +61,7 @@
         </div>
 
         <div class="card mt-5">
-            <div class="card-header bg-primary text-light">
+            <div class="card-header  bg-dark text-light">
                 Global durations of this stadia
             </div>
             <div class="card-body">
@@ -100,7 +100,7 @@
         </div>
 
         <div class="card mt-3">
-            <div class="card-header bg-primary text-light">
+            <div class="card-header  bg-dark text-light">
                 Durations per country
             </div>
 
@@ -160,7 +160,7 @@
         </div>
 
         <div class="card mt-3">
-            <div class="card-header bg-primary text-light">
+            <div class="card-header  bg-dark text-light">
                 Durations per country and climate codes:
             </div>
 
@@ -270,7 +270,7 @@
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Get duration(s)</button>
+                <button type="submit" class="btn btn-outline-dark btn-block">Get duration(s)</button>
             </form>
         </div>
 
@@ -355,7 +355,7 @@
                 {
                     type: 'scatter',
                     label: 'Datapoints',
-                    backgroundColor: "red",
+                    backgroundColor: "#5600e1",
                     data: data,
                     order: 2,
                 },

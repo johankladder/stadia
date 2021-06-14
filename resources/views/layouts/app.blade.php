@@ -79,14 +79,13 @@
 
             <div class="col-12">
                 <div class="card border-0 shadow-lg">
-
-                    <div class="card-body">
-                        <div class="row border-bottom p-1 mb-3">
+                    <div class="card-header bg-dark text-light">
+                        <div class="row">
                             <div class="col">
-                                <a class="btn btn-outline-dark" href="@yield('backUrl', url()->previous() )">Back</a>
+                                <a class="btn btn btn-light" href="@yield('backUrl', url()->previous() )">Back</a>
                             </div>
                             <div class="col text-center">
-                                <h3 class="card-title mb-3 font-weight-bold">
+                                <h3 class="font-weight-bold mb-0">
                                     @yield('title')
                                 </h3>
                             </div>
@@ -94,6 +93,9 @@
 
                             </div>
                         </div>
+                    </div>
+
+                    <div class="card-body">
                         @yield('content')
                     </div>
                 </div>
