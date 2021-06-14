@@ -75,8 +75,14 @@ class CalendarController extends Controller
         $entries = Stadia::locationFactoryDefined($stadiaPlant->harvestInformation(), $country, $climateCode, true)->get();
         $logic = new RegressionLogic();
         $regression = $logic->createAndTrainHarvestPrediction($entries);
-        $slope = $regression->getCoefficients()[0];
-        $intercept = $regression->getIntercept();
+
+        $slope = 0;
+        $intercept = 0;
+        if (count($regression->getCoefficients()) > 0) {
+            $slope = $regression->getCoefficients()[0];
+            $intercept = $regression->getIntercept();
+        }
+
         return [
             'intercept' => $intercept,
             'slope' => $slope,
