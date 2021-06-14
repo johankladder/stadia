@@ -11,4 +11,5 @@ return [
     'levels_table_name' => 'levels',
     'levels_name_column' => 'name',
     'plant_model' => null,
+    'level_model' => null,
 ];

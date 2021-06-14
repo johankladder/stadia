@@ -4,6 +4,7 @@ namespace JohanKladder\Stadia\Logic;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedLevel;
 use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedPlant;
 use JohanKladder\Stadia\Models\StadiaLevel;
 use JohanKladder\Stadia\Models\StadiaPlant;
@@ -65,26 +66,67 @@ class SyncLogic
     public function syncLevels($nameCallBack = null): Collection
     {
         $syncedEntities = Collection::make();
-        $results = DB::select($this->queryFactory(
-            config('stadia.levels_table_name'),
-            config('stadia.levels_table_soft_deleted', false)
-        ));
+
+        $modelName = config("stadia.level_model", null);
+        if ($modelName) {
+            $results = $modelName::all();
+        } else {
+            $results = DB::select($this->queryFactory(
+                config('stadia.levels_table_name'),
+                config('stadia.levels_table_soft_deleted', false)
+            ));
+        }
+
         foreach ($results as $levelEntity) {
-            $entityId = $levelEntity->id;
-            $plantReferenceId = $levelEntity->plant_id;
-            $entityName = $nameCallBack == null ? $levelEntity->name : call_user_func($nameCallBack, $levelEntity);
-            $stadiaPlant = StadiaPlant::where('reference_id', $plantReferenceId)->first();
-            if ($stadiaPlant) {
-                $entity = StadiaLevel::firstOrCreate([
-                    'reference_id' => $entityId,
-                    'reference_table' => config('stadia.levels_table_name'),
-                    'name' => $entityName,
-                    'stadia_plant_id' => $stadiaPlant->id
-                ]);
+            $entity = $this->syncLevelEntity($levelEntity, $nameCallBack);
+            if ($entity) {
                 $syncedEntities->add($entity);
             }
         }
         return $syncedEntities;
+    }
+
+    private function syncLevelEntity($levelEntity, $nameCallBack, $modelName = null): ?StadiaLevel
+    {
+        if ($modelName) {
+            if (new $modelName() instanceof StadiaRelatedLevel) {
+                $entity = $this->getOrCreateStadiaLevel(
+                    $levelEntity->getId(),
+                    $levelEntity->getTableName()
+                );
+                $entity->name = $levelEntity->getFormattedName();
+                $stadiaPlant = StadiaPlant::where('reference_id', $levelEntity->getPlantReferenceId())->first();
+                if ($stadiaPlant) {
+                    $entity->stadia_plant_id = $stadiaPlant->id;
+                }
+                $entity->save();
+                return $entity->refresh();
+            }
+        }
+
+        $entityId = $levelEntity->id;
+        $plantReferenceId = $levelEntity->plant_id;
+        $entityName = $nameCallBack == null ? $levelEntity->name : call_user_func($nameCallBack, $levelEntity);
+        $stadiaPlant = StadiaPlant::where('reference_id', $plantReferenceId)->first();
+        if ($stadiaPlant) {
+            $entity = StadiaLevel::firstOrCreate([
+                'reference_id' => $entityId,
+                'reference_table' => config('stadia.levels_table_name'),
+                'name' => $entityName,
+                'stadia_plant_id' => $stadiaPlant->id
+            ]);
+
+            return $entity;
+        }
+        return null;
+    }
+
+    private function getOrCreateStadiaLevel($referenceId, $tableName): StadiaLevel
+    {
+        return StadiaLevel::firstOrCreate([
+            'reference_id' => $referenceId,
+            'reference_table' => $tableName,
+        ]);
     }
 
     private function queryFactory($table, $isSoftDeleted)
