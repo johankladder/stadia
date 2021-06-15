@@ -7,26 +7,6 @@
 
         <div class="row">
             <div class="col">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-body">
-                        <div id="chart-harvest" style="height: 300px;">
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card border-0 shadow-lg h-100">
-                    <div class="card-body">
-                        <div id="chart-level">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-3">
-            <div class="col">
                 <div class="card border-0 shadow-lg h-100">
                     <div class="card-body">
                         <h5 class="mb-3 font-weight-bold">
@@ -72,7 +52,7 @@
             <div class="col">
                 <div class="card border-0 shadow-lg h-100">
                     <div class="card-body">
-                        <div id="chart-level-monthly" style="min-height: 300px">
+                        <div id="chart-level">
                         </div>
                     </div>
                 </div>
@@ -123,11 +103,30 @@
                     @endif
                 </div>
             </div>
-
             <div class="col">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body">
+                        <div id="chart-harvest" style="height: 300px;">
+                        </div>
 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
             </div>
 
+
+            <div class="col">
+                <div class="card border-0 shadow-lg h-100">
+                    <div class="card-body">
+                        <div id="chart-level-monthly" style="height: 300px">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
