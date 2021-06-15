@@ -64,7 +64,7 @@
                 <div class="card border-0 shadow-lg h-100">
                     <div class="card-body">
                         <h5 class="mb-3 font-weight-bold">
-                            Top 5 levels most activity
+                            Top 5 levels most activity this month and previous month
                         </h5>
                         <ul class="list-group list-group-flush">
                             @foreach($mostActivity as $stadiaLevel)
