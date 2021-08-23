@@ -4,7 +4,7 @@ namespace JohanKladder\Stadia\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Country extends Model
+class Country extends StadiaModel
 {
 
     protected $table = "stadia_countries";

@@ -4,7 +4,7 @@ namespace JohanKladder\Stadia\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class StadiaLevelDuration extends Model
+class StadiaLevelDuration extends StadiaModel
 {
     protected $fillable = [
         'duration',

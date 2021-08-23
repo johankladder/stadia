@@ -4,7 +4,7 @@ namespace JohanKladder\Stadia\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ClimateCode extends Model
+class ClimateCode extends StadiaModel
 {
 
     protected $fillable = [

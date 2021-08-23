@@ -2,11 +2,10 @@
 
 namespace JohanKladder\Stadia\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use JohanKladder\Stadia\Models\Information\StadiaHarvestInformation;
 use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedPlant;
 
-class StadiaPlant extends Model
+class StadiaPlant extends StadiaModel
 {
 
     protected $fillable = [

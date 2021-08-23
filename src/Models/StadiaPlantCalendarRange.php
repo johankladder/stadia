@@ -4,7 +4,7 @@ namespace JohanKladder\Stadia\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class StadiaPlantCalendarRange extends Model
+class StadiaPlantCalendarRange extends StadiaModel
 {
     protected $fillable = [
         'range_from',

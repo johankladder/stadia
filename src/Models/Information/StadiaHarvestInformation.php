@@ -4,12 +4,12 @@
 namespace JohanKladder\Stadia\Models\Information;
 
 
-use Illuminate\Database\Eloquent\Model;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
+use JohanKladder\Stadia\Models\StadiaModel;
 use JohanKladder\Stadia\Models\StadiaPlant;
 
-class StadiaHarvestInformation extends Model
+class StadiaHarvestInformation extends StadiaModel
 {
 
     protected $fillable = [

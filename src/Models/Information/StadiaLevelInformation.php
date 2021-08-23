@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use JohanKladder\Stadia\Models\ClimateCode;
 use JohanKladder\Stadia\Models\Country;
 use JohanKladder\Stadia\Models\StadiaLevel;
+use JohanKladder\Stadia\Models\StadiaModel;
 
-class StadiaLevelInformation extends Model
+class StadiaLevelInformation extends StadiaModel
 {
 
     protected $fillable = [

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use JohanKladder\Stadia\Models\Information\StadiaLevelInformation;
 use JohanKladder\Stadia\Models\Interfaces\StadiaRelatedLevel;
 
-class StadiaLevel extends Model
+class StadiaLevel extends StadiaModel
 {
 
     protected $fillable = [
