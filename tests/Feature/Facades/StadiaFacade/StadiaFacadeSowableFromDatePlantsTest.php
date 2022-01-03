@@ -94,7 +94,10 @@ class StadiaFacadeSowableFromDatePlantsTest extends TestCase
             $mock
         ]), now());
         $this->assertCount(1, $items);
-        $this->assertEquals(now()->subWeeks(2)->setHour(0)->roundDay(), $items[0]->sowable_from);
+
+        $yearSaveSowableFrom = now()->subWeeks(2)->setHour(0)->roundDay();
+        $yearSaveSowableFrom->year = now()->year;
+        $this->assertEquals($yearSaveSowableFrom, $items[0]->sowable_from);
     }
 
 
