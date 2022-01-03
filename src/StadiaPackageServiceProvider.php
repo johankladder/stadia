@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use JohanKladder\Stadia\Charts\HarvestChart;
 use JohanKladder\Stadia\Charts\LevelChart;
 use JohanKladder\Stadia\Charts\LevelMonthlyChart;
+use JohanKladder\Stadia\Console\CalendarRangesUpdate;
 
 class StadiaPackageServiceProvider extends ServiceProvider
 {
@@ -38,6 +39,9 @@ class StadiaPackageServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../config/config.php' => config_path('stadia.php'),
             ], 'config');
+            $this->commands([
+                CalendarRangesUpdate::class
+            ]);
         }
 
         $this->publishes([
@@ -85,5 +89,4 @@ class StadiaPackageServiceProvider extends ServiceProvider
             __DIR__ . '/../database/seeds/datasets/' => database_path('seeds/datasets')
         ], 'stadia-datasets');
     }
-
 }
