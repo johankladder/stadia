@@ -24,7 +24,7 @@ class UserInformationController extends Controller
     private function getMostHarvest(): Collection
     {
         $currentMonth = now()->month;
-        $previousMonth = ($currentMonth - 1 > 0) ? $currentMonth - 1 : 12;
+        $previousMonth = ($currentMonth - 1 > 0) ? $currentMonth - 1 : 1;
         $items = StadiaHarvestInformation::orderBy('count', 'desc')
             ->whereMonth('created_at', '>=', $previousMonth)
             ->whereMonth('created_at', '<=', $currentMonth)
