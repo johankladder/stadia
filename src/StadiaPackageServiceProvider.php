@@ -22,13 +22,13 @@ class StadiaPackageServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'stadia');
     }
 
-    public function boot(Charts $charts)
+    public function boot()
     {
-        $charts->register([
-            HarvestChart::class,
-            LevelChart::class,
-            LevelMonthlyChart::class
-        ]);
+        // $charts->register([
+        //     HarvestChart::class,
+        //     LevelChart::class,
+        //     LevelMonthlyChart::class
+        // ]);
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->registerRoutes();
