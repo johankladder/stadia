@@ -61,7 +61,8 @@ class Stadia
     {
         $stadiaPlant = StadiaPlant::where('reference_id', $referenceId)->first();
         if ($stadiaPlant) {
-            return $this->getCalendarRanges($stadiaPlant, $locationWrapper);
+            return $this->getCalendarRanges($stadiaPlant, $locationWrapper)
+                ->map(fn ($item) => $this->mapRangesToCurrentYear($item, now()));
         }
         throw new NoStadiaPlantFoundException(
             "Can't find a StadiaPlant with the following reference_id: $referenceId"
@@ -143,7 +144,6 @@ class Stadia
                 } finally {
                     $durations += $duration;
                 }
-
             }
             return $durations;
         }
@@ -224,7 +224,7 @@ class Stadia
             $stadiaPlant = $this->getStadiaPlantWithRelatedPlant($referenceItem);
             if ($stadiaPlant != null) {
                 $ranges = $this->getCalendarRanges($stadiaPlant, $locationWrapper, $country, $climateCode)
-                    ->map(fn($item) => $this->mapRangesToCurrentYear($item, $currentDate))
+                    ->map(fn ($item) => $this->mapRangesToCurrentYear($item, $currentDate))
                     ->where('range_from', '<=', $currentDate->toDateTime())
                     ->where('range_to', '>=', $currentDate->toDateTime());
 
@@ -257,7 +257,7 @@ class Stadia
             $stadiaPlant = $this->getStadiaPlantWithRelatedPlant($referenceItem);
             if ($stadiaPlant != null) {
                 $ranges = $this->getCalendarRanges($stadiaPlant, $locationWrapper, $country, $climateCode)
-                    ->map(fn($item) => $this->mapRangesToCurrentYear($item, $currentDate));
+                    ->map(fn ($item) => $this->mapRangesToCurrentYear($item, $currentDate));
 
                 if ($ranges->count() > 0) {
                     $rangesLater = $ranges
@@ -484,5 +484,4 @@ class Stadia
             $country, $climateCode
         ];
     }
-
 }
