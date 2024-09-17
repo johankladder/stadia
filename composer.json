@@ -12,7 +12,7 @@
     "require": {
         "doctrine/dbal": "^2.12",
         "consoletvs/charts": "6.*",
-        "php-ai/php-ml": "^0.9.0"
+        "php-ai/php-ml": "^0.10.0"
     },
     "autoload": {
         "psr-4": {
